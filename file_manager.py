@@ -12,6 +12,7 @@ dir = pathlib.Path().resolve()
 data_folder = dir / Path("data")
 raw_folder = data_folder / Path("raw")
 cleaned_folder = data_folder / Path("clean")
+
 backup_folder = dir / Path("Backup")
 
 def now():

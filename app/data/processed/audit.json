@@ -1,0 +1,52 @@
+{
+  "input_rows": 5002,
+  "input_sites": 148,
+  "accepted_qc": [
+    "CheckedGood",
+    "CheckedCorrected"
+  ],
+  "cs_daily_confirmed": false,
+  "input_counts": {
+    "ground_data.csv": 102,
+    "ground_sites.csv": 58,
+    "surface_data.csv": 2086,
+    "surface_sites.csv": 41,
+    "precip_data.csv": 2814,
+    "precip_sites.csv": 49
+  },
+  "invalid_or_naive_times": 0,
+  "excluded_qc_rows": 21,
+  "quarantined_duplicate_rows": 4,
+  "numeric_coercions": {
+    "precip_mm": 0,
+    "gw_depth_m": 0,
+    "water_flow_cms": 0,
+    "wq_temp_c": 0,
+    "wq_ec_uscm": 0,
+    "wq_tds_ppm": 0,
+    "wq_ph": 0,
+    "water_level_m": 1
+  },
+  "invalid_precip_mm": 0,
+  "invalid_gw_depth_m": 0,
+  "invalid_water_flow_cms": 0,
+  "invalid_wq_temp_c": 0,
+  "invalid_wq_ec_uscm": 0,
+  "invalid_wq_tds_ppm": 0,
+  "invalid_wq_ph": 1,
+  "invalid_water_level_m": 0,
+  "metadata_only_stations": 55,
+  "missing_coordinates": 0,
+  "valid_long_values": 8448,
+  "input_sha256": {
+    "ground_data.csv": "f944e5928bc1c9d49115300938a9438233cf5bf7d791e2be57b5d1f49e7c1cce",
+    "ground_sites.csv": "f09b61ee8a99d80f610c367777582d58f776ac3fd7f01a0f05c4464f012c7bb0",
+    "station_pairs_template.csv": "32c6b351ddafe8c47579574d4221d3eba60ff78e5beb89ac5dc6f33138ef32a0",
+    "surface_sites.csv": "469d95856056da6b75e6034d36c1c8429e722eb24c413ad32a7fb09d448d8eff",
+    "precip_data.csv": "96c5a9ad4376ea846dca548d263d7fe40b86817e33f723a970fa1331f9253733",
+    "surface_data.csv": "b4e71270578f8d1b6acce04d94090fed48e1b51b92704c50d361cc979287f7cb",
+    "precip_sites.csv": "fa46e0fa17128a88e10cf85a77b501a1ae1075f3dfe48dcfc15a6e7f91507de6",
+    "tipping_bucket_template.csv": "07af3ecde88c3835cadcecd5b2063eb6a471f8e1a11fe35128bac5cdb927e58d"
+  },
+  "built_utc": "2026-10-27T05:55:18.431427+00:00"
+}

@@ -1,0 +1,5 @@
+site_id,source,qc_flag,msmt_datetime,elevation,latitude,longitude,gw_depth_m,water_flow_cms,wq_ec_uscm,wq_tds_ppm,wq_temp_c,wq_ph,water_level_m,precip_mm,time,station_key
+HM09,sw_database,CheckedGood,2021-02-23 12:45:00+05:45,1283.3599267578,27.6890329,85.4389909,,0.0,,,,,,,2021-02-23 12:45:00,sw_database::HM09
+HM09,sw_database,CheckedGood,2021-02-23 12:45:00+05:45,1279.4451898276,27.689062,85.4390775,,0.0,,,,,,,2021-02-23 12:45:00,sw_database::HM09
+KD01,sw_database,CheckedGood,2024-05-22 10:12:00+05:45,1369.2,27.6008467,85.3524067,,0.0162,,,,,0.0,,2024-05-22 10:12:00,sw_database::KD01
+KD01,sw_database,CheckedGood,2024-05-22 10:12:00+05:45,1352.9000244141,27.6006933,85.3524334,,0.0162482068,,,,,0.0,,2024-05-22 10:12:00,sw_database::KD01

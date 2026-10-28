@@ -1,0 +1,59 @@
+site_id,name,project,records,watershed,elevation,latitude,longitude,start_date,end_date,timestep
+GW001,Jhor,,,Bishnumati,,27.79869,85.33005,2017-01-01,2025-12-01,1 month
+GW003,Chapali Height,,,Bishnumati,,27.76756,85.3455,2017-01-01,2025-12-01,1 month
+GW005,Tokha Saraswati,,,Bishnumati,,27.76008,85.32971,2017-01-01,2025-12-01,1 month
+GW013,Bhumthali,,,Bagmati,,27.74128,85.40544,2017-01-01,2025-12-01,1 month
+GW016,Thankot,,,Balkhu,,27.70002,85.21507,2017-01-01,2025-12-01,1 month
+GW020,Panga,,,Bagmati low,,27.6703,85.27853,2017-01-01,2025-12-01,1 month
+GW021,Basantapur Durbar Square,,,Bagmati low,,27.70115,85.30807,2017-01-01,2025-12-01,1 month
+GW022,Sinamangal,,,Bagmati,,27.69519,85.34995,2017-01-01,2025-12-01,1 month
+GW029,Chhaling,,,Hanumante,,27.69735,85.45652,2017-01-01,2025-12-01,1 month
+GW033,Biruwa Road,,,Hanumante,,27.66452,85.39053,2017-01-01,2025-12-01,1 month
+GW038,Khokana,,,Bagmati low,,27.63638,85.29957,2017-01-01,2025-12-01,1 month
+GW041,Harishidi,,,Godawari,,27.63422,85.34742,2017-01-01,2025-12-01,1 month
+GW042,"Mahalaxmi, Lubu",,,Godawari,,27.65102,85.35969,2017-01-01,2025-12-01,1 month
+GW044,Sipadol,,,Hanumante,,27.65319,85.44188,2017-01-01,2025-12-01,1 month
+GW046,Tathali,,,Hanumante,,27.66354,85.46472,2017-01-01,2025-12-01,1 month
+GW047,Balkot,,,Godawari,,27.66414,85.36466,2017-01-01,2025-12-01,1 month
+GW057,Nayapati,,,Bagmati,,27.75239,85.4062,2017-01-01,2025-12-01,1 month
+GW063,Dahachowk,,,Balkhu,,27.69616,85.23144,2017-01-01,2025-12-01,1 month
+GW006,Manmaiju,,,Bishnumati,,27.74962,85.30973,2017-01-01,2025-12-01,1 month
+GW012,Sahidpark,,,Dhobi,,27.73009,85.37417,2017-01-01,2025-12-01,1 month
+GW014,Thali,,,Bagmati,,27.73229,85.40812,2017-01-01,2025-12-01,1 month
+GW019,Kritipur Ring Road,,,Balkhu,,27.68075,85.27976,2017-01-01,2025-12-01,1 month
+GW023,Pepsicola,,,Mahonara,,27.68807,85.36321,2017-01-01,2025-12-01,1 month
+GW024,Jadibuti,,,Mahonara,,27.68005,85.36236,2017-01-01,2025-12-01,1 month
+GW025,Madyapur Thimi,,,Hanumante,,27.67801,85.38603,2017-01-01,2025-12-01,1 month
+GW026,Duwakot,,,Hanumante,,27.69848,85.41418,2017-01-01,2025-12-01,1 month
+GW030,Ekantakuna,,,Nakkhu,,27.66809,85.30815,2017-01-01,2025-12-01,1 month
+GW031,Koteshowr,,,Bagmati low,,27.67914,85.34135,2017-01-01,2025-12-01,1 month
+GW035,Adarsha,,,Hanumante,,27.6669,85.43325,2017-01-01,2025-12-01,1 month
+GW039,Thecho,,,Kodku,,27.61231,85.32014,2017-01-01,2025-12-01,1 month
+GW045,Nalinchok,,,Hanumante,,27.65427,85.45884,2017-01-01,2025-12-01,1 month
+GW048,Suryamadi,,,Hanumante,,27.67386,85.43722,2017-01-01,2025-12-01,1 month
+GW051,Saatdobato,,,Nakkhu,,27.65571,85.32127,2017-01-01,2025-12-01,1 month
+GW053,Madhyapur Thimi,,,Hanumanthe,,27.68254,85.38714,2017-01-01,2025-12-01,1 month
+GW062,Kusunti,,,Nakkhu,,27.66387,85.31476,2017-01-01,2025-12-01,1 month
+GW002,Tokha Chandeshowri,,,Bishnumati,,27.7767,85.33349,2017-01-01,2025-12-01,1 month
+GW064,Khumaltar,,,Kodku,,27.64341,85.32208,2017-01-01,2025-12-01,1 month
+GW065,Chapagaun,,,Nakkhu,,27.60955,85.33238,2017-01-01,2025-12-01,1 month
+GW066,Aalapot,,,Bagmati,,27.74904,85.4297,2017-01-01,2025-12-01,1 month
+GW067,Imadol,,,Godawari,,27.67022,85.34367,2017-01-01,2025-12-01,1 month
+GW069,"Khusibun, Nayabazar",,,Bishnumati,,27.72131,85.30259,2017-01-01,2025-12-01,1 month
+GW070,Nangkhel,,,Hanumante,,27.65675,85.45003,2017-01-01,2025-12-01,1 month
+GW072,Raniban,,,Bishnumati,,27.73797,85.28897,2017-01-01,2025-12-01,1 month
+GW073,Shanku,,,Manohara,,27.72808,85.46289,2017-01-01,2025-12-01,1 month
+GW074,Makalbari,,,Bagmati ,,27.73081,85.38435,2017-01-01,2025-12-01,1 month
+GW075,Nagarkot,,,Manohara,,27.71736,85.46966,2017-01-01,2025-12-01,1 month
+GW077,Sukedhara,,,Dhobi,,27.72318,85.34607,2017-01-01,2025-12-01,1 month
+GW078,"Nayabajar, Balaju",,,Bishnumati,,27.72287,85.30108,2017-01-01,2025-12-01,1 month
+GW079,"Nayabasti, Chunikhel",,,Dhobi,,27.75399,85.36056,2017-01-01,2025-12-01,1 month
+GW082,Lele,,,Nakkhu,,27.57336,85.32756,2017-01-01,2025-12-01,1 month
+GW083,Lubhu,,,Godawari,,27.64368,85.37334,2017-01-01,2025-12-01,1 month
+GW086,Jhaukhel,,,Bagmati Low,,27.68618,85.43037,2017-01-01,2025-12-01,1 month
+GW089,Nakkhipot,,,Nakkhu,,27.64964,85.31399,2017-01-01,2025-12-01,1 month
+GW090,Naikap,,,Balkhu,,27.69121,85.26636,2017-01-01,2025-12-01,1 month
+GW094,"Shreejananagar, Suryabinayak-5",,,Hanumanthe,,27.67184,85.40213,2017-01-01,2025-12-01,1 month
+GW095,Tokha Chandeshwori (Staff),,,Bishnumati,,27.77694,85.33327,2017-01-01,2025-12-01,1 month
+GW096,Manmaiju new,,,Bishnumati,,27.74855,85.31139,2017-01-01,2025-12-01,1 month
+GW097,Manmaiju bridge,,,Bishnumati,,27.74208,85.31475,2017-01-01,2025-12-01,1 month

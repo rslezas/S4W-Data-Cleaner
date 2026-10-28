@@ -1,0 +1,804 @@
+site_id,project,records,watershed,elevation,latitude,longitude,start_date,end_date,timestep,source
+BA01,"0                S4W-Main
+1                S4W-Main
+2                S4W-Main
+3                S4W-Main
+4                S4W-Main
+             ...         
+85               S4W-Asia
+86               S4W-Asia
+87    S4W-Main - Sediment
+88    S4W-Main - Sediment
+89    S4W-Main - Sediment
+Name: Project, Length: 90, dtype: str",90.0,,1955.7,27.7966933333,85.4215483333,2017-01-08 07:09:00,2026-05-29 13:43:00,1 month,Flow_SW_DB
+BA02,"0                S4W-Main
+1                S4W-Main
+2                S4W-Main
+3                S4W-Main
+4                S4W-Main
+             ...         
+94               S4W-Asia
+95               S4W-Asia
+96    S4W-Main - Sediment
+97    S4W-Main - Sediment
+98    S4W-Main - Sediment
+Name: Project, Length: 99, dtype: str",99.0,,1815.3000488281,27.7923179,85.4212386,2017-01-08 05:23:00,2026-05-29 13:04:00,1 month,Flow_SW_DB
+BA03,"0                S4W-Main
+1                S4W-Main
+2                S4W-Main
+3                S4W-Main
+4                S4W-Main
+             ...         
+85               S4W-Asia
+86               S4W-Asia
+87    S4W-Main - Sediment
+88    S4W-Main - Sediment
+89    S4W-Main - Sediment
+Name: Project, Length: 90, dtype: str",90.0,,1820.9244927857,27.7722212887,85.4259282111,2017-04-08 05:49:00,2026-05-29 09:51:00,1 month,Flow_SW_DB
+BA03A,"0                S4W-Main
+1                S4W-Main
+2                S4W-Main
+3                S4W-Main
+4                S4W-Main
+5                S4W-Main
+6                S4W-Main
+7                S4W-Main
+8                S4W-Main
+9                S4W-Main
+10               S4W-Main
+11               S4W-Main
+12               S4W-Main
+13               S4W-Main
+14               S4W-Main
+15               S4W-Main
+16               S4W-Main
+17               S4W-Main
+18               S4W-Main
+19               S4W-Main
+20               S4W-Main
+21               S4W-Main
+22               S4W-Main
+23               S4W-Main
+24               S4W-Main
+25               S4W-Main
+26               S4W-Asia
+27               S4W-Asia
+28               S4W-Asia
+29               S4W-Asia
+30               S4W-Asia
+31               S4W-Asia
+32    S4W-Main - Sediment
+33    S4W-Main - Sediment
+34    S4W-Main - Sediment
+35    S4W-Main - Sediment
+36    S4W-Main - Sediment
+37    S4W-Main - Sediment
+38    S4W-Main - Sediment
+39    S4W-Main - Sediment
+40    S4W-Main - Sediment
+Name: Project, dtype: str",41.0,,1391.2337036133,27.649626,85.444282,2022-12-01 14:51:00,2024-10-28 09:43:00,1 month,Flow_SW_DB
+BA04,"0                S4W-Main
+1                S4W-Main
+2                S4W-Main
+3                S4W-Main
+4                S4W-Main
+             ...         
+60    S4W-Main - Sediment
+61    S4W-Main - Sediment
+62    S4W-Main - Sediment
+63    S4W-Main - Sediment
+64    S4W-Main - Sediment
+Name: Project, Length: 65, dtype: str",65.0,,1358.0,27.7320816667,85.3852383333,2017-01-18 06:55:00,2024-06-21 09:58:00,1 month,Flow_SW_DB
+BA05,"0                S4W-Main
+1                S4W-Main
+2                S4W-Main
+3                S4W-Main
+4                S4W-Main
+5                S4W-Main
+6                S4W-Main
+7                S4W-Main
+8                S4W-Main
+9                S4W-Main
+10               S4W-Main
+11               S4W-Main
+12               S4W-Main
+13               S4W-Main
+14               S4W-Main
+15               S4W-Main
+16               S4W-Main
+17               S4W-Main
+18               S4W-Main
+19               S4W-Main
+20               S4W-Main
+21               S4W-Main
+22               S4W-Main
+23               S4W-Main
+24               S4W-Main
+25               S4W-Main
+26               S4W-Main
+27               S4W-Main
+28               S4W-Main
+29               S4W-Main
+30               S4W-Main
+31               S4W-Asia
+32               S4W-Asia
+33               S4W-Asia
+34               S4W-Asia
+35               S4W-Asia
+36               S4W-Asia
+37               S4W-Asia
+38               S4W-Asia
+39    S4W-Main - Sediment
+40    S4W-Main - Sediment
+41    S4W-Main - Sediment
+42    S4W-Main - Sediment
+43    S4W-Main - Sediment
+44    S4W-Main - Sediment
+45    S4W-Main - Sediment
+46    S4W-Main - Sediment
+47    S4W-Main - Sediment
+48    S4W-Main - Sediment
+49    S4W-Main - Sediment
+Name: Project, dtype: str",50.0,,1844.2049605972,27.7109451,85.3463502,2022-12-01 13:30:00,2026-03-31 16:08:00,1 month,Flow_SW_DB
+BK01,"0                S4W-Main
+1                S4W-Main
+2                S4W-Main
+3                S4W-Main
+4                S4W-Main
+             ...         
+88               S4W-Asia
+89               S4W-Asia
+90               S4W-Asia
+91    S4W-Main - Sediment
+92    S4W-Main - Sediment
+Name: Project, Length: 93, dtype: str",93.0,,1391.5,27.6962253,85.2314496,2017-04-24 07:04:00,2026-06-01 11:27:00,1 month,Flow_SW_DB
+BM01,"0                S4W-Main
+1                S4W-Main
+2                S4W-Main
+3                S4W-Main
+4                S4W-Main
+             ...         
+82               S4W-Asia
+83               S4W-Asia
+84               S4W-Asia
+85    S4W-Main - Sediment
+86    S4W-Main - Sediment
+Name: Project, Length: 87, dtype: str",87.0,,1626.715959756,27.8035150417,85.3216020203,2018-02-14 11:12:00,2026-05-28 11:40:00,1 month,Flow_SW_DB
+DB01,"0                S4W-Main
+1                S4W-Main
+2                S4W-Main
+3                S4W-Main
+4                S4W-Main
+             ...         
+88               S4W-Asia
+89               S4W-Asia
+90               S4W-Asia
+91    S4W-Main - Sediment
+92    S4W-Main - Sediment
+Name: Project, Length: 93, dtype: str",93.0,,1687.5084075928,27.792171,85.371691,2017-05-15 08:25:00,2026-05-28 12:55:00,1 month,Flow_SW_DB
+GD01,"0                S4W-Main
+1                S4W-Main
+2                S4W-Main
+3                S4W-Main
+4                S4W-Main
+             ...         
+83               S4W-Asia
+84               S4W-Asia
+85               S4W-Asia
+86    S4W-Main - Sediment
+87    S4W-Main - Sediment
+Name: Project, Length: 88, dtype: str",88.0,,1461.9264816641,27.6644116,85.363302,2017-05-09 03:00:00,2026-05-25 10:50:00,1 month,Flow_SW_DB
+GD02,"0    S4W-Main
+Name: Project, dtype: str",1.0,,1365.0105314687,27.6134731,85.360529,2021-02-15 14:43:00,2021-02-15 14:43:00,1 month,Flow_SW_DB
+HM01,"0     S4W-Main
+1     S4W-Main
+2     S4W-Main
+3     S4W-Main
+4     S4W-Main
+        ...   
+80    S4W-Asia
+81    S4W-Asia
+82    S4W-Asia
+83    S4W-Asia
+84    S4W-Asia
+Name: Project, Length: 85, dtype: str",85.0,,1574.7,27.70611,85.488035,2017-01-12 09:19:00,2026-04-23 14:34:00,1 month,Flow_SW_DB
+HM02,"0                 S4W-Main
+1                 S4W-Main
+2                 S4W-Main
+3                 S4W-Main
+4                 S4W-Main
+              ...         
+116               S4W-Asia
+117               S4W-Asia
+118    S4W-Main - Sediment
+119    S4W-Main - Sediment
+120    S4W-Main - Sediment
+Name: Project, Length: 121, dtype: str",121.0,,1522.3,27.7060808,85.4880715,2019-07-03 10:14:00,2026-05-26 14:17:00,1 month,Flow_SW_DB
+HM02D,"0     S4W-Main
+1     S4W-Main
+2     S4W-Main
+3     S4W-Main
+4     S4W-Main
+5     S4W-Main
+6     S4W-Main
+7     S4W-Main
+8     S4W-Main
+9     S4W-Main
+10    S4W-Main
+11    S4W-Main
+12    S4W-Main
+13    S4W-Main
+Name: Project, dtype: str",14.0,,1304.5,27.6733551,85.4478925,2017-01-09 09:25:00,2026-03-11 14:09:00,1 month,Flow_SW_DB
+HM02U,"0                S4W-Main
+1                S4W-Main
+2                S4W-Main
+3                S4W-Main
+4                S4W-Main
+5                S4W-Main
+6                S4W-Main
+7                S4W-Main
+8                S4W-Main
+9                S4W-Main
+10               S4W-Main
+11               S4W-Main
+12               S4W-Main
+13               S4W-Main
+14               S4W-Main
+15               S4W-Main
+16               S4W-Main
+17               S4W-Main
+18               S4W-Main
+19               S4W-Main
+20    S4W-Main - Sediment
+21    S4W-Main - Sediment
+22    S4W-Main - Sediment
+23    S4W-Main - Sediment
+24    S4W-Main - Sediment
+Name: Project, dtype: str",25.0,,1327.4000244141,27.6760224,85.4486994,2022-08-02 10:02:00,2025-10-17 10:56:00,1 month,Flow_SW_DB
+HM03,"0     S4W-Main
+1     S4W-Main
+2     S4W-Main
+3     S4W-Main
+4     S4W-Main
+5     S4W-Main
+6     S4W-Main
+7     S4W-Main
+8     S4W-Main
+9     S4W-Main
+10    S4W-Main
+11    S4W-Main
+12    S4W-Main
+13    S4W-Main
+14    S4W-Main
+15    S4W-Main
+16    S4W-Main
+17    S4W-Main
+18    S4W-Main
+19    S4W-Main
+20    S4W-Main
+21    S4W-Main
+22    S4W-Main
+23    S4W-Main
+24    S4W-Main
+25    S4W-Main
+26    S4W-Main
+27    S4W-Main
+28    S4W-Main
+29    S4W-Main
+30    S4W-Main
+31    S4W-Main
+32    S4W-Main
+33    S4W-Main
+34    S4W-Main
+35    S4W-Main
+36    S4W-Main
+37    S4W-Main
+38    S4W-Main
+39    S4W-Main
+40    S4W-Main
+41    S4W-Main
+42    S4W-Main
+43    S4W-Main
+44    S4W-Main
+45    S4W-Main
+46    S4W-Main
+47    S4W-Main
+48    S4W-Main
+49    S4W-Main
+50    S4W-Main
+51    S4W-Main
+52    S4W-Main
+53    S4W-Main
+54    S4W-Main
+55    S4W-Main
+56    S4W-Main
+57    S4W-Main
+58    S4W-Asia
+Name: Project, dtype: str",59.0,,1383.3,27.6688157,85.4381294,2019-07-03 14:34:00,2025-10-17 12:23:00,1 month,Flow_SW_DB
+HM04,"0                S4W-Main
+1                S4W-Main
+2                S4W-Main
+3                S4W-Main
+4                S4W-Main
+             ...         
+69               S4W-Asia
+70               S4W-Asia
+71    S4W-Main - Sediment
+72    S4W-Main - Sediment
+73    S4W-Main - Sediment
+Name: Project, Length: 74, dtype: str",74.0,,1496.9982456202,27.6670368332,85.4314881762,2019-07-03 13:27:00,2024-01-22 12:57:00,1 month,Flow_SW_DB
+HM05,"0     S4W-Main
+1     S4W-Main
+2     S4W-Main
+3     S4W-Main
+4     S4W-Main
+5     S4W-Main
+6     S4W-Main
+7     S4W-Main
+8     S4W-Main
+9     S4W-Main
+10    S4W-Main
+11    S4W-Main
+12    S4W-Main
+13    S4W-Main
+14    S4W-Main
+Name: Project, dtype: str",15.0,,1303.6,27.6774016667,85.4080433333,2019-07-03 17:05:00,2020-09-30 12:46:00,1 month,Flow_SW_DB
+HM06,"0    S4W-Main
+1    S4W-Main
+2    S4W-Main
+3    S4W-Main
+4    S4W-Main
+5    S4W-Main
+6    S4W-Main
+7    S4W-Main
+8    S4W-Main
+9    S4W-Main
+Name: Project, dtype: str",10.0,,1469.1119620465,27.6739604397,85.4004897836,2019-07-04 09:38:00,2020-02-14 12:22:00,1 month,Flow_SW_DB
+HM07,"0     S4W-Main
+1     S4W-Main
+2     S4W-Main
+3     S4W-Main
+4     S4W-Main
+5     S4W-Main
+6     S4W-Main
+7     S4W-Main
+8     S4W-Main
+9     S4W-Main
+10    S4W-Main
+11    S4W-Main
+12    S4W-Main
+13    S4W-Main
+14    S4W-Main
+15    S4W-Main
+16    S4W-Main
+17    S4W-Main
+18    S4W-Main
+19    S4W-Main
+20    S4W-Main
+21    S4W-Main
+22    S4W-Main
+23    S4W-Main
+24    S4W-Main
+25    S4W-Main
+26    S4W-Main
+27    S4W-Main
+28    S4W-Main
+29    S4W-Main
+30    S4W-Main
+31    S4W-Asia
+Name: Project, dtype: str",32.0,,1326.0606231689,27.683432,85.45829,2021-02-23 13:18:00,2022-11-17 14:36:00,1 month,Flow_SW_DB
+HM08,"0     S4W-Main
+1     S4W-Main
+2     S4W-Main
+3     S4W-Main
+4     S4W-Main
+5     S4W-Main
+6     S4W-Main
+7     S4W-Main
+8     S4W-Main
+9     S4W-Main
+10    S4W-Main
+11    S4W-Main
+12    S4W-Main
+13    S4W-Main
+14    S4W-Main
+15    S4W-Main
+16    S4W-Main
+17    S4W-Main
+18    S4W-Main
+19    S4W-Main
+20    S4W-Main
+21    S4W-Main
+22    S4W-Main
+23    S4W-Main
+24    S4W-Main
+25    S4W-Main
+26    S4W-Main
+27    S4W-Main
+28    S4W-Main
+29    S4W-Main
+30    S4W-Asia
+Name: Project, dtype: str",31.0,,1316.7,27.6620547,85.4546447,2021-02-23 15:04:00,2022-11-17 13:02:00,1 month,Flow_SW_DB
+HM09,"0     S4W-Main
+1     S4W-Main
+2     S4W-Main
+3     S4W-Main
+4     S4W-Main
+5     S4W-Main
+6     S4W-Main
+7     S4W-Main
+8     S4W-Main
+9     S4W-Main
+10    S4W-Main
+11    S4W-Main
+12    S4W-Main
+13    S4W-Main
+14    S4W-Main
+15    S4W-Main
+16    S4W-Main
+17    S4W-Main
+Name: Project, dtype: str",18.0,,1307.5352487664,27.6890183,85.4388906,2021-02-23 12:45:00,2022-03-23 12:27:00,1 month,Flow_SW_DB
+HM10,"0     S4W-Main
+1     S4W-Main
+2     S4W-Main
+3     S4W-Main
+4     S4W-Main
+5     S4W-Main
+6     S4W-Main
+7     S4W-Main
+8     S4W-Main
+9     S4W-Main
+10    S4W-Main
+11    S4W-Main
+12    S4W-Main
+13    S4W-Main
+14    S4W-Main
+15    S4W-Main
+16    S4W-Main
+17    S4W-Main
+18    S4W-Main
+19    S4W-Main
+20    S4W-Main
+21    S4W-Main
+22    S4W-Main
+23    S4W-Main
+24    S4W-Main
+25    S4W-Main
+26    S4W-Main
+27    S4W-Asia
+28    S4W-Asia
+Name: Project, dtype: str",29.0,,1344.2796592712,27.681937,85.464811,2021-02-23 13:48:00,2022-11-02 12:00:00,1 month,Flow_SW_DB
+HM1U,"0    S4W-Main
+1    S4W-Main
+Name: Project, dtype: str",2.0,,1277.9000244141,27.6663015,85.3142028,2023-10-16 13:54:00,2023-11-22 13:55:00,1 month,Flow_SW_DB
+HM3N,"0    S4W-Main
+1    S4W-Main
+2    S4W-Main
+3    S4W-Main
+4    S4W-Main
+5    S4W-Main
+6    S4W-Main
+7    S4W-Main
+Name: Project, dtype: str",8.0,,1273.8,27.6690335,85.4372411,2025-07-10 14:43:00,2025-11-13 12:57:00,1 month,Flow_SW_DB
+HM5N,"0                S4W-Main
+1                S4W-Main
+2                S4W-Main
+3                S4W-Main
+4                S4W-Main
+5                S4W-Main
+6                S4W-Main
+7                S4W-Main
+8                S4W-Main
+9                S4W-Main
+10               S4W-Main
+11               S4W-Main
+12               S4W-Main
+13               S4W-Main
+14               S4W-Main
+15               S4W-Main
+16               S4W-Main
+17               S4W-Main
+18               S4W-Main
+19               S4W-Main
+20               S4W-Main
+21               S4W-Main
+22               S4W-Main
+23               S4W-Main
+24               S4W-Main
+25               S4W-Main
+26               S4W-Main
+27               S4W-Main
+28               S4W-Main
+29               S4W-Main
+30               S4W-Main
+31               S4W-Main
+32               S4W-Main
+33               S4W-Main
+34               S4W-Main
+35               S4W-Main
+36               S4W-Main
+37               S4W-Main
+38               S4W-Main
+39    S4W-Main - Sediment
+40    S4W-Main - Sediment
+41    S4W-Main - Sediment
+Name: Project, dtype: str",42.0,,1293.8822002374,27.67943,85.4292296,2020-08-06 11:53:00,2025-10-17 12:50:00,1 month,Flow_SW_DB
+HM6N,"0                S4W-Main
+1                S4W-Main
+2                S4W-Main
+3                S4W-Main
+4                S4W-Main
+5                S4W-Main
+6                S4W-Main
+7                S4W-Main
+8                S4W-Main
+9                S4W-Main
+10               S4W-Main
+11               S4W-Main
+12               S4W-Main
+13               S4W-Main
+14               S4W-Main
+15               S4W-Main
+16               S4W-Main
+17               S4W-Main
+18               S4W-Main
+19               S4W-Main
+20               S4W-Main
+21               S4W-Main
+22               S4W-Main
+23               S4W-Main
+24               S4W-Main
+25               S4W-Main
+26               S4W-Main
+27               S4W-Main
+28               S4W-Main
+29               S4W-Main
+30               S4W-Main
+31               S4W-Main
+32               S4W-Main
+33               S4W-Main
+34               S4W-Main
+35               S4W-Main
+36               S4W-Main
+37               S4W-Main
+38               S4W-Main
+39               S4W-Asia
+40               S4W-Asia
+41               S4W-Asia
+42               S4W-Asia
+43               S4W-Asia
+44    S4W-Main - Sediment
+45    S4W-Main - Sediment
+Name: Project, dtype: str",46.0,,1309.0845413208,27.672089,85.394347,2021-01-15 11:18:00,2024-01-22 12:13:00,1 month,Flow_SW_DB
+HM6U,"0    S4W-Main
+1    S4W-Main
+2    S4W-Main
+3    S4W-Main
+Name: Project, dtype: str",4.0,,1263.6999511719,27.6732172,85.3990674,2025-07-24 14:49:00,2025-10-17 13:54:00,1 month,Flow_SW_DB
+KD01,"0                S4W-Main
+1                S4W-Main
+2                S4W-Main
+3                S4W-Main
+4                S4W-Main
+             ...         
+88               S4W-Asia
+89    S4W-Main - Sediment
+90    S4W-Main - Sediment
+91    S4W-Main - Sediment
+92    S4W-Main - Sediment
+Name: Project, Length: 93, dtype: str",93.0,,1449.2724609375,27.606583,85.364872,2017-04-25 08:46:00,2026-05-25 11:35:00,1 month,Flow_SW_DB
+MH01,"0                S4W-Main
+1                S4W-Main
+2                S4W-Main
+3                S4W-Main
+4                S4W-Main
+             ...         
+93    S4W-Main - Sediment
+94    S4W-Main - Sediment
+95    S4W-Main - Sediment
+96    S4W-Main - Sediment
+97    S4W-Main - Sediment
+Name: Project, Length: 98, dtype: str",98.0,,1478.0,27.7464233,85.4804217,2017-04-27 11:32:00,2026-05-26 12:05:00,1 month,Flow_SW_DB
+Mustang,"0               S4W-Main
+1               S4W-Main
+2               S4W-Main
+3    S4W-Main - Sediment
+4    S4W-Main - Sediment
+5    S4W-Main - Sediment
+6    S4W-Main - Sediment
+7    S4W-Main - Sediment
+Name: Project, dtype: str",8.0,,2589.4406738281,28.7099416,83.6412701,2023-05-11 14:38:00,2023-11-10 17:11:00,1 month,Flow_SW_DB
+NA01,"0                 S4W-Main
+1                 S4W-Main
+2                 S4W-Main
+3                 S4W-Main
+4                 S4W-Main
+              ...         
+112    S4W-Main - Sediment
+113    S4W-Main - Sediment
+114    S4W-Main - Sediment
+115    S4W-Main - Sediment
+116    S4W-Main - Sediment
+Name: Project, Length: 117, dtype: str",117.0,,1957.6889648438,27.7851596,85.4447786,2017-01-07 10:37:00,2026-05-29 12:04:00,1 month,Flow_SW_DB
+NA02,"0                 S4W-Main
+1                 S4W-Main
+2                 S4W-Main
+3                 S4W-Main
+4                 S4W-Main
+              ...         
+105    S4W-Main - Sediment
+106    S4W-Main - Sediment
+107    S4W-Main - Sediment
+108    S4W-Main - Sediment
+109    S4W-Main - Sediment
+Name: Project, Length: 110, dtype: str",110.0,,1928.3649902344,27.7749119,85.4384405,2017-01-07 05:19:00,2026-05-29 11:04:00,1 month,Flow_SW_DB
+NA1U,"0                S4W-Main
+1                S4W-Main
+2                S4W-Main
+3                S4W-Main
+4                S4W-Main
+5                S4W-Main
+6                S4W-Main
+7                S4W-Main
+8                S4W-Main
+9                S4W-Main
+10               S4W-Main
+11               S4W-Main
+12               S4W-Main
+13               S4W-Main
+14               S4W-Main
+15               S4W-Main
+16               S4W-Main
+17               S4W-Main
+18               S4W-Main
+19               S4W-Main
+20               S4W-Main
+21               S4W-Main
+22               S4W-Main
+23               S4W-Main
+24               S4W-Main
+25               S4W-Main
+26               S4W-Main
+27               S4W-Main
+28               S4W-Main
+29               S4W-Main
+30               S4W-Main
+31               S4W-Main
+32               S4W-Main
+33               S4W-Main
+34               S4W-Main
+35               S4W-Main
+36               S4W-Main
+37               S4W-Main
+38               S4W-Main
+39               S4W-Asia
+40               S4W-Asia
+41               S4W-Asia
+42    S4W-Main - Sediment
+43    S4W-Main - Sediment
+44    S4W-Main - Sediment
+45    S4W-Main - Sediment
+46    S4W-Main - Sediment
+47    S4W-Main - Sediment
+48    S4W-Main - Sediment
+Name: Project, dtype: str",49.0,,1981.685546875,27.7953926,85.4565794,2021-10-28 14:34:00,2024-06-28 13:20:00,1 month,Flow_SW_DB
+NA2N,"0    S4W-Main
+1    S4W-Main
+2    S4W-Main
+3    S4W-Main
+4    S4W-Main
+5    S4W-Main
+6    S4W-Main
+7    S4W-Main
+8    S4W-Main
+9    S4W-Asia
+Name: Project, dtype: str",10.0,,1820.8,27.7753414,85.4386178,2022-07-13 09:30:00,2023-02-15 13:57:00,1 month,Flow_SW_DB
+NK01,"0                S4W-Main
+1                S4W-Main
+2                S4W-Main
+3                S4W-Main
+4                S4W-Main
+             ...         
+94    S4W-Main - Sediment
+95    S4W-Main - Sediment
+96    S4W-Main - Sediment
+97    S4W-Main - Sediment
+98    S4W-Main - Sediment
+Name: Project, Length: 99, dtype: str",99.0,,1623.0944224596,27.5755876157,85.3124389351,2017-03-22 05:42:00,2026-05-25 12:36:00,1 month,Flow_SW_DB
+NK01.L,"0                S4W-Main
+1                S4W-Main
+2                S4W-Main
+3                S4W-Main
+4                S4W-Main
+5                S4W-Main
+6                S4W-Main
+7                S4W-Main
+8                S4W-Main
+9                S4W-Main
+10               S4W-Main
+11               S4W-Main
+12               S4W-Main
+13               S4W-Main
+14               S4W-Main
+15               S4W-Main
+16    S4W-Main - Sediment
+17    S4W-Main - Sediment
+Name: Project, dtype: str",18.0,,1462.9801437697,27.57521,85.3133111,2023-07-23 13:00:00,2026-05-25 13:12:00,1 month,Flow_SW_DB
+NK01.R,"0               S4W-Main
+1    S4W-Main - Sediment
+2    S4W-Main - Sediment
+Name: Project, dtype: str",3.0,,1427.6999511719,27.5747554,85.3129937,2023-07-23 13:50:00,2025-06-17 16:29:00,1 month,Flow_SW_DB
+NK1U,"0                S4W-Main
+1                S4W-Main
+2                S4W-Main
+3                S4W-Main
+4                S4W-Main
+5                S4W-Main
+6     S4W-Main - Sediment
+7     S4W-Main - Sediment
+8     S4W-Main - Sediment
+9     S4W-Main - Sediment
+10    S4W-Main - Sediment
+11    S4W-Main - Sediment
+12    S4W-Main - Sediment
+Name: Project, dtype: str",13.0,,1660.6664654195,27.5504862,85.3450312,2023-06-28 12:57:00,2024-10-24 14:49:00,1 month,Flow_SW_DB
+Nakkhudole,"0                S4W-Main
+1                S4W-Main
+2                S4W-Main
+3                S4W-Main
+4                S4W-Main
+5                S4W-Main
+6                S4W-Main
+7                S4W-Main
+8                S4W-Main
+9                S4W-Main
+10               S4W-Main
+11               S4W-Main
+12               S4W-Main
+13               S4W-Main
+14               S4W-Main
+15               S4W-Main
+16               S4W-Main
+17               S4W-Main
+18               S4W-Main
+19               S4W-Main
+20               S4W-Main
+21               S4W-Main
+22               S4W-Main
+23               S4W-Main
+24               S4W-Main
+25               S4W-Main
+26               S4W-Main
+27               S4W-Main
+28               S4W-Main
+29               S4W-Main
+30    S4W-Main - Sediment
+31    S4W-Main - Sediment
+32    S4W-Main - Sediment
+33    S4W-Main - Sediment
+34    S4W-Main - Sediment
+35    S4W-Main - Sediment
+36    S4W-Main - Sediment
+37    S4W-Main - Sediment
+38    S4W-Main - Sediment
+Name: Project, dtype: str",39.0,,1483.1999511719,27.6477481,85.312824,2023-07-23 15:59:00,2026-06-01 14:18:00,1 month,Flow_SW_DB
+RO01,"0     S4W-Main
+1     S4W-Main
+2     S4W-Main
+3     S4W-Main
+4     S4W-Main
+5     S4W-Main
+6     S4W-Main
+7     S4W-Main
+8     S4W-Main
+9     S4W-Main
+10    S4W-Main
+11    S4W-Main
+12    S4W-Main
+13    S4W-Main
+14    S4W-Main
+15    S4W-Main
+16    S4W-Main
+Name: Project, dtype: str",17.0,,1390.9576635065,27.570235,85.5391463,2025-06-16 13:50:00,2026-06-01 11:56:00,1 month,Flow_SW_DB
+,,,,,,,,,1 month,Flow_SW_DB
+,,,,,,,,,1 month,Flow_SW_DB
