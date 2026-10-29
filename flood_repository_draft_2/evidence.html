@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+  <!-- Document metadata, browser title, mobile viewport, and shared stylesheet. -->
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="description" content="S4W Nepal Flood Repository" />
+    <title>Evidence | S4W Nepal Flood Repository</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+
+    <a class="skip" href="#main">Skip to content</a>
+    
+    <!-- Shared header -->
+    <header>
+      <!-- Logo Text -->
+      <div class="wrap header-inner">
+        <a class="brand" href="index.html">
+          <img
+            src="images/S4W-Nepal.png"
+            alt="S4W Nepal"
+            class="brand-logo"
+          />
+        </a>
+        
+        <!-- Navigation Menu -->
+        <nav aria-label="Main navigation">
+          <a href="index.html">Home</a>
+          <a href="map.html">Explore Map</a>
+          <a href="events.html">Flood Events</a>
+          <a href="evidence.html" aria-current="page">Evidence</a>
+          <a href="data.html">Data & Methods</a>
+        </nav>
+        <a class="button small-button" href="contribute.html">Add Observation</a>
+      </div>
+    </header>
+
+    <!-- Evidence Page -->
+    <main id="main">
+      <!-- Page Introduction -->
+      <section class="page-heading">
+        <div class="wrap">
+          <p class="eyebrow">EVIDENCE REPOSITORY</p>
+          <h1>Stories through observation</h1>
+          <p class="lead">
+            Photographs, video, field notes, and reports are submitted by citizen scientists to help explain each flood event.
+          </p>
+        </div>
+      </section>
+      <section class="panel">
+
+        <a>Evidence Filters</a>
+
+        <div class="filter-row">
+
+          <div>
+            <label for="event-select">Select an event</label>
+            <select id="event-select" class="filter-dropdown">
+              <option value="event-1">All Events</option>
+              <option value="event-1">Template Event 1</option>
+              <option value="event-2">Template Event 2</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="evidence-type">Evidence Type</label>
+            <select id="evidence-type" class="filter-dropdown">
+              <option value="evidence-type">All Evidence Types</option>
+              <option value="evidence-type">Images</option>
+              <option value="evidence-type">Video</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="sort-by">Sort By</label>
+            <select id="sort-by" class="filter-dropdown">
+              <option value="sort-by">Most Relevant</option>
+              <option value="sort-by">Newest</option>
+              <option value="sort-by">Oldest</option>
+            </select>
+          </div>
+
+        </div>
+
+        <br>
+
+        <section class="panel">
+          
+          <!-- Template evidence cards -->
+          <div class="cards media">
+
+            <!-- Evidence card-->
+            <article>
+              
+              <div class="placeholder image">
+                <strong>Evidence 1</strong>
+              </div>
+              <div class="media-copy">
+                <h3>Title, Location</h3>
+                <p>Event - Date - Author</p>
+                <p>Caption</p>
+              </div>
+            </article>
+
+            <article>
+              
+              <div class="placeholder image">
+                <strong>Evidence 2</strong>
+              </div>
+              <div class="media-copy">
+                <h3>Title, Location</h3>
+                <p>Event - Date - Author</p>
+                <p>Caption</p>
+              </div>
+            </article>
+
+            <article>
+              <div class="placeholder image">
+                <strong>Evidence 3</strong>
+              </div>
+              <div class="media-copy">
+                <h3>Title, Location</h3>
+                <p>Event - Date - Author</p>
+                <p>Caption</p>
+              </div>
+            </article>
+
+            <article>
+              <div class="placeholder image">
+                <strong>Evidence 4</strong>
+              </div>
+              <div class="media-copy">
+                <h3>Title, Location</h3>
+                <p>Event - Date - Author</p>
+                <p>Caption</p>
+              </div>
+            </article>
+
+          </div>
+
+          <!-- DHM Report -->
+          <div class="panel report">
+            <div>
+              <p class="eyebrow">SOURCE REPORT</p>
+              <h2>September 2024 · DHM situational report</h2>
+              <p>Extreme precipitation and flooding, 27–29 September 2024.</p>
+            </div>
+            <a
+              class="button secondary"
+              href="https://dhm.gov.np/uploads/dhm/downloads/Situational_Report_on_Extreme_Precipitation_and_Flooding_Event_of_27-29_September_2024.pdf"
+              target="_blank"
+              rel="noopener"
+            >
+              Open report ↗
+            </a>
+          </div>
+        </section>
+      </section>
+    </main>
+    
+    <!-- Shared Footer -->
+    
+    <footer>
+      <div class="wrap footer-inner">
+        <div class="brand">
+          <img
+            src="images/S4W-Nepal.png"
+            alt="S4W Nepal"
+            class="brand-logo-mini"
+          />
+        </div>
+        <div>
+          <a href="index.html">Home</a>
+          <a href="data.html">Data & Methods</a>
+          <a href="https://s4w-nepal.smartphones4water.org/">S4W Nepal ↗</a>
+        </div>
+      </div>
+    </footer>
+
+  </body>
+</html>
