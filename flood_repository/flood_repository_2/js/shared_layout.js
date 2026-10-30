@@ -15,7 +15,7 @@ const headerHTML =
           <a href="index.html">Home</a>
           <a href="map.html">Explore Map</a>
           <a href="events.html">Flood Events</a>
-          <a href="evidence.html">Evidence</a>
+          <a href="evidence.html">Gallery</a>
           <a href="data.html">Data</a>
       </nav>
       <a class="button small-button" href="contribute.html">Add Observation</a>
