@@ -18,8 +18,8 @@ const evidenceTypes = [
 ]
 
 evidenceTypes.forEach(type => {
-            evidenceFilter.add(new Option(capitalized, type));
-        });
+    evidenceFilter.add(new Option(type, type));
+});
 
 function populateObservationFilters() {
     const csvRecords = approvedObservations;
@@ -62,17 +62,29 @@ function populateObservationFilters() {
 function filterObservations() {
     const selectedWatershed = watershedFilter?.value || "all";
     const selectedRiver = riverFilter?.value || "all";
+    const selectedLocation = locationFilter?.value || "all";
+    const selectedEvidence = evidenceFilter?.value || "all";
+
+    // Ignore capitalization and surrounding spaces when comparing values.
+    function normalize(value) {
+        return String(value ?? "").trim().toLowerCase();
+    }
+
+    function matches(selected, actual) {
+        return selected === "all" ||
+            normalize(actual) === normalize(selected);
+    }
 
     return approvedObservations.filter(obs => {
-        const matchesWatershed =
-            selectedWatershed === "all" ||
-            obs.watershed === selectedWatershed;
+        const evidenceType =
+            String(obs.evidence_type ?? "").trim() || "Not Provided";
 
-        const matchesRiver =
-            selectedRiver === "all" ||
-            obs.river === selectedRiver;
-
-        return matchesWatershed && matchesRiver;
+        return (
+            matches(selectedWatershed, obs.watershed) &&
+            matches(selectedRiver, obs.river) &&
+            matches(selectedLocation, obs.location_name) &&
+            matches(selectedEvidence, evidenceType)
+        );
     });
 }
 
