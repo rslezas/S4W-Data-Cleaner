@@ -132,7 +132,6 @@ fetch("./data/evidence.geojson")
         console.error("Error loading flood evidence:", error);
 });
 
-
 let floodEvents = [];
 
 let approvedEvidence = [];
@@ -229,7 +228,6 @@ document.getElementById("evidenceEventFilter")
 
 // Add a marker for every demonstration record
 
-
 function displayTimeline(events) {
     const timeline = document.getElementById("eventTimeline");
     timeline.innerHTML = "";
@@ -275,210 +273,218 @@ function displayTimeline(events) {
     });
 }
 
-
-
-
 const markers = [];
 
 function displayEvents() {
-    // Remove previously displayed markers
-    markers.forEach(function(marker) {
-            map.removeLayer(marker);
+    // Read the selected filters.
+    // Missing inputs default to "all" or an unrestricted date range.
+    const location =
+        document.getElementById("locationFilter")?.value || "all";
+
+    const evidenceType =
+        document.getElementById("evidenceFilter")?.value || "all";
+
+    const startDate =
+        document.getElementById("startDateFilter")?.value || "";
+
+    const endDate =
+        document.getElementById("endDateFilter")?.value || "";
+
+    const errorElement = document.getElementById("dateFilterError");
+    const eventCount = document.getElementById("eventCount");
+    const eventList = document.getElementById("eventList");
+
+    // Dates must use YYYY-MM-DD, for example: "2024-09-28".
+    // ISO date strings can be compared directly.
+    const invalidRange =
+        startDate !== "" &&
+        endDate !== "" &&
+        startDate > endDate;
+
+    if (errorElement) {
+        errorElement.hidden = !invalidRange;
+        errorElement.textContent = invalidRange
+            ? "Start date must be on or before the end date."
+            : "";
+    }
+
+    // Keep the current results visible while the user fixes the range.
+    if (invalidRange) {
+        return;
+    }
+
+    // Apply all filters together.
+    const filteredEvents = floodEvents.filter((event) => {
+        const matchesLocation =
+            location === "all" ||
+            event.location === location;
+
+        const matchesEvidence =
+            evidenceType === "all" ||
+            (event.evidenceType || "Not provided") === evidenceType;
+
+        const eventDate =
+            typeof event.date === "string" ? event.date.trim() : "";
+
+        const hasDateRange = startDate !== "" || endDate !== "";
+
+        // Both boundaries are inclusive.
+        // Undated events remain visible only when no date range is set.
+        const matchesDate =
+            !hasDateRange ||
+            (
+                eventDate !== "" &&
+                (!startDate || eventDate >= startDate) &&
+                (!endDate || eventDate <= endDate)
+            );
+
+        return matchesLocation && matchesEvidence && matchesDate;
+    });
+
+    // Remove the previous event markers and regional circles.
+    // This leaves the GeoJSON boundary and evidence layers intact.
+    markers.forEach((marker) => {
+        map.removeLayer(marker);
     });
 
     markers.length = 0;
 
-    // Select matching events
+    // Update the number of matching records.
+    if (eventCount) {
+        const noun = filteredEvents.length === 1 ? "event" : "events";
 
-
-    const selectedLocation =
-        document.getElementById("locationFilter").value;
-
-    const selectedEvidence =
-        document.getElementById("evidenceFilter").value;
-
-    const filteredEvents = floodEvents.filter(function(event) {
-            const matchesLocation =
-                selectedLocation === "all" ||
-                event.location === selectedLocation;
-
-            const matchesEvidence =
-                selectedEvidence === "all" ||
-                (event.evidenceType || "Not provided") === selectedEvidence;
-
-            // Expects event.date in YYYY-MM-DD format.
-            const date = event.date || "";
-
-            const matchesDate =
-                (!startDate && !endDate) ||
-                (
-                date !== "" &&
-                (!startDate || date >= startDate) &&
-                (!endDate || date <= endDate)
-            );
-
-            return matchesLocation && matchesEvidence && matchesDate;
-    });
-
-
-    // Update the timeline using the filtered events
-    displayTimeline(filteredEvents);
-
-
-
-
-    // Add matching markedisplayTimeline(filteredrs to the map
-    filteredEvents.forEach(function(event) {
-
-
-            // Only create map markers for events with valid coordinates
-            if (
-                !Number.isFinite(event.latitude) ||
-                !Number.isFinite(event.longitude) ||
-                event.latitude < -90 ||
-                event.latitude > 90 ||
-                event.longitude < -180 ||
-                event.longitude > 180
-            ) {
-                return;
-            }
-
-            const isRegionalReference = Boolean(event.coordinateNote);
-
-            let marker;
-
-            if (isRegionalReference) {
-                // A reference circle, NOT a verified flood boundary
-                marker = L.circle(
-                    [event.latitude, event.longitude],
-                    {
-                        radius: 3000,
-                        color: "#155e75",
-                        fillColor: "#155e75",
-                        fillOpacity: 0.08,
-                        weight: 2,
-                        dashArray: "6, 6"
-                    }
-                );
-            } else {
-                marker = L.marker([event.latitude, event.longitude]);
-            }
-
-            marker.addTo(map);
-
-            marker.bindPopup(
-                "<strong>" + event.name + "</strong>" +
-                "<br><strong>Location:</strong> " + event.location +
-                "<br><strong>Date:</strong> " + (event.date || "Not assigned") +
-                "<br><strong>Status:</strong> " + event.status +
-                "<br><strong>Map location:</strong> " +
-                (event.coordinateNote ||
-                "Demonstration marker — location not verified") +
-                (isRegionalReference ? "<br><em>Illustrative reference only; not a flood extent.</em>": "")
-            );
-
-            markers.push(marker);
-
-    });
-
-
-    // Automatically adjust the map to visible markers
-    if (markers.length > 0) {
-        const group = L.featureGroup(markers);
-
-        map.fitBounds(group.getBounds(), {
-                padding: [40, 40],
-                maxZoom: 12
-        });
-    } else {
-        // Return to Kathmandu Valley when no events match
-        map.setView([27.7172, 85.3240], 11);
+        eventCount.textContent =
+            `${filteredEvents.length} matching ${noun}`;
     }
 
+    // Update the timeline only on pages that contain one.
+    if (
+        document.getElementById("eventTimeline") &&
+        typeof displayTimeline === "function"
+    ) {
+        displayTimeline(filteredEvents);
+    }
 
-    // Update the number of displayed events
-    document.getElementById("eventCount").textContent =
-        "Showing " + filteredEvents.length + " flood event record(s)";
-    // Update the event information panel
-    const eventList = document.getElementById("eventList");
+    // Clear the previous event cards.
+    if (eventList) {
+        eventList.replaceChildren();
 
-    // Clear the previous list
-    eventList.innerHTML = "";
+        if (filteredEvents.length === 0) {
+            const message = document.createElement("p");
+            message.textContent = "No events match the selected filters.";
+            eventList.appendChild(message);
+        }
+    }
 
-    // Create a card for each matching event
-    filteredEvents.forEach(function(event) {
+    // Create safe text content for both cards and map popups.
+    function createEventContent(event) {
+        const container = document.createElement("div");
 
-            const card = document.createElement("div");
-            card.className = "event-item";
+        const title = document.createElement("h3");
+        title.textContent =
+            event.title || event.eventId || "Flood event";
 
-            const heading = document.createElement("h3");
-            heading.textContent = event.name;
+        container.appendChild(title);
 
-            const location = document.createElement("p");
-            location.textContent = "Location: " + event.location;
+        function addDetail(label, value) {
+            const paragraph = document.createElement("p");
+            const heading = document.createElement("strong");
 
-            const date = document.createElement("p");
-            date.textContent = "Date: " + (event.date || "Not assigned");
+            heading.textContent = `${label}: `;
 
-            const description = document.createElement("p");
-            description.textContent = event.description;
-
-            const status = document.createElement("p");
-            status.className = "event-status";
-            status.textContent = "Status: " + event.status;
-
-            const eventId = document.createElement("p");
-            eventId.textContent = "Event ID: " + (event.eventId || "Not assigned");
-
-            const verifiedBy = document.createElement("p");
-            verifiedBy.textContent =
-                "Verified By: " + (event.verifiedBy || "Not yet verified");
-
-            const verificationDate = document.createElement("p");
-            verificationDate.textContent =
-                "Verification Date: " + (event.verificationDate || "Not available");
-
-            const sourceLink = document.createElement("p");
-
-            if (event.sourceUrl) {
-                const link = document.createElement("a");
-                link.href = event.sourceUrl;
-                link.textContent = "View Supporting Evidence";
-                link.target = "_blank";
-                link.rel = "noopener noreferrer";
-                sourceLink.appendChild(link);
-            } else {
-                sourceLink.textContent = "Supporting Evidence: Not yet provided";
-            }
-
-            const evidenceType = document.createElement("p");
-            evidenceType.textContent = "Evidence Type: " + (event.evidenceType || "Not provided");
-
-            const evidenceSource = document.createElement("p");
-            evidenceSource.textContent = "Evidence Source: " + (event.evidenceSource || "Not provided");
-
-            const coordinateNote = document.createElement("p");
-            coordinateNote.textContent = "Map Location: " + (event.coordinateNote || "Demonstration marker — location not verified");    
-
-            card.append(
-                heading,
-                eventId,
-                location,
-                date,
-                description,
-                status,
-                evidenceType,
-                evidenceSource,
-                verifiedBy,
-                verificationDate,
-                sourceLink,
-                coordinateNote
+            paragraph.appendChild(heading);
+            paragraph.appendChild(
+                document.createTextNode(
+                    value === null || value === undefined || value === ""
+                        ? "Not provided"
+                        : String(value)
+                )
             );
 
+            container.appendChild(paragraph);
+        }
 
+        addDetail("Date", event.date);
+        addDetail("Location", event.location);
+        addDetail("Evidence type", event.evidenceType);
+
+        if (event.description) {
+            addDetail("Description", event.description);
+        }
+
+        if (event.coordinateNote) {
+            addDetail("Location note", event.coordinateNote);
+        }
+
+        return container;
+    }
+
+    filteredEvents.forEach((event) => {
+        // Create a card even when an event has no usable coordinates.
+        if (eventList) {
+            const card = createEventContent(event);
+            card.classList.add("event-item");
             eventList.appendChild(card);
+        }
+
+        // Reject missing coordinates before converting numeric strings.
+        const hasCoordinates =
+            event.latitude !== null &&
+            event.latitude !== undefined &&
+            String(event.latitude).trim() !== "" &&
+            event.longitude !== null &&
+            event.longitude !== undefined &&
+            String(event.longitude).trim() !== "";
+
+        if (!hasCoordinates) {
+            return;
+        }
+
+        const latitude = Number(event.latitude);
+        const longitude = Number(event.longitude);
+
+        const validCoordinates =
+            Number.isFinite(latitude) &&
+            Number.isFinite(longitude) &&
+            latitude >= -90 &&
+            latitude <= 90 &&
+            longitude >= -180 &&
+            longitude <= 180;
+
+        if (!validCoordinates) {
+            return;
+        }
+
+        // Preserve the existing convention:
+        // events with a coordinate note use an illustrative regional circle.
+        const marker = event.coordinateNote
+            ? L.circle([latitude, longitude], {
+                radius: 3000,
+                color: "#155e75",
+                fillColor: "#155e75",
+                fillOpacity: 0.15,
+                weight: 2
+            })
+            : L.marker([latitude, longitude]);
+
+        marker.bindPopup(createEventContent(event));
+        marker.addTo(map);
+
+        markers.push(marker);
     });
 
+    // Fit the map to the matching events that have valid coordinates.
+    if (markers.length > 0) {
+        const bounds = L.featureGroup(markers).getBounds();
+
+        map.fitBounds(bounds, {
+            padding: [30, 30],
+            maxZoom: 12
+        });
+    } else {
+        // Default view when no matching events can be mapped.
+        map.setView([27.7172, 85.3240], 11);
+    }
 }
 
 // Display all events when the page first loads
