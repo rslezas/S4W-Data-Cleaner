@@ -83,6 +83,18 @@
                         </select>
                     </div>
 
+                    <div class="map-filter">
+                      <label for="startDateFilter">Start date</label>
+                      <input type="date" id="startDateFilter">
+                    </div>
+
+                    <div class="map-filter">
+                      <label for="endDateFilter">End date</label>
+                      <input type="date" id="endDateFilter">
+                    </div>
+
+                    <p id="dateFilterError" role="alert" hidden></p>
+
                 </div>
           </aside>
 
@@ -114,10 +126,10 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     
     <script src="js/map_maker.js"></script>
-    <!--
+
     <script src="js/flood_observations.js"></script>
     <script src="js/json_observations.js"></script>
-    <script src="js/map_filter_options.js"></script> -->
+    <script src="js/map_filter_options.js"></script>
 
     <script src="js/shared_layout.js"></script>
 
