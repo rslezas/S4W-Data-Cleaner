@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+
+  <!-- Metadata -->
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="description" content="S4W Nepal Flood Repository" />
+    <title>Explore Map | S4W Nepal Flood Repository</title>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    
+    <a class="skip" href="#main">Skip to content</a>
+
+    <!-- Shared header-->
+    <div id="site-header"></div>
+
+    <!-- Map Page -->
+    <main id="main">
+
+      <!-- Page Intro -->
+      <section class="page-heading">
+        <div class="wrap">
+          <p class="eyebrow">EXPLORE MAP</p>
+          <h1>Interactive Flood Map</h1>
+          <p class="lead">
+            See where flooding has been documented and view the evidence behind each location.
+          </p>
+        </div>
+      </section>
+
+      <!-- Map Section -->
+      <section class="wrap section">
+
+        <!-- Two-column map area -->
+        <div class="map-layout">
+          <!-- Template filters are intentionally disabled until connected to map data. -->
+          <aside class="panel">
+
+            <div class="map-filters">
+
+                    <!-- Watershed Filter -->
+                    <div class="map-filter">
+                        <label for="watershedFilter">
+                            Filter by Watershed
+                        </label>
+                        <select id="watershedFilter">
+                            <option value="all">All Watersheds</option>
+                        </select>
+                    </div>
+
+                    <!-- River Filter -->
+                    <div class="map-filter">
+                        <label for="riverFilter">
+                            Filter by River
+                        </label>
+                        <select id="riverFilter">
+                            <option value="all">All Rivers</option>
+                        </select>
+                    </div>
+
+                    <!-- Location Filter -->
+                    <div class="map-filter">
+                        <label for="locationFilter">
+                            Filter by Location
+                        </label>
+                        <select id="locationFilter">
+                            <option value="all">All Locations</option>
+                            <option value="Kathmandu">Kathmandu</option>
+                            <option value="Lalitpur">Lalitpur</option>
+                            <option value="Bhaktapur">Bhaktapur</option>
+                            <option value="Kathmandu Valley">
+                                Kathmandu Valley (Regional)
+                            </option>
+                        </select>
+                    </div>
+
+                    <!-- Evidence Type Filter -->
+                    <div class="map-filter">
+                        <label for="evidenceFilter">
+                            Filter by Evidence Type
+                        </label>
+                        <select id="evidenceFilter">
+                            <option value="all">All Evidence Types</option>
+                            <option value="Field Observation">Field Observation</option>
+                            <option value="Photo">Photo</option>
+                            <option value="Video">Video</option>
+                            <option value="Government Report">Government Report</option>
+                            <option value="Not provided">Not provided</option>
+                        </select>
+                    </div>
+
+                </div>
+          </aside>
+
+          <div class="panel">
+              <!-- Number of matching event records -->
+              <p id="eventCount"></p>
+
+              <!-- Interactive Leaflet Map -->
+              <div id="map" aria-label="Flood observation map"></div>
+          </div>
+        </div>
+        <div class="section-intro">
+          <h2>Observations Shown</h2>
+          <a class="textlink" href="events.html">Browse event summaries →</a>
+        </div>
+        <div class="panel">
+          <h3>List of Observations</h3>
+          <p>
+            Show date, place, event, evidence type, and a link to details of each event shown on the map.
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <!-- Shared footer -->
+    <div id="site-footer"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script src="js/map_maker.js"></script>
+    <script src="js/flood_observations.js"></script>
+    <script src="js/json_observations.js"></script>
+
+    <script src="js/shared_layout.js"></script>
+
+  </body>
+
+</html>
