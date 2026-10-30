@@ -1,0 +1,2 @@
+observation_id,event_id,event_name,date,river,watershed,location_name,latitude,longitude,description,impact,photo_filename,source_url,photo_credit,permission_status,verification_status
+DEMO-001,DEMO-EVENT,Example Flood Event,2024-09-28,Bagmati,Bagmati Watershed,Example Location,27.7000,85.3200,Example flood observation,Example flooding impact,example.jpg,https://example.com,Example Photographer,pending,pending
