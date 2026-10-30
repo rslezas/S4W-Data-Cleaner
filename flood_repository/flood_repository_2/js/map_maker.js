@@ -109,12 +109,12 @@ fetch("./data/evidence.geojson")
     })
     .then(function(data) {
         
-const publicEvidence = {
-type: "FeatureCollection",
-features: (data.features || []).filter(function(feature) {
-return feature.properties?.verification_status === "approved" &&
-        feature.properties?.publication_consent === true;
-})
+    const publicEvidence = {
+        type: "FeatureCollection",
+        features: (data.features || []).filter(function(feature) {
+        return feature.properties?.verification_status === "approved" &&
+                feature.properties?.publication_consent === true;
+    })
 };
 
 evidenceLayer.addData(publicEvidence);
