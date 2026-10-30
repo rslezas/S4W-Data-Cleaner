@@ -6,7 +6,20 @@ let approvedObservations = [];
 
 const watershedFilter = document.getElementById("watershedFilter");
 const riverFilter = document.getElementById("riverFilter");
+const locationFilter = document.getElementById("locationFilter");
+const evidenceFilter = document.getElementById("evidenceFilter");
 
+const evidenceTypes = [
+    "Image",
+    "Video",
+    "News Report",
+    "Official Report",
+    "Not Provided"
+]
+
+evidenceTypes.forEach(type => {
+            evidenceFilter.add(new Option(capitalized, type));
+        });
 
 function populateObservationFilters() {
     const csvRecords = approvedObservations;
@@ -32,7 +45,8 @@ function populateObservationFilters() {
         select.replaceChildren(new Option(defaultLabel, "all"));
 
         names.forEach(name => {
-            select.add(new Option(name, name));
+            const capitalized = name.replace(/\b\w/g, c => c.toUpperCase())
+            select.add(new Option(capitalized, name));
         });
 
         select.value = names.includes(previousValue)
@@ -42,6 +56,7 @@ function populateObservationFilters() {
 
     fillDropdown(watershedFilter, "watershed", "All Watersheds");
     fillDropdown(riverFilter, "river", "All Rivers");
+    fillDropdown(locationFilter, "location_name", "All Locations")
 }
 
 function filterObservations() {
