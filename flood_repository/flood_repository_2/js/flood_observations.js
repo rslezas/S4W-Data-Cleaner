@@ -1,4 +1,3 @@
-
 /* S4W Nepal - CSV Flood Observations */
 
 const floodObservationLayer = L.layerGroup().addTo(map);
@@ -17,9 +16,15 @@ const evidenceTypes = [
     "Not Provided"
 ]
 
-evidenceTypes.forEach(type => {
-    evidenceFilter.add(new Option(type, type));
-});
+if (evidenceFilter) {
+    evidenceFilter.replaceChildren(
+        new Option("All Evidence Types", "all")
+    );
+
+    evidenceTypes.forEach(type => {
+        evidenceFilter.add(new Option(type, type));
+    });
+}
 
 function populateObservationFilters() {
     const csvRecords = approvedObservations;
@@ -65,6 +70,30 @@ function filterObservations() {
     const selectedLocation = locationFilter?.value || "all";
     const selectedEvidence = evidenceFilter?.value || "all";
 
+    const startDate =
+        document.getElementById("startDateFilter")?.value || "";
+
+    const endDate =
+        document.getElementById("endDateFilter")?.value || "";
+
+    // Show an error if the date range is reversed.
+    const invalidRange = Boolean(
+        startDate && endDate && startDate > endDate
+    );
+
+    const errorElement = document.getElementById("dateFilterError");
+
+    if (errorElement) {
+        errorElement.hidden = !invalidRange;
+        errorElement.textContent = invalidRange
+            ? "Start date must be on or before the end date."
+            : "";
+    }
+
+    if (invalidRange) {
+        return [];
+    }
+
     // Ignore capitalization and surrounding spaces when comparing values.
     function normalize(value) {
         return String(value ?? "").trim().toLowerCase();
@@ -79,11 +108,24 @@ function filterObservations() {
         const evidenceType =
             String(obs.evidence_type ?? "").trim() || "Not Provided";
 
+        const date = String(obs.date ?? "").trim();
+
+        // Include both boundary dates.
+        // Exclude undated observations when a date limit is selected.
+        const matchesDate =
+            (!startDate && !endDate) ||
+            (
+                date !== "" &&
+                (!startDate || date >= startDate) &&
+                (!endDate || date <= endDate)
+            );
+
         return (
             matches(selectedWatershed, obs.watershed) &&
             matches(selectedRiver, obs.river) &&
             matches(selectedLocation, obs.location_name) &&
-            matches(selectedEvidence, evidenceType)
+            matches(selectedEvidence, evidenceType) &&
+            matchesDate
         );
     });
 }
@@ -223,14 +265,21 @@ function loadFloodObservations() {
     });
 }
 
-watershedFilter?.addEventListener(
-    "change",
-    renderFloodObservations
-);
 
-riverFilter?.addEventListener(
-    "change",
-    renderFloodObservations
-);
+["startDateFilter", "endDateFilter"].forEach(id => {
+    document.getElementById(id)?.addEventListener(
+        "change",
+        renderFloodObservations
+    );
+});
+
+[
+    watershedFilter,
+    riverFilter,
+    locationFilter,
+    evidenceFilter
+].forEach(select => {
+    select?.addEventListener("change", renderFloodObservations);
+});
 
 loadFloodObservations();
