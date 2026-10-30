@@ -27,14 +27,7 @@ if (evidenceFilter) {
 }
 
 function populateObservationFilters() {
-    const csvRecords = approvedObservations;
-
-    const jsonRecords =
-        typeof approvedJsonObservations !== "undefined"
-            ? approvedJsonObservations
-            : [];
-
-    const allRecords = [...csvRecords, ...jsonRecords];
+    const allRecords = approvedObservations;
 
     function fillDropdown(select, field, defaultLabel) {
         if (!select) return;
@@ -239,7 +232,7 @@ function renderFloodObservations() {
 }
 
 function loadFloodObservations() {
-    Papa.parse("data/flood_observations.csv", {
+    Papa.parse("data/evidence/flood_observations.csv", {
         download: true,
         header: true,
         skipEmptyLines: true,
