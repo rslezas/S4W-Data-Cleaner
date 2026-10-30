@@ -1,75 +1,5 @@
 
-[
-  
-{
-  "eventId": "DEMO-001",
-  "name": "Demo Event 1",
-  "location": "Kathmandu",
-  "river": null,
-  "ward": null,
-  "author": null,
-  "rights": null,
-  "locationAccuracy": null,
-  "date": null,
-  "description": "Demonstration record for testing the flood repository.",
-  "status": "DEMO - Not verified",
-  "evidenceType": "Field Observation",
-  "evidenceSource": "Demonstration data only",
-  "sourceUrl": null,
-  "evidenceDate": null,
-  "verifiedBy": null,
-  "verificationDate": null,
-  "photoUrl": null,
-  "latitude": 27.7172,
-  "longitude": 85.3240
-},
-
-  {
-    "eventId": "DEMO-002",
-    "name": "Demo Event 2",
-    "location": "Lalitpur",
-    "river": null,
-    "ward": null,
-    "author": null,
-    "rights": null,
-    "locationAccuracy": null,
-    "date": null,
-    "description": "Second demonstration record.",
-    "status": "DEMO - Not verified",
-    "evidenceType": null,
-    "evidenceSource": null,
-    "sourceUrl": null,
-    "evidenceDate": null,
-    "verifiedBy": null,
-    "verificationDate": null,
-    "photoUrl": null,
-    "latitude": 27.6644,
-    "longitude": 85.3188
-  },
-  {
-    "eventId": "DEMO-003",
-    "name": "Demo Event 3",
-    "location": "Bhaktapur",
-    "river": null,
-    "ward": null,
-    "author": null,
-    "rights": null,
-    "locationAccuracy": null,
-    "date": null,
-    "description": "Third demonstration record.",
-    "status": "DEMO - Not verified",
-    "evidenceType": null,
-    "evidenceSource": null,
-    "sourceUrl": null,
-    "evidenceDate": null,
-    "verifiedBy": null,
-    "verificationDate": null,
-    "photoUrl": null,
-    "latitude": 27.6710,
-    "longitude": 85.4298
-  },
-  
-{
+[{
   "eventId": "FLOOD-2024-001",
   "name": "September 2024 Kathmandu Valley Floods",
   "location": "Kathmandu Valley",
@@ -99,6 +29,4 @@
       "relationship": "Pre-flood context only"
     }
   ]
-}
-
-]
+}]
