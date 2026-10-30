@@ -713,7 +713,7 @@ if (properties.sourceUrl) {
 }
 
 document.getElementById("evidenceEventFilter")
-    .addEventListener("change", displayEvidence);
+    ?.addEventListener("change", displayEvidence);
 
 // Add a marker for every demonstration record
 
@@ -762,9 +762,6 @@ function displayTimeline(events) {
         timeline.appendChild(item);
     });
 }
-
-       
-
 
 const markers = [];
 
@@ -1009,15 +1006,14 @@ fetch("./data/events.json")
 // Update the map when the user selects a location
 
 document.getElementById("locationFilter")
-    .addEventListener("change", displayEvents);
+    ?.addEventListener("change", displayEvents);
 
 document.getElementById("evidenceFilter")
-    .addEventListener("change", displayEvents);
+    ?.addEventListener("change", displayEvents);
 
+document.getElementById("downloadDataBtn")
+    ?.addEventListener("click", function() {
 
-      
-
-document.getElementById("downloadDataBtn").addEventListener("click", function() {
     const jsonData = JSON.stringify(floodEvents, null, 2);
 
     const blob = new Blob([jsonData], {
@@ -1037,7 +1033,8 @@ document.getElementById("downloadDataBtn").addEventListener("click", function() 
     URL.revokeObjectURL(url);
 });
 
-document.getElementById("downloadCsvBtn").addEventListener("click", function() {
+document.getElementById("downloadCsvBtn")
+    ?.addEventListener("click", function() {
 
     const columns = [
         "eventId",
