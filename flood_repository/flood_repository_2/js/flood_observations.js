@@ -29,35 +29,145 @@ if (evidenceFilter) {
     });
 }
 
-function populateObservationFilters() {
-    const allRecords = approvedObservations;
+// Cache each request so dropdown updates do not repeatedly fetch the files.
+const filterGeojsonCache = new Map();
 
-    function fillDropdown(select, field, defaultLabel) {
+function loadFilterGeojson(path) {
+    if (!filterGeojsonCache.has(path)) {
+        const request = fetch(path)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(
+                        `Could not load ${path}: HTTP ${response.status}`
+                    );
+                }
+
+                return response.json();
+            })
+            .then(data => {
+                if (
+                    data.type !== "FeatureCollection" ||
+                    !Array.isArray(data.features)
+                ) {
+                    throw new Error(`Invalid GeoJSON: ${path}`);
+                }
+
+                return data;
+            })
+            .catch(error => {
+                // Allow a later call to retry a failed request.
+                filterGeojsonCache.delete(path);
+                throw error;
+            });
+
+        filterGeojsonCache.set(path, request);
+    }
+
+    return filterGeojsonCache.get(path);
+}
+
+async function populateObservationFilters() {
+    // Populate a dropdown from an array of names.
+    function fillDropdown(
+        select,
+        values,
+        defaultLabel,
+        normalize = value => String(value ?? "").trim()
+    ) {
         if (!select) return;
 
         const previousValue = select.value;
+        const normalizedPrevious = normalize(previousValue);
 
         const names = [...new Set(
-            allRecords
-                .map(obs => String(obs[field] || "").trim())
-                .filter(Boolean)
-        )].sort();
+            values.map(normalize).filter(Boolean)
+        )].sort((a, b) => a.localeCompare(b));
 
         select.replaceChildren(new Option(defaultLabel, "all"));
 
         names.forEach(name => {
-            const capitalized = name.replace(/\b\w/g, c => c.toUpperCase())
-            select.add(new Option(capitalized, name));
+            const label = name.replace(/\b\w/g, c => c.toUpperCase());
+            select.add(new Option(label, name));
         });
 
-        select.value = names.includes(previousValue)
-            ? previousValue
+        select.value = names.includes(normalizedPrevious)
+            ? normalizedPrevious
             : "all";
+
+        if (select.value !== previousValue) {
+            select.dispatchEvent(new Event("change"));
+        }
     }
 
-    fillDropdown(watershedFilter, "watershed", "All Watersheds");
-    fillDropdown(riverFilter, "river", "All Rivers");
-    fillDropdown(locationFilter, "location_name", "All Locations")
+    // Locations still come from the approved CSV observations.
+    fillDropdown(
+        locationFilter,
+        approvedObservations.map(observation => observation.location_name),
+        "All Locations"
+    );
+
+    // Load each dropdown independently so one failure does not block another.
+    await Promise.all([
+        populateFromGeojson(
+            riverFilter,
+            "data/geojson/rivers.geojson",
+            ["river", "name:en", "name"],
+            "All Rivers"
+        ),
+
+        populateFromGeojson(
+            watershedFilter,
+            "data/geojson/watersheds.geojson", // Use your actual filename.
+            ["watershed", "name:en", "name"],  // Use its actual name property.
+            "All Watersheds"
+        )
+    ]);
+
+    function normalizeRiverName(value) {
+    return String(value ?? "")
+        .normalize("NFKC")
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
+    async function populateFromGeojson(
+        select,
+        path,
+        propertyNames,
+        defaultLabel
+    ) {
+        if (!select) return;
+
+        try {
+            const data = await loadFilterGeojson(path);
+
+            const names = data.features.map(feature => {
+                const properties = feature.properties || {};
+
+                // Use the first available, nonblank name property.
+                for (const property of propertyNames) {
+                    const value = String(properties[property] ?? "").trim();
+
+                    if (value !== "") {
+                        return value;
+                    }
+                }
+
+                return "";
+            });
+
+            fillDropdown(
+                select, 
+                names, 
+                defaultLabel, 
+                select.id === "riverFilter" ? normalizeRiverName : undefined
+            );
+        } catch (error) {
+            console.error(`Unable to populate ${select.id}:`, error);
+        }
+    }
 }
 
 function filterObservations() {
