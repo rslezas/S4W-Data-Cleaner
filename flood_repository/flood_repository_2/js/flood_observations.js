@@ -1,8 +1,18 @@
 /* S4W Nepal - CSV Flood Observations */
 
 const floodObservationLayer = L.layerGroup().addTo(map);
+// Separate map layer for sponsor observations awaiting review.
+const sponsorPreviewLayer = L.layerGroup().addTo(map);
+
+const sponsorPreviewIcon = L.divIcon({
+    className: "sponsor-preview-marker",
+    html: '<div style="background:#f97316;width:16px;height:16px;border:2px solid white;border-radius:50%;box-shadow:0 1px 5px #555;"></div>',
+    iconSize: [20, 20],
+    iconAnchor: [10, 10]
+});
 
 layerControl.addOverlay(floodObservationLayer, "Flood evidence");
+layerControl.addOverlay(sponsorPreviewLayer, "Sponsor observations (Pending Review)");
 
 let approvedObservations = [];
 // Sponsor observations awaiting verification or permission approval.
@@ -347,6 +357,64 @@ function renderFloodObservations() {
     );
 }
 
+function renderSponsorObservations() {
+    sponsorPreviewLayer.clearLayers();
+
+    pendingSponsorObservations.forEach(function(observation) {
+        const lat = Number(observation.latitude);
+        const lng = Number(observation.longitude);
+
+        if (
+            !String(observation.latitude ?? "").trim() ||
+            !String(observation.longitude ?? "").trim() ||
+            !Number.isFinite(lat) ||
+            !Number.isFinite(lng) ||
+            lat < -90 || lat > 90 ||
+            lng < -180 || lng > 180
+        ) {
+            return;
+        }
+
+        const marker = L.marker([lat, lng], {
+            icon: sponsorPreviewIcon
+        });
+
+        const popup = document.createElement("div");
+
+        const title = document.createElement("h3");
+        title.textContent = observation.location_name || "Sponsor observation";
+
+        const status = document.createElement("p");
+        status.textContent = "Pending verification — sponsor-provided observation";
+
+        const details = document.createElement("p");
+        details.textContent =
+            "Date: " + (observation.date || "Unknown") +
+            " | River: " + (observation.river || "Unknown");
+
+        popup.append(title, status, details);
+
+        if (observation.source_url) {
+            try {
+                const url = new URL(observation.source_url);
+
+                if (["https:", "http:"].includes(url.protocol)) {
+                    const link = document.createElement("a");
+                    link.href = url.href;
+                    link.target = "_blank";
+                    link.rel = "noopener noreferrer";
+                    link.textContent = "View original source";
+                    popup.appendChild(link);
+                }
+            } catch (error) {
+                console.warn("Invalid sponsor source URL");
+            }
+        }
+
+        marker.bindPopup(popup);
+        marker.addTo(sponsorPreviewLayer);
+    });
+}
 function loadFloodObservations() {
     Papa.parse("data/evidence/flood_observations.csv", {
         download: true,
@@ -380,6 +448,7 @@ function loadFloodObservations() {
 
             populateObservationFilters();
             renderFloodObservations();
+            renderSponsorObservations();
         },
 
         error: function(error) {
