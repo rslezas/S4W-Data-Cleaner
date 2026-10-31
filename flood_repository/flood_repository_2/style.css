@@ -235,38 +235,29 @@ nav a[aria-current] {
   color: white;
   font-size: 13px;
 }
-/* Image and embed placeholders. Replace their contents when assets are available. */
-.placeholder {
+
+.image-container {
   border: 1px dashed #94adb7;
-  background: #edf3f5;
-  min-height: 245px;
-  padding: 25px;
   text-align: center;
+  background-color: #ffffff;
+  padding: 15px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   position: relative;
   color: #395d6c;
-  margin-bottom: 24px;
 }
-.placeholder-label {
-  font-size: 9px;
-  letter-spacing: 1.5px;
-  font-weight: bold;
-  position: absolute;
-  top: 15px;
-  left: 18px;
-  color: #466774;
+
+.image-href {
+  font-size: 0;
 }
-.placeholder svg {
-  width: 115px;
-  height: 58px;
-  fill: none;
-  stroke: #8ca8b3;
-  stroke-width: 2;
-  margin: 20px 0 12px;
+
+.thumbnail {
+  max-height: 525px;
+  width: 100%;
 }
+
 .placeholder strong {
   font-size: 16px;
 }
@@ -523,14 +514,11 @@ select {
 .media article {
   border: 1px solid var(--line);
 }
-.media .placeholder {
-  min-height: 235px;
-  border: 0;
-  border-bottom: 1px dashed #94adb7;
-}
+
 .media .placeholder p {
   font-size: 11px;
 }
+
 .media-copy {
   padding: 24px;
 }
@@ -699,9 +687,7 @@ caption {
   .hero h1 {
     font-size: 37px;
   }
-  .hero .placeholder {
-    min-height: 225px;
-  }
+
   .cards,
   .timeline,
   .steps {
