@@ -10,6 +10,7 @@
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
     <link rel="stylesheet" href="style.css" />
+    <link rel="icon" type="image/png" href="images/favicon.png">
   </head>
 
   <body>
@@ -43,6 +44,16 @@
 
             <div class="map-filters">
 
+                    <!-- Location Filter -->
+                    <div class="map-filter">
+                        <label for="eventFilter">
+                            Filter by Event
+                        </label>
+                        <select id="eventFilter">
+                            <option value="all">All Events</option>
+                        </select>
+                    </div>
+
                     <!-- Watershed Filter -->
                     <div class="map-filter">
                         <label for="watershedFilter">
@@ -60,16 +71,6 @@
                         </label>
                         <select id="riverFilter">
                             <option value="all">All Rivers</option>
-                        </select>
-                    </div>
-
-                    <!-- Location Filter -->
-                    <div class="map-filter">
-                        <label for="locationFilter">
-                            Filter by Location
-                        </label>
-                        <select id="locationFilter">
-                            <option value="all">All Locations</option>
                         </select>
                     </div>
 
@@ -125,10 +126,11 @@
     <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     
+    <script src="js/geojson_converter.js"></script>
+    <script src="js/create_legend.js"></script>
+    <script src="js/populate_map_filters.js"></script>
     <script src="js/map_maker.js"></script>
-    <script src="js/flood_observations.js"></script>
-    <script src="js/display_events.js"></script>
-
+    
     <script src="js/shared_layout.js"></script>
 
   </body>

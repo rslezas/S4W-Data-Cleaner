@@ -945,3 +945,40 @@ caption {
         min-height: 0;
     }
 }
+
+/* Map legend container. */
+.map-legend {
+    max-width: 230px;
+    padding: 12px 14px;
+    background: white;
+    color: #1f2937;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgb(0 0 0 / 20%);
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+.map-legend strong {
+    display: block;
+    margin-bottom: 8px;
+}
+
+/* Keep each symbol beside its label. */
+.map-legend-row {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-top: 6px;
+}
+
+/* Small pin-shaped colour swatch. */
+.map-legend-symbol {
+    display: inline-block;
+    flex-shrink: 0;
+    width: 12px;
+    height: 12px;
+    margin: 0 3px;
+    border: 1px solid rgb(0 0 0 / 20%);
+    border-radius: 50% 50% 50% 0;
+    transform: rotate(-45deg);
+}

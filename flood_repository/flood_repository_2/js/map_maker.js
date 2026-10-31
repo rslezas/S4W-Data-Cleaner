@@ -1,276 +1,454 @@
-/* S4W Nepal — Map and geographic layers */
 
-// Create a map centered on Kathmandu.
-const map = L.map("map").setView(
-    [27.7172, 85.3240],
-    11
-);
+const DATA_PATHS = {
+    rivers: "data/geojson/rivers.geojson",
+    watersheds: "data/geojson/watersheds.geojson",
+    events: "data/events.json", // May instead point to data/flood_events.csv.
+    observations: "data/flood_observations.csv"
+};
 
-// Municipality boundaries below rivers.
-map.createPane("municipalitiesPane");
-map.getPane("municipalitiesPane").style.zIndex = 400;
+const map = L.map("map").setView([27.7172, 85.3240], 11);
+for (const [name, zIndex] of Object.entries({
+    watershedsPane: 410,
+    riversPane: 420,
+    eventsPane: 430,
+    observationsPane: 440
+})) {
+    map.createPane(name);
+    map.getPane(name).style.zIndex = zIndex;
+}
+// map.createPane("municipalitiesPane");
+// map.getPane("municipalitiesPane").style.zIndex = 400;
 
-// Municipality boundaries below rivers.
-map.createPane("watershedsPane");
-map.getPane("watershedsPane").style.zIndex = 410;
-
-// Rivers above municipality boundaries.
-map.createPane("riversPane");
-map.getPane("riversPane").style.zIndex = 420;
-
-
-// Add OpenStreetMap background tiles.
-L.tileLayer(
-    "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
-    {
-        attribution: "&copy; OpenStreetMap contributors"
-    }
-).addTo(map);
-
-// Keep this at the top level so flood_observations.js can
-// register its evidence layer with the same menu.
+L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+}).addTo(map);
 const layerControl = L.control.layers(null, null, {
     collapsed: true,
     position: "topright"
 }).addTo(map);
 
-// Load rivers and streams.
-fetch("data/geojson/rivers.geojson")
-    .then(response => {
-        if (!response.ok) {
-            throw new Error("Could not load river GeoJSON file");
+function getFilters() {
+    return {
+        event: document.getElementById("eventFilter")?.value || "all",
+        river: document.getElementById("riverFilter")?.value || "all",
+        watershed: document.getElementById("watershedFilter")?.value || "all",
+        evidence: document.getElementById("evidenceFilter")?.value || "all"
+    };
+}
+
+function normalize(value) {
+    return String(value ?? "").normalize("NFKC").trim()
+        .toLowerCase().replace(/\s+/g, " ");
+}
+
+function normalizeRiverName(value) {
+    const name = normalize(value);
+    // Explicit aliases preserve multiword names and distinct waterways.
+    const aliases = {
+        bagmati: "bagmati river", bishnumati: "bishnumati river",
+        dhobi: "dhobi khola", nakkhu: "nakkhu khola",
+        hanumante: "hanumante khola", manohara: "manohara khola",
+        manahara: "manohara khola", "manahara khola": "manohara khola"
+    };
+    return aliases[name] ?? name;
+}
+
+function matches(selected, value, normalizer = normalize) {
+    return selected === "all" || normalizer(selected) === normalizer(value);
+}
+
+function featureName(feature, field) {
+    const p = feature.properties || {};
+    return [p[field], p["name:en"], p.name]
+        .map(value => String(value ?? "").trim()).find(Boolean) || "";
+}
+
+function popup(title, fields = []) {
+    const element = document.createElement("div");
+    const heading = document.createElement("strong");
+    heading.textContent = title;
+    element.appendChild(heading);
+    fields.forEach(([label, value]) => {
+        if (value == null || value === "") {
+            return;
         }
+        const p = document.createElement("p");
+        p.textContent = `${label}: ${value}`;
+        element.appendChild(p);
+    });
+    return element;
+}
 
-        return response.json();
-    })
-    .then(data => {
-        // This variable is local to this callback, avoiding conflicts
-        // with filter variables in flood_observations.js.
-        const riverSelect = document.getElementById("riverFilter");
+// Create and register each layer once. Refreshes preserve layer-menu toggles.
+const riversLayer = L.geoJSON(null, {
+    pane: "riversPane",
+    style: { color: "#0c5f9a", weight: 3, opacity: 1 },
+    onEachFeature: (f, layer) => layer.bindPopup(popup("River/Stream: " + featureName(f, "river")))
+}).addTo(map);
 
-        // Prefer the English name, then fall back to the local name.
-        function getRiverName(feature) {
-            const properties = feature.properties || {};
+const watershedsLayer = L.geoJSON(null, {
+    pane: "watershedsPane",
+    style: { color: "#e18804", fillOpacity: 0.2, weight: 2, opacity: 0.8 },
+    onEachFeature: (f, layer) => layer.bindPopup(popup("Watershed: " + featureName(f, "watershed")))
+}).addTo(map);
 
-            const name = (
-                String(properties["river"] ?? "").trim()
-            )
-            return name
-        }
+// Pin colours for each evidence category.
+const evidenceColors = {
+    "image": "#2563eb",
+    "video": "#dc2626",
+    "social media link": "#9333ea",
+    "news report": "#16a34a",
+    "official report": "#d97706",
+    "government report": "#d97706",
+    "not provided": "#64748b"
+};
 
-        function normalizeRiverName(value) {
-            return String(value ?? "")
-                .normalize("NFKC")
-                .trim()
-                .toLowerCase()
-                .replace(/\s+/g, " ")       // Collapse repeated spaces.
-                .replace(/\s+river$/, "")  // Remove a trailing " river".
-                .trim()
-                .split(" ")[0];
-        }
+const evidenceLegend = createEvidenceLegend(evidenceColors);
+evidenceLegend.addTo(map);
 
-        const riverLayer = L.geoJSON(data, {
-            pane: "riversPane",
-            style: {
-                color: "#56a7e0",
-                weight: 3,
-                opacity: 1
-            },
-            filter: function(feature) {
-                const isLine = [
-                    "LineString",
-                    "MultiLineString"
-                ].includes(feature.geometry?.type);
+// Reuse icons instead of rebuilding one for every point.
+const pinIcons = new Map();
 
-                const name = normalizeRiverName(getRiverName(feature));
-                const selected = normalizeRiverName(riverSelect?.value || "all");
+function getPinIcon(color) {
+    if (pinIcons.has(color)) {
+        return pinIcons.get(color);
+    }
 
-                return (
-                    isLine &&
-                    name !== "" &&
-                    name !== "unnamed waterway" &&
-                    (selected === "all" || name === selected)
-                );
-            },
-            onEachFeature: function(feature, layer) {
-                const popup = document.createElement("div");
+    const svg = `
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="33"
+            viewBox="0 0 32 44"
+        >
+            <path
+                d="M16 1
+                   C8 1 1 8 1 16
+                   C1 27 16 42 16 42
+                   C16 42 31 27 31 16
+                   C31 8 24 1 16 1 Z"
+                fill="${color}"
+                stroke="white"
+                stroke-width="2"
+            />
+            <circle cx="16" cy="16" r="5" fill="white" />
+        </svg>
+    `;
 
-                popup.textContent =
-                    "River/Stream: " + getRiverName(feature);
-
-                layer.bindPopup(popup);
-            }
-        }).addTo(map);
-
-        layerControl.addOverlay(
-            riverLayer,
-            "Rivers and streams"
-        );
-
-        // Leaflet applies the filter when features are added.
-        // Reuse the downloaded data to redraw matching rivers.
-        riverSelect?.addEventListener("change", function() {
-            riverLayer.clearLayers();
-            riverLayer.addData(data);
-        });
-
-        console.log("Kathmandu Valley river layer loaded successfully");
-    })
-    .catch(error => {
-        console.error("Error loading river data:", error);
+    const icon = L.icon({
+        iconUrl: "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(svg),
+        iconSize: [24, 33],
+        iconAnchor: [12, 31.5],
+        popupAnchor: [0, -28]
     });
 
-fetch("data/geojson/watersheds.geojson")
-    .then(response => {
-        if (!response.ok) {
-            throw new Error("Could not load watershed GeoJSON file");
-        }
+    pinIcons.set(color, icon);
 
-        return response.json();
-    })
-    .then(data => {
-        // This variable is local to this callback, avoiding conflicts
-        // with filter variables in flood_observations.js.
-        const watershedSelect = document.getElementById("watershedFilter");
+    return icon;
+}
 
-        // Prefer the English name, then fall back to the local name.
-        function getWatershedName(feature) {
+function makePointLayer(pane, color, isEvent = false) {
+    const layer = L.geoJSON(null, {
+        pointToLayer: function (feature, latlng) {
             const properties = feature.properties || {};
 
-            const name = (
-                String(properties["watershed"] ?? "").trim()
+            const evidenceType = String(
+                properties.evidence_type ||
+                properties.evidenceType ||
+                "Not Provided"
             )
-            return name
-        }
-
-        function normalizeWatershedName(value) {
-            return String(value ?? "")
-                .normalize("NFKC")
                 .trim()
-                .toLowerCase()
-                .replace(/\s+/g, " ")       // Collapse repeated spaces.
-        }
+                .toLowerCase();
 
-        const watershedLayer = L.geoJSON(data, {
-            pane: "watershedsPane",
-            style: {
-                color: "#e18804",
-                fillOpacity: 0.2,
-                weight: 2,
-                opacity: 0.8
-            },
-            filter: function(feature) {
-                const isLine = [
-                    "Polygon",
-                    "MultiPolygon"
-                ].includes(feature.geometry?.type);
+            // Events retain their layer colour.
+            // Evidence receives a colour based on its type.
+            const pinColor = isEvent ? color : evidenceColors[evidenceType] || evidenceColors["not provided"];
 
-                const name = normalizeWatershedName(getWatershedName(feature));
-                const selected = normalizeWatershedName(watershedSelect?.value || "all");
+            return L.marker(latlng, {
+                pane: pane,
+                icon: getPinIcon(pinColor),
 
-                return (
-                    isLine &&
-                    name !== "" &&
-                    name !== "unnamed waterway" &&
-                    (selected === "all" || name === selected)
-                );
-            },
-            onEachFeature: function(feature, layer) {
-                const popup = document.createElement("div");
+                // Text available on hover and to assistive technology.
+                title: isEvent ? "Flood event" : `Flood evidence: ${evidenceType}`,
+                alt: isEvent ? "Flood event" : `Flood evidence: ${evidenceType}`
+            });
+        },
 
-                popup.textContent =
-                    "Watershed: " + getWatershedName(feature);
+        onEachFeature: function (feature, marker) {
+            const properties = feature.properties;
+            const id = eventId(properties);
+            const parentEvent = eventRecords.get(id);
+            const fields = [];
+            let title;
 
-                layer.bindPopup(popup);
+            if (isEvent) {
+                title = properties.name || "Flood event";
+                fields.push(["Event ID", id]);
+            } else {
+                title = properties.observation_title || properties.title ||
+                    properties.event_name || properties.name || "Flood evidence";
+
+                fields.push(["Parent event ID", id || "Not linked"]);
+                fields.push([
+                    "Parent event",
+                    parentEvent ? parentEvent.name : "Not linked to a known event"
+                ]);
             }
-        }).addTo(map);
 
-        layerControl.addOverlay(
-            watershedLayer,
-            "Watersheds"
-        );
+            fields.push(
+                ["Location", properties.location_name || properties.location],
+                ["Date", properties.date],
+                ["End date", properties.endDate],
+                ["River", properties.river],
+                ["Watershed", properties.watershed],
+                ["Evidence type", properties.evidence_type || properties.evidenceType || "Not Provided"],
+                ["Description", properties.description],
+                ["Verification", properties.verification_status || properties.status],
+                ["Map location", properties.coordinateNote || properties.locationAccuracy]
+            );
 
-        // Leaflet applies the filter when features are added.
-        // Reuse the downloaded data to redraw matching watersheds.
-        watershedSelect?.addEventListener("change", function() {
-            watershedLayer.clearLayers();
-            watershedLayer.addData(data);
-        });
-
-        console.log("Kathmandu Valley watershed layer loaded successfully");
-        })
-        .catch(error => {
-            console.error("Error loading watershed data:", error);
+            marker.bindPopup(popup(title, fields));
+        }
     });
 
+    return layer.addTo(map);
+}
 
-// Load municipality boundaries.
-fetch("data/geojson/kathmandu_municipalities.geojson")
-    .then(response => {
-        if (!response.ok) {
-            throw new Error("Could not load municipality GeoJSON file");
+const eventsLayer = makePointLayer("eventsPane", "#000000", true);
+const observationsLayer = makePointLayer("observationsPane", "#56a7e0");
+
+[
+    [riversLayer, "Rivers and streams"], [watershedsLayer, "Watersheds"],
+    [eventsLayer, "Flood Events"], [observationsLayer, "Flood Observations"]
+].forEach(([layer, label]) => layerControl.addOverlay(layer, label));
+
+// Registry includes documented events even when their coordinates are missing.
+const eventRecords = new Map();
+
+function eventId(record) {
+    return String(record.event_id ?? "").trim();
+}
+
+function matchesEvent(selected, record) {
+    return selected === "all" || eventId(record) === selected;
+}
+
+const layerData = {
+    rivers: [],
+    watersheds: [],
+    events: [],
+    observations: []
+};
+
+// Shared refresh reads the controls once; no network calls or new layers.
+function refreshLayers() {
+    const selected = getFilters();
+    renderRiversLayer(selected);
+    renderWatershedsLayer(selected);
+    renderEventsLayer(selected);
+    renderObservationsLayer(selected);
+}
+
+function replaceFeatures(layer, features) {
+    layer.clearLayers();
+    layer.addData({ type: "FeatureCollection", features });
+}
+
+function renderRiversLayer(selected) {
+    replaceFeatures(riversLayer, layerData.rivers.filter(feature => {
+        const name = featureName(feature, "river");
+        return ["LineString", "MultiLineString"].includes(feature.geometry?.type)
+            && name !== "" && !/^unnamed\b/i.test(name)
+            && matches(selected.river, name, normalizeRiverName);
+    }));
+}
+
+function renderWatershedsLayer(selected) {
+    replaceFeatures(watershedsLayer, layerData.watersheds.filter(feature =>
+        ["Polygon", "MultiPolygon"].includes(feature.geometry?.type)
+        && matches(selected.watershed, featureName(feature, "watershed"))
+    ));
+}
+
+function renderEventsLayer(selected) {
+    // Event selection controls regional event references; evidence-specific
+    // filters apply to observations, not the regional reference marker.
+    replaceFeatures(eventsLayer, layerData.events.filter(feature =>
+        matchesEvent(selected.event, feature.properties)
+    ));
+}
+
+function renderObservationsLayer(selected) {
+    const matchingEvidence = layerData.observations.filter(function (feature) {
+        const properties = feature.properties;
+
+        // Link evidence to its parent event by ID, never by its title.
+        const matchesParentEvent = matchesEvent(selected.event, properties);
+        const matchesRiver = matches(
+            selected.river,
+            properties.river,
+            normalizeRiverName
+        );
+        const matchesWatershed = matches(selected.watershed, properties.watershed);
+        const matchesEvidenceType = matches(
+            selected.evidence,
+            properties.evidence_type || "Not Provided"
+        );
+
+        return matchesParentEvent && matchesRiver &&
+            matchesWatershed && matchesEvidenceType;
+    });
+
+    replaceFeatures(observationsLayer, matchingEvidence);
+}
+
+// CSV files use Papa Parse. Malformed files report errors instead of silently
+// displaying incorrectly shifted columns. Header names are trimmed.
+function loadCSV(path) {
+    return new Promise((resolve, reject) => {
+        Papa.parse(path, {
+            download: true,
+            header: true,
+            delimiter: ",",
+            skipEmptyLines: "greedy",
+            transformHeader: header => header.replace(/^\uFEFF/, "").trim(),
+            complete(results) {
+                if (results.errors.length) {
+                    reject(new Error(`${path}: ${results.errors[0].message}`));
+                    return;
+                }
+                if (!["latitude", "longitude"].every(key => results.meta.fields?.includes(key))) {
+                    reject(new Error(`${path}: latitude and longitude columns are required.`));
+                    return;
+                }
+                resolve(results.data);
+            },
+            error: error => reject(new Error(`${path}: ${error.message || error}`))
+        });
+    });
+}
+
+// Papa Parse cannot parse JSON/GeoJSON. XMLHttpRequest avoids fetch while
+// retaining the original geographic files and events.json without conversion.
+function loadJSON(path) {
+    return new Promise((resolve, reject) => {
+        const request = new XMLHttpRequest();
+        request.open("GET", path);
+        request.timeout = 30000;
+        request.onload = () => {
+            if (request.status < 200 || request.status >= 300) {
+                reject(new Error(`${path}: HTTP ${request.status}`));
+                return;
+            }
+            try {
+                resolve(JSON.parse(request.responseText.replace(/^\uFEFF/, "")));
+            } catch (error) {
+                reject(new Error(`${path}: invalid JSON (${error.message})`));
+            }
+        };
+        request.onerror = () => reject(new Error(`${path}: network error`));
+        request.ontimeout = () => reject(new Error(`${path}: request timed out`));
+        request.send();
+    });
+}
+
+function geographicFeatures(data) {
+    if (data?.type !== "FeatureCollection" || !Array.isArray(data.features)) {
+        throw new Error("Expected a GeoJSON FeatureCollection.");
+    }
+    return data.features;
+}
+
+// Load independent files once. Each loader stores data in its own collection.
+async function loadRivers() {
+    const data = await loadJSON(DATA_PATHS.rivers);
+    layerData.rivers = geographicFeatures(data);
+}
+
+async function loadWatersheds() {
+    const data = await loadJSON(DATA_PATHS.watersheds);
+    layerData.watersheds = geographicFeatures(data);
+}
+
+async function loadEvents() {
+    const events = await loadJSON(DATA_PATHS.events);
+
+    // Index events for dropdown options and parent-event lookups.
+    eventRecords.clear();
+
+    events.forEach(function (event) {
+        eventRecords.set(event.event_id, event);
+    });
+
+    // Create the event overview points.
+    layerData.events = observationsToGeoJSON(events).features;
+}
+
+async function loadObservations() {
+    const observations = await loadCSV(DATA_PATHS.observations);
+
+    // Preserve the supplied script's behavior: display all valid rows.
+    // This does not apply approval-status filtering.
+    layerData.observations = observationsToGeoJSON(observations).features;
+}
+
+async function initializeLayers() {
+    // Clear stale HTML options immediately, even if loading later fails.
+    populateEventFilter();
+
+    const loaders = [loadRivers, loadWatersheds, loadEvents, loadObservations];
+    const labels = ["Rivers", "Watersheds", "Events", "Evidence"];
+    const results = await Promise.allSettled(loaders.map(function (load) {
+        return load();
+    }));
+    const errors = [];
+
+    results.forEach(function (result, index) {
+        if (result.status === "rejected") {
+            errors.push(`${labels[index]}: ${result.reason.message}`);
         }
+    });
 
-        return response.json();
-    })
+    if (errors.length > 0) {
+        console.error("Map loading errors:", errors);
+
+        const errorBox = document.createElement("p");
+        errorBox.setAttribute("role", "alert");
+        errorBox.textContent = "Some map data could not load. " + errors.join("; ");
+        document.getElementById("map").insertAdjacentElement("afterend", errorBox);
+    }
+
+    const unlinkedEvidence = layerData.observations.filter(function (feature) {
+        return !eventRecords.has(eventId(feature.properties));
+    });
+
+    if (unlinkedEvidence.length > 0) {
+        console.warn(
+            `${unlinkedEvidence.length} evidence records have missing or unknown event_id. ` +
+            "They appear under All Events, but not under a specific event."
+        );
+    }
+
+    populateFilters();
+    refreshLayers();
+}
+
+["eventFilter", "riverFilter", "watershedFilter", "evidenceFilter"]
+    .forEach(id => document.getElementById(id)?.addEventListener("change", refreshLayers));
+initializeLayers();
+
+/* Municipality loading remains disabled.
+loadJSON("data/geojson/kathmandu_municipalities.geojson")
     .then(data => {
         const municipalityLayer = L.geoJSON(data, {
             pane: "municipalitiesPane",
-            style: {
-                color: "#8b5cf6",
-                weight: 2,
-                opacity: 0.8,
-                fillOpacity: 0.03
-            },
-
-            // Exclude point features so this layer adds no markers.
-            filter: function(feature) {
-                return [
-                    "Polygon",
-                    "MultiPolygon"
-                ].includes(feature.geometry?.type);
-            },
-
-            onEachFeature: function(feature, layer) {
-                const properties = feature.properties || {};
-
-                const name =
-                    String(properties["name:en"] ?? "").trim() ||
-                    String(properties.name ?? "").trim() ||
-                    "Unnamed administrative area";
-
-                const popup = document.createElement("div");
-                popup.textContent = "Municipality: " + name;
-
-                layer.bindPopup(popup);
-            }
+            style: { color: "#8b5cf6", weight: 2, opacity: 0.8, fillOpacity: 0.03 },
+            filter: feature => ["Polygon", "MultiPolygon"].includes(feature.geometry?.type),
+            onEachFeature: (feature, layer) => layer.bindPopup(
+                popup("Municipality: " + featureName(feature, "name"))
+            )
         });
-
-        layerControl.addOverlay(
-            municipalityLayer,
-            "Municipalities"
-        );
-
-        console.log("Municipality boundaries loaded successfully");
+        layerControl.addOverlay(municipalityLayer, "Municipalities");
     })
-    .catch(error => {
-        console.error("Error loading municipality boundaries:", error);
-    });
-
-// Load documented flood events for the map.
-let floodEvents = [];
-
-fetch("data/events.json")
-    .then(response => {
-        if (!response.ok) {
-            throw new Error("Could not load flood events");
-        }
-        return response.json();
-    })
-    .then(events => {
-        floodEvents = events;
-        displayEvents();
-    })
-    .catch(error => {
-        console.error("Error loading flood events:", error);
-    });
+    .catch(error => console.error("Municipality loading error:", error));
+*/
