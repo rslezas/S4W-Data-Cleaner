@@ -1,0 +1,5 @@
+GW_ID,Location,Watershed,qualifying_years,monthly_observations,first_year,last_year,adjusted_depth_trend_m_per_year,adjusted_r_squared,direction
+GW019,Kritipur Ring Road,Balkhu,8,95,2018,2025,-0.502,0.324,Shallower
+GW030,Ekantakuna,Nakkhu,8,95,2018,2025,-0.3581,0.171,Shallower
+GW051,Saatdobato,Nakkhu,8,94,2018,2025,-0.3063,0.367,Shallower
+GW062,Kusunti,Nakkhu,6,71,2019,2025,-0.2836,0.13,Shallower

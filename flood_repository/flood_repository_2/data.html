@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+  <!-- Document metadata, browser title, mobile viewport, and shared stylesheet. -->
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="description" content="S4W Nepal Flood Repository" />
+    <title>Data | S4W Nepal Flood Repository</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  
+  <!-- Page content. Shared header and footer are repeated in each standalone HTML file. -->
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+
+    <!-- Shared header -->
+    <div id="site-header"></div>
+
+    <!-- Data Page -->
+    <main id="main">
+
+      <!-- Introduction -->
+      <section class="page-heading">
+        <div class="wrap">
+          <p class="eyebrow">DATA</p>
+          <h1>View verified pre- and post-flood conditions.</h1>
+          <p class="lead">
+            Explore available measurements and how information is collected, presented, and
+            interpreted.
+          </p>
+        </div>
+      </section>
+
+      <!-- Event selector -->
+      <section class="panel">
+        <h2>Flow conditions around a flood event</h2>
+
+        <label for="event-select">Select an event</label>
+        <select id="event-select" class="filter-dropdown">
+          <option value="event-1">Template Event 1</option>
+          <option value="event-2">Template Event 2</option>
+        </select>
+
+          <!-- Allows horizontal scrolling on smaller screens. -->
+        <div class="table-wrap">
+          <table>
+            <caption id="event-caption" aria-live="polite"></caption>
+
+            <thead>
+              <tr>
+                <th scope="col">Site ID</th>
+                <th scope="col">Latitude (°N)</th>
+                <th scope="col">Longitude (°E)</th>
+                <th scope="col">Altitude (m above sea level)</th>
+                <th scope="col">Rainfall total (mm)</th>
+                <th scope="col">Mean streamflow (m³/s)</th>
+                <th scope="col">Mean groundwater depth (m below ground)</th>
+              </tr>
+            </thead>
+
+            <!-- JavaScript to insert data here -->
+            <tbody id="event-table-body"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="wrap section">
+        
+        <!-- Embed Graph Here -->
+        <div class="placeholder embed">
+          <strong>Embed Streamflow Chart</strong>
+          <p>
+            Description
+          </p>
+        </div>
+        
+          <div class="panel">
+            <p class="eyebrow">DOWNLOADS</p>
+            <h2>Use the underlying data.</h2>
+            <p>
+              Download filtered event records in CSV and JSON.
+            </p>
+            <a class="button" href="https://rslezas.github.io/S4W-Data-Cleaner/flood_repository/">
+              Open Downloads (WIP)
+            </a>
+          </div>
+
+          <div class="panel">
+            <p class="eyebrow">METHODS & LIMITATIONS</p>
+            <h2>Learn how this data is created.</h2>
+            <ul>
+              <li>Methods statement here</li>
+            </ul>
+          </div>
+        </div>
+        <div class="panel">
+          <h2>About this repository</h2>
+          <p>
+            A S4W Nepal / WPI student project to organize, document, and visualize flood events in
+            Nepal.
+          </p>
+          <a
+            class="textlink"
+            href="https://s4w-nepal.smartphones4water.org/"
+            target="_blank"
+            rel="noopener"
+          >
+            Learn about S4W Nepal ↗
+          </a>
+        </div>
+      </section>
+    </main>
+    
+    <!-- Shared Footer -->
+    <div id="site-footer"></div>
+
+    <script src="js/shared_layout.js"></script>
+  </body>
+</html>

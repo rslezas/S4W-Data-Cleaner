@@ -1,0 +1,11 @@
+
+{
+  "type": "FeatureCollection",
+  "features": [],
+  "metadata": {
+    "description": "Approved flood evidence linked to flood events using eventId.",
+    "eventIdField": "eventId",
+    "coordinateSystem": "WGS84 (EPSG:4326)",
+    "status": "Awaiting reviewed evidence submissions"
+  }
+}

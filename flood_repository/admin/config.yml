@@ -1,0 +1,33 @@
+
+backend:
+  name: github
+  repo: rslezas/S4W-Data-Cleaner
+  branch: groundwater-sql-analysis
+  
+media_folder: "flood_repository/media/observations"
+public_folder: "/S4W-Data-Cleaner/flood_repository/media/observations"
+
+collections:
+  - name: "observations"
+    label: "Flood Observations"
+    folder: "flood_repository/data/observations"
+    create: true
+    extension: "json"
+    format: "json"
+    slug: "{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Event Name", name: "event_name", widget: "string" }
+      - { label: "Date", name: "date", widget: "datetime", format: "YYYY-MM-DD", time_format: false }
+      - { label: "River", name: "river", widget: "string" }
+      - { label: "Watershed", name: "watershed", widget: "string", required: false }
+      - { label: "Location", name: "location_name", widget: "string" }
+      - { label: "Latitude", name: "latitude", widget: "number", value_type: "float" }
+      - { label: "Longitude", name: "longitude", widget: "number", value_type: "float" }
+      - { label: "Description", name: "description", widget: "text" }
+      - { label: "Impact", name: "impact", widget: "text", required: false }
+      - { label: "Photo", name: "photo", widget: "image", required: false }
+      - { label: "Photo Credit", name: "photo_credit", widget: "string", required: false }
+      - { label: "Source URL", name: "source_url", widget: "string", required: false }
+      - { label: "Publication Permission Confirmed", name: "publication_consent", widget: "boolean", default: false }
+      - { label: "Verified", name: "verified", widget: "boolean", default: false }

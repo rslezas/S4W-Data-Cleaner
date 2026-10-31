@@ -1,0 +1,48 @@
+
+[{
+  "eventId": "FLOOD-2024-001",
+  "name": "September 2024 Kathmandu Valley Floods",
+  "location": "Kathmandu Valley",
+  "river": null,
+  "ward": null,
+  "author": "Department of Hydrology and Meteorology, Nepal",
+  "rights": null,
+  "locationAccuracy": "Kathmandu city-center reference point; not a verified flood location.",
+  "date": "2024-09-27",
+  "endDate": "2024-09-29",
+  "description": "Major flooding associated with extreme rainfall across Kathmandu Valley and surrounding areas from September 27–29, 2024.",
+  "status": "Documented by official source",
+  "evidenceType": "Government Report",
+  "evidenceSource": "Department of Hydrology and Meteorology, Nepal",
+  "sourceUrl": "https://dhm.gov.np/uploads/dhm/downloads/Situational_Report_on_Extreme_Precipitation_and_Flooding_Event_of_27-29_September_2024.pdf",
+  "evidenceDate": null,
+  "verifiedBy": null,
+  "verificationDate": null,
+  "photos": [
+  "461438455_10162274000551579_5878900693350515324_n.jpg",
+  "461489819_10162273999461579_7089817589092610755_n.jpg",
+  "461527116_10162273999481579_5018585758559862_n.jpg",
+  "binaryData(1).jpg",
+  "binaryData(2).jpg",
+  "binaryData.jpg",
+  "flood.jpg",
+  "IMG-20241001-WA0001 (3).jpg",
+  "IMG-20241001-WA0001 (4).jpg",
+  "IMG-20241001-WA0001.jpg",
+  "IMG_20240927_172202.jpg",
+  "IMG_20240927_172250.jpg",
+  "IMG_20240928_071205.jpg",
+  "IMG_20240928_071920.jpg"
+],
+  "latitude": 27.7172,
+  "longitude": 85.3240,
+  "coordinateNote": "Kathmandu city-center reference point; not a verified flood location.",
+  "linkedS4WMeasurements": [
+    {
+      "dataset": "Flow_SW_Clean",
+      "date": "2024-09-26",
+      "relationship": "Pre-flood context only"
+    }
+  ]
+}
+]

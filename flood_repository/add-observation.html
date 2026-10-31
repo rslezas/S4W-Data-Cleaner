@@ -1,0 +1,817 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Flood Observation | S4W Nepal</title>
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    >
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7fa;
+            margin: 0;
+            color: #243746;
+        }
+
+        header {
+            background: #155e75;
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+
+        main {
+            max-width: 760px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 28px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-top: 18px;
+            margin-bottom: 6px;
+        }
+
+        input, select, textarea {
+            box-sizing: border-box;
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font: inherit;
+        }
+
+        textarea {
+            min-height: 100px;
+        }
+
+        button {
+            background: #155e75;
+            color: white;
+            border: none;
+            padding: 13px 22px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 22px;
+        }
+
+        button:hover {
+            background: #0e4556;
+        }
+
+        button:disabled {
+            background: #94a3b8 !important;
+            color: #ffffff;
+            cursor: not-allowed;
+            opacity: 0.65;
+        }
+
+        .notice {
+            background: #eef5f7;
+            padding: 14px;
+            border-radius: 6px;
+            line-height: 1.5;
+        }
+
+        a {
+            color: #155e75;
+        }
+        /* Interactive location picker */
+
+#locationPicker {
+    height: 350px;
+    width: 100%;
+    border-radius: 8px;
+    margin-top: 12px;
+    border: 1px solid #cbd5e1;
+}
+
+.location-help {
+    color: #475569;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+/* ==========================================
+   S4W Mobile Form Improvements
+   ========================================== */
+
+@media (max-width: 600px) {
+
+    header {
+        padding: 20px 15px;
+    }
+
+    header h1 {
+        font-size: 24px;
+    }
+
+    main {
+        margin: 15px auto;
+        padding: 0 12px;
+    }
+
+    .card {
+        padding: 18px;
+        border-radius: 8px;
+    }
+
+    #locationPicker {
+        height: 280px;
+    }
+
+    input, select, textarea {
+        font-size: 16px;
+    }
+
+    button {
+        width: 100%;
+        min-height: 48px;
+    }
+}
+
+    </style>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+</head>
+
+<body>
+
+<header>
+    <h1>Add Flood Observation</h1>
+    <p>S4W Nepal Flood Event Repository</p>
+</header>
+
+<main>
+    <div class="card">
+
+        <p><a href="index.html">← Back to Flood Map</a></p>
+
+        <div class="notice">
+            <strong>S4W Flood Observation Submission</strong>
+            <p>
+                Use this form to document a flood event in Nepal.
+                You can preview your information before submitting it
+                for S4W staff review.
+            </p>
+            <p>
+                Submitted observations are kept private until reviewed.
+                Only verified observations approved by authorized S4W
+                staff may be published on the public flood map.
+                Photograph uploads are not available yet.
+            </p>
+        </div>
+
+        <form id="observationForm">
+
+            <label for="eventName">Flood Event Name</label>
+            <input id="eventName" name="eventName"
+                   placeholder="Example: September 2024 Floods"
+                   required>
+
+            <label for="date">Observation Date</label>
+            <input type="date" id="date" name="date" required>
+
+            <label for="river">River Name</label>
+            <input id="river" name="river"
+                   placeholder="Example: Hanumante"
+                   required>
+
+            <label for="watershed">Watershed</label>
+            <input id="watershed" name="watershed"
+                   placeholder="Enter watershed name if known">
+
+            <label for="location">Location Name</label>
+            <input id="location" name="location"
+                   placeholder="Village, neighborhood, or landmark"
+                   required>
+            <label>Select Flood Location on Map</label>
+
+            <p class="location-help">
+                Click the map to select the location where the flood
+                was observed. The latitude and longitude fields below
+                will fill automatically.
+            </p>
+
+            <div id="locationPicker"></div>
+
+            <label for="latitude">Latitude</label>
+            <input type="number" id="latitude" name="latitude"
+                   step="any" min="-90" max="90"
+                   placeholder="Example: 27.7000"
+                   required>
+
+            <label for="longitude">Longitude</label>
+            <input type="number" id="longitude" name="longitude"
+                   step="any" min="-180" max="180"
+                   placeholder="Example: 85.3200"
+                   required>
+
+            <label for="description">Flood Description</label>
+            <textarea id="description" name="description"
+                      placeholder="Describe what happened..."
+                      required></textarea>
+
+            <label for="impact">Reported Impacts</label>
+            <textarea id="impact" name="impact"
+                      placeholder="Road damage, homes affected, agricultural impacts..."></textarea>
+
+
+<label for="photo">Flood Photograph</label>
+<input type="file" id="photo" name="photo"
+       accept="image/jpeg,image/png,image/webp">
+
+<div id="photoPreviewContainer"
+     style="display:none; margin-top:15px;">
+
+    <p><strong>Selected Photograph Preview</strong></p>
+
+    <img id="photoPreview"
+         alt="Preview of selected flood photograph"
+         style="max-width:100%; max-height:300px;
+                border-radius:8px; object-fit:contain;">
+
+    <p id="photoFileName"
+       class="location-help"></p>
+</div>
+
+
+            <label for="photoCredit">Photographer / Source Credit</label>
+            <input id="photoCredit" name="photoCredit"
+                   placeholder="Name or organization">
+
+            <label for="sourceUrl">Supporting Source URL</label>
+            <input type="url" id="sourceUrl" name="sourceUrl"
+                   placeholder="https://...">
+
+
+
+            <label for="submitterConsent">
+                <input
+                    type="checkbox"
+                    id="submitterConsent"
+                    name="submitterConsent"
+                    value="yes"
+                    required
+                    style="width:auto; margin-right:8px;"
+                >
+                I give S4W permission to review this observation
+                and publish the information I submit if S4W staff
+                approve it.
+            </label>
+
+            <p class="location-help">
+                Submitting an observation does not make it public.
+                S4W staff must review and approve the information
+                before it can appear on the flood map.
+                Photograph permission is handled separately.
+            </p>
+
+            <label for="photoConsent">
+    <input
+        type="checkbox"
+        id="photoConsent"
+        name="photoConsent"
+        value="yes"
+        style="width:auto; margin-right:8px;"
+    >
+    I confirm that I own this photograph or have permission
+    to share it with S4W for possible public use.
+</label>
+
+<p class="location-help">
+    Check this box if you select a photograph.
+    Photographs are currently previewed only and are
+    not uploaded with the observation.
+    S4W staff will review photograph permissions
+    before any photograph is published.
+</p>
+
+
+<button type="submit" id="previewButton">
+    Preview Observation
+</button>
+
+<button type="button" id="submitObservationButton"
+        disabled
+        style="background:#166534; margin-left:10px;">
+    Submit Observation for S4W Review
+</button>
+
+
+
+<p class="location-help">
+    Previewing does not save or upload your observation.
+    Clicking "Submit Observation for S4W Review" sends
+    the observation for private staff review once submissions
+    are enabled. Nothing appears on the public flood map
+    until authorized S4W staff approve it.
+</p>
+
+        <div class="cf-turnstile"
+     data-sitekey="0x4AAAAAAFnuz9ngXbNuyrW6">
+        </div>
+        </form>
+
+        <div id="result" aria-live="polite"></div>
+
+        <div id="jsonPreviewContainer" style="display:none; margin-top:20px;">
+            <h2>Observation JSON Preview</h2>
+
+            <p class="location-help">
+                This is a preview of the observation data format.
+                This preview has not been submitted or saved.
+                To send your observation for private S4W staff review,
+                click "Submit Observation for S4W Review" above.
+                Submission storage is currently being tested.
+            </p>
+
+            <pre id="jsonPreview"
+                style="background:#f1f5f9; padding:15px;
+                        border-radius:8px; overflow-x:auto;
+                        white-space:pre-wrap; overflow-wrap:anywhere;"></pre>
+        </div>
+
+    </div>
+</main>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+    // ==========================================
+// S4W Flood Observation Location Picker
+// ==========================================
+
+const locationMap = L.map("locationPicker").setView(
+    [27.7172, 85.3240],
+    11
+);
+
+L.tileLayer(
+    "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",
+    {
+        attribution: "Tiles &copy; Esri",
+    }
+).addTo(locationMap);
+
+let selectedLocationMarker = null;
+
+const latitudeInput = document.getElementById("latitude");
+const longitudeInput = document.getElementById("longitude");
+
+locationMap.on("click", function(event) {
+    const latitude = event.latlng.lat;
+    const longitude = event.latlng.lng;
+
+    latitudeInput.value = latitude.toFixed(6);
+    longitudeInput.value = longitude.toFixed(6);
+
+    // A new map location requires another preview.
+    document.getElementById("submitObservationButton").disabled = true;
+    previewIsCurrent = false;
+    if (selectedLocationMarker) {
+        locationMap.removeLayer(selectedLocationMarker);
+    }
+
+    selectedLocationMarker = L.marker(
+        [latitude, longitude]
+    ).addTo(locationMap);
+
+    selectedLocationMarker.bindPopup(
+        "Selected flood observation location"
+    ).openPopup();
+});
+
+const form = document.getElementById("observationForm");
+const result = document.getElementById("result");
+
+function addPreviewField(container, label, value) {
+    const paragraph = document.createElement("p");
+
+    const strong = document.createElement("strong");
+    strong.textContent = label + ": ";
+
+    paragraph.appendChild(strong);
+    paragraph.appendChild(
+        document.createTextNode(value || "Not provided")
+    );
+
+    container.appendChild(paragraph);
+}
+
+function updateLocationMarker() {
+    const latitude = Number(latitudeInput.value);
+    const longitude = Number(longitudeInput.value);
+
+    if (
+        latitudeInput.value === "" ||
+        longitudeInput.value === "" ||
+        !Number.isFinite(latitude) ||
+        !Number.isFinite(longitude) ||
+        latitude < -90 || latitude > 90 ||
+        longitude < -180 || longitude > 180
+    ) {
+        return;
+    }
+
+    const coordinates = [latitude, longitude];
+
+    if (selectedLocationMarker) {
+        selectedLocationMarker.setLatLng(coordinates);
+    } else {
+        selectedLocationMarker = L.marker(coordinates)
+            .addTo(locationMap);
+    }
+
+    selectedLocationMarker.bindPopup(
+        "Selected flood observation location"
+    );
+
+    locationMap.setView(coordinates, 13);
+}
+
+latitudeInput.addEventListener("change", updateLocationMarker);
+longitudeInput.addEventListener("change", updateLocationMarker);
+// Require a fresh preview whenever the form changes.
+const submitObservationButton =
+    document.getElementById("submitObservationButton");
+
+form.addEventListener("input", function() {
+    previewIsCurrent = false;
+    submitObservationButton.disabled = true;
+});
+
+form.addEventListener("change", function() {
+    previewIsCurrent = false;
+    submitObservationButton.disabled = true;
+});
+
+let submissionInProgress = false;
+let previewIsCurrent = false;
+form.addEventListener("submit", async function(event) {
+    event.preventDefault();
+
+    if (!form.reportValidity()) return;
+
+    const data = new FormData(form);
+    const photo = document.getElementById("photo").files[0];
+    const submitterConsent =
+        data.get("submitterConsent") === "yes";
+
+    const photoConsent =
+        data.get("photoConsent") === "yes";
+
+    const turnstileToken =
+        window.turnstile?.getResponse() || "";
+    const observationJson = {
+        title: String(data.get("eventName") || "").trim(),
+        date: String(data.get("date") || ""),
+        river: String(data.get("river") || "").trim(),
+        watershed: String(data.get("watershed") || "").trim(),
+        location_name: String(data.get("location") || "").trim(),
+        latitude: Number(data.get("latitude")),
+        longitude: Number(data.get("longitude")),
+        description: String(data.get("description") || "").trim(),
+        impact: String(data.get("impact") || "").trim(),
+        photo_filename: "",
+        photo_credit: String(data.get("photoCredit") || "").trim(),
+        source_url: String(data.get("sourceUrl") || "").trim(),
+        submitter_consent: submitterConsent,
+        photo_consent: photoConsent,
+        verified: false,
+        publication_consent: false,
+        photo_permission: false,
+        turnstile_token: turnstileToken
+    };
+
+
+
+    result.replaceChildren();
+
+    if (photo && !photoConsent) {
+        result.textContent =
+                "Please confirm photograph permission or remove the photograph.";
+        return;
+    }
+
+    if (photo && photo.size > 10 * 1024 * 1024) {
+        result.textContent =
+            "Please select a photograph smaller than 10 MB.";
+        return;
+    }
+
+    if (
+        photo &&
+        !["image/jpeg", "image/png", "image/webp"]
+            .includes(photo.type)
+    ) {
+        result.textContent =
+            "Please select a JPEG, PNG, or WebP photograph.";
+        return;
+    }
+
+    if (photo && !String(data.get("photoCredit") || "").trim()) {
+        result.textContent =
+            "Please provide photographer/source credit for the photo.";
+        return;
+    }
+
+    const observationDate = String(data.get("date"));
+
+    const today = new Date();
+    const localToday = [
+        today.getFullYear(),
+        String(today.getMonth() + 1).padStart(2, "0"),
+        String(today.getDate()).padStart(2, "0")
+    ].join("-");
+
+    if (observationDate > localToday) {
+        result.textContent =
+            "Observation date cannot be in the future.";
+        return;
+    }
+
+    const heading = document.createElement("h2");
+    heading.textContent = "Flood Observation Preview";
+    result.appendChild(heading);
+
+    addPreviewField(result, "Event", data.get("eventName"));
+    addPreviewField(result, "Date", observationDate);
+    addPreviewField(result, "River", data.get("river"));
+    addPreviewField(result, "Watershed", data.get("watershed"));
+    addPreviewField(result, "Location", data.get("location"));
+    addPreviewField(result, "Latitude", data.get("latitude"));
+    addPreviewField(result, "Longitude", data.get("longitude"));
+    addPreviewField(result, "Description", data.get("description"));
+    addPreviewField(result, "Reported Impacts", data.get("impact"));
+    addPreviewField(
+        result,
+        "Photograph",
+        photo ? photo.name : "No photograph selected"
+    );
+    addPreviewField(
+        result,
+        "Photograph Credit",
+        data.get("photoCredit")
+    );
+    addPreviewField(
+        result,
+        "Source URL",
+        data.get("sourceUrl")
+    );
+
+    addPreviewField(
+    result,
+    "Photograph Permission",
+    photo
+        ? (photoConsent
+            ? "Permission confirmed by submitter"
+            : "Permission not confirmed")
+        : "No photograph selected"
+    );
+
+    addPreviewField(
+        result,
+        "Observation Verification Status",
+        "Pending S4W staff review"
+    );
+
+    addPreviewField(
+        result,
+        "Publication Status",
+        submitterConsent
+            ? "Submitter consent received; awaiting S4W approval"
+            : "Submitter consent not provided"
+    );
+
+
+    const notice = document.createElement("div");
+    notice.className = "notice";
+
+    const noticeTitle = document.createElement("strong");
+    noticeTitle.textContent = "Preview only — not published";
+
+    const noticeText = document.createElement("p");
+    noticeText.textContent =
+        "This information has not been uploaded or saved. " +
+        "The final publishing system will require authorized " +
+        "staff access and verification before records " +
+        "are displayed on the public map.";
+
+    notice.append(noticeTitle, noticeText);
+    result.appendChild(notice);
+
+    const readiness = document.createElement("p");
+
+
+readiness.textContent =
+    "Pending S4W staff review. " +
+    "The submitter has provided publication consent, " +
+    "but this observation has not been verified or " +
+    "approved for public display.";
+    readiness.style.fontWeight = "bold";
+    result.appendChild(readiness);
+
+const jsonPreviewContainer =
+    document.getElementById("jsonPreviewContainer");
+
+const jsonPreview =
+    document.getElementById("jsonPreview");
+
+const { turnstile_token, ...previewObservation } = observationJson;
+
+jsonPreview.textContent = JSON.stringify(
+    previewObservation,
+    null,
+    2
+);
+
+jsonPreviewContainer.style.display = "block";
+
+// Preview only: no information is sent to Cloudflare.
+const submitObservationButton =
+    document.getElementById("submitObservationButton");
+
+previewIsCurrent = true;
+submitObservationButton.disabled = false;
+
+const previewStatus = document.createElement("p");
+previewStatus.textContent =
+    "Preview ready. Review the information above, then click " +
+    "'Submit Observation for S4W Review' when you are ready.";
+
+result.appendChild(previewStatus);
+
+    updateLocationMarker();
+
+    result.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+    });
+});
+
+submitObservationButton.addEventListener("click", async function() {
+    if (
+    submissionInProgress ||
+    submitObservationButton.disabled ||
+    !previewIsCurrent
+) {
+    return;
+}
+
+
+
+
+    const data = new FormData(form);
+    const photo = document.getElementById("photo").files[0];
+
+    if (photo && data.get("photoConsent") !== "yes") {
+        result.textContent =
+            "Please confirm photograph permission or remove the photograph.";
+        submitObservationButton.disabled = true;
+        return;
+    }
+
+    const turnstileToken = window.turnstile?.getResponse() || "";
+
+    if (!turnstileToken) {
+        alert("Please complete the security verification before submitting.");
+        return;
+    }
+
+    const observationJson = {
+        title: String(data.get("eventName") || "").trim(),
+        date: String(data.get("date") || ""),
+        river: String(data.get("river") || "").trim(),
+        watershed: String(data.get("watershed") || "").trim(),
+        location_name: String(data.get("location") || "").trim(),
+        latitude: Number(data.get("latitude")),
+        longitude: Number(data.get("longitude")),
+        description: String(data.get("description") || "").trim(),
+        impact: String(data.get("impact") || "").trim(),
+        photo_filename: "",
+        photo_credit: String(data.get("photoCredit") || "").trim(),
+        source_url: String(data.get("sourceUrl") || "").trim(),
+        submitter_consent: data.get("submitterConsent") === "yes",
+        photo_consent: data.get("photoConsent") === "yes",
+        turnstile_token: turnstileToken
+    };
+
+    submissionInProgress = true;
+    submitObservationButton.disabled = true;
+
+    const status = document.createElement("p");
+    status.setAttribute("role", "status");
+    status.textContent = "Sending observation...";
+    result.appendChild(status);
+
+    try {
+        const response = await fetch(
+            "https://s4w-flood-submissions.leah-sheintsvit.workers.dev/submit",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(observationJson)
+            }
+        );
+
+        const responseData = await response.json();
+
+        if (response.ok && responseData.saved === true) {
+            status.textContent =
+                "Observation submitted successfully! Reference ID: " +
+                responseData.submission_id +
+                ". Awaiting S4W staff review.";
+        } else if (response.ok && responseData.saved === false) {
+            status.textContent =
+                "Security verification passed. Private storage is not enabled yet.";
+        } else {
+            status.textContent =
+                "Submission failed: " +
+                (responseData.error ||
+                 responseData.errors?.join(", ") ||
+                 "Unknown error.");
+        }
+    } catch (error) {
+        status.textContent =
+            "Could not connect to the submission service.";
+    } finally {
+        submissionInProgress = false;
+
+        // Turnstile tokens can only be used once.
+        window.turnstile?.reset();
+    }
+});
+
+// ==========================================
+// S4W Photograph Preview
+// ==========================================
+
+const photoInput = document.getElementById("photo");
+const photoPreviewContainer =
+    document.getElementById("photoPreviewContainer");
+const photoPreview = document.getElementById("photoPreview");
+const photoFileName = document.getElementById("photoFileName");
+
+let currentPhotoURL = null;
+
+photoInput.addEventListener("change", function() {
+    if (currentPhotoURL) {
+        URL.revokeObjectURL(currentPhotoURL);
+        currentPhotoURL = null;
+    }
+
+    photoPreview.removeAttribute("src");
+    photoPreviewContainer.style.display = "none";
+    photoFileName.textContent = "";
+
+    const file = photoInput.files[0];
+    if (!file) return;
+
+    const allowedTypes = [
+        "image/jpeg",
+        "image/png",
+        "image/webp"
+    ];
+
+    if (
+        !allowedTypes.includes(file.type) ||
+        file.size > 10 * 1024 * 1024
+    ) {
+        photoInput.value = "";
+        alert(
+            "Please choose a JPEG, PNG, or WebP image " +
+            "smaller than 10 MB."
+        );
+        return;
+    }
+
+    currentPhotoURL = URL.createObjectURL(file);
+    photoPreview.src = currentPhotoURL;
+    photoFileName.textContent = file.name;
+    photoPreviewContainer.style.display = "block";
+});
+
+window.addEventListener("pagehide", function() {
+    if (currentPhotoURL) {
+        URL.revokeObjectURL(currentPhotoURL);
+    }
+});
+
+</script>
+
+</body>
+</html>
