@@ -28,5 +28,27 @@
       "date": "2024-09-26",
       "relationship": "Pre-flood context only"
     }
+  
   ]
-}]
+},
+{
+  "eventId": "SPONSOR-2024-001",
+  "name": "Narephant Flood Observation",
+  "location": "Narephant",
+  "river": "Manohara",
+  "ward": null,
+  "date": "2024-09-28",
+  "endDate": null,
+  "description": "Flood-related observation at Narephant, documented in the sponsor-provided spreadsheet. Independent verification pending.",
+  "status": "Pending verification",
+  "evidenceType": "Photograph",
+  "evidenceSource": "Sponsor-provided flood events spreadsheet",
+  "sourceUrl": "https://republicaimg.nagariknewscdn.com/shared/web/uploads/media/20240928_095900_20240928113621.jpg",
+  "latitude": 27.6686435517355,
+  "longitude": 85.3497877677178,
+  "coordinateNote": null,
+  "verifiedBy": null,
+  "verificationDate": null
+}
+]
+
