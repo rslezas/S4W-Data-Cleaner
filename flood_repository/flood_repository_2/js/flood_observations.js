@@ -6,7 +6,7 @@ const sponsorPreviewLayer = L.layerGroup().addTo(map);
 
 const sponsorPreviewIcon = L.divIcon({
     className: "sponsor-preview-marker",
-    html: '<div style="background:#f97316;width:16px;height:16px;border:2px solid white;border-radius:50%;box-shadow:0 1px 5px #555;"></div>',
+    html: '<div style="background:#0077cc;width:16px;height:16px;border:2px solid white;border-radius:50%;box-shadow:0 1px 5px #555;"></div>',
     iconSize: [20, 20],
     iconAnchor: [10, 10]
 });
