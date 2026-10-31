@@ -391,7 +391,60 @@ function renderSponsorObservations() {
             " | River: " + (observation.river || "Unknown");
 
         popup.append(title, status, details);
+// Display additional sponsor observation details when available.
+const extraFields = [
+    ["Watershed", "watershed"],
+    ["Description", "description"],
+    ["Impact", "impact"],
+    ["Evidence type", "evidence_type"],
+    ["Photo credit", "credit"]
+];
 
+extraFields.forEach(function([label, field]) {
+    const value = String(observation[field] ?? "").trim();
+
+    if (!value) return;
+
+    const paragraph = document.createElement("p");
+    const heading = document.createElement("strong");
+
+    heading.textContent = label + ": ";
+
+    paragraph.appendChild(heading);
+    paragraph.appendChild(document.createTextNode(value));
+
+    popup.appendChild(paragraph);
+});
+// Show a source photograph when the URL points directly to an image.
+if (observation.source_url) {
+    try {
+        const imageUrl = new URL(observation.source_url);
+
+        if (
+            imageUrl.protocol === "https:" &&
+            /\.(jpg|jpeg|png|webp)$/i.test(imageUrl.pathname)
+        ) {
+            const img = document.createElement("img");
+
+            img.src = imageUrl.href;
+            img.alt = "Flood observation at " +
+                (observation.location_name || "unknown location");
+            img.loading = "lazy";
+
+            img.style.display = "block";
+            img.style.width = "100%";
+            img.style.maxWidth = "280px";
+            img.style.maxHeight = "180px";
+            img.style.objectFit = "contain";
+            img.style.borderRadius = "8px";
+            img.style.marginTop = "10px";
+
+            popup.appendChild(img);
+        }
+    } catch (error) {
+        console.warn("Invalid sponsor image URL");
+    }
+}
         if (observation.source_url) {
             try {
                 const url = new URL(observation.source_url);
@@ -409,8 +462,15 @@ function renderSponsorObservations() {
             }
         }
 
-        marker.bindPopup(popup);
-        marker.addTo(sponsorPreviewLayer);
+marker.bindPopup(popup, {
+    maxWidth: 280,
+    minWidth: 250,
+    maxHeight: 220,
+    autoPan: false,
+    keepInView: false
+});
+
+marker.addTo(sponsorPreviewLayer);
     });
 }
 function loadFloodObservations() {

@@ -30,7 +30,8 @@ L.tileLayer(
 // Keep this at the top level so flood_observations.js can
 // register its evidence layer with the same menu.
 const layerControl = L.control.layers(null, null, {
-    collapsed: false
+    collapsed: true,
+    position: "topright"
 }).addTo(map);
 
 // Load rivers and streams.
@@ -254,4 +255,22 @@ fetch("data/geojson/kathmandu_municipalities.geojson")
     })
     .catch(error => {
         console.error("Error loading municipality boundaries:", error);
+    });
+
+// Load documented flood events for the map.
+let floodEvents = [];
+
+fetch("data/events.json")
+    .then(response => {
+        if (!response.ok) {
+            throw new Error("Could not load flood events");
+        }
+        return response.json();
+    })
+    .then(events => {
+        floodEvents = events;
+        displayEvents();
+    })
+    .catch(error => {
+        console.error("Error loading flood events:", error);
     });

@@ -1,8 +1,10 @@
 const markers = [];
 
 function displayEvents() {
-    
+
     // Read the current filter selections.
+    const eventList = document.getElementById("eventList");
+    const eventCount = document.getElementById("eventCount");
     const selectedWatershed =
         document.getElementById("watershedFilter")?.value || "all";
 
@@ -125,8 +127,7 @@ function displayEvents() {
         const container = document.createElement("div");
 
         const title = document.createElement("h3");
-        title.textContent =
-            event.title || event.eventId || "Flood event";
+        title.textContent = event.name || event.title || event.eventId || "Flood event";
 
         container.appendChild(title);
 
@@ -157,11 +158,76 @@ function displayEvents() {
         }
 
         if (event.coordinateNote) {
-            addDetail("Location note", event.coordinateNote);
+    addDetail("Location note", event.coordinateNote);
+}
+
+if (Array.isArray(event.photos) && event.photos.length > 0) {
+    const photos = event.photos.filter(filename =>
+        /^[a-zA-Z0-9_() -]+\.jpg$/i.test(filename)
+    );
+
+    if (photos.length > 0) {
+        let currentPhoto = 0;
+
+        const gallery = document.createElement("div");
+        gallery.style.width = "280px";
+        gallery.style.maxWidth = "100%";
+        gallery.style.marginTop = "12px";
+
+        const img = document.createElement("img");
+        img.alt = "September 2024 flood photograph";
+        img.style.width = "100%";
+        img.style.height = "180px";
+        img.style.objectFit = "contain";
+        img.style.borderRadius = "8px";
+
+        const controls = document.createElement("div");
+        controls.style.display = "flex";
+        controls.style.justifyContent = "space-between";
+        controls.style.alignItems = "center";
+        controls.style.marginTop = "8px";
+
+        const previous = document.createElement("button");
+        previous.textContent = "← Previous";
+        previous.type = "button";
+
+        const counter = document.createElement("span");
+
+        const next = document.createElement("button");
+        next.textContent = "Next →";
+        next.type = "button";
+
+        function showPhoto() {
+            img.src = "media/" + encodeURIComponent(event.eventId) + "/" +
+                encodeURIComponent(photos[currentPhoto]);
+            counter.textContent = (currentPhoto + 1) + " / " + photos.length;
         }
 
-        return container;
+        previous.addEventListener("click", function(e) {
+            L.DomEvent.stopPropagation(e);
+            currentPhoto = (currentPhoto - 1 + photos.length) % photos.length;
+            showPhoto();
+        });
+
+        next.addEventListener("click", function(e) {
+            L.DomEvent.stopPropagation(e);
+            currentPhoto = (currentPhoto + 1) % photos.length;
+            showPhoto();
+        });
+
+        controls.append(previous, counter, next);
+        gallery.append(img, controls);
+        container.appendChild(gallery);
+
+        L.DomEvent.disableClickPropagation(gallery);
+        L.DomEvent.disableScrollPropagation(gallery);
+
+        showPhoto();
     }
+}
+
+return container;
+}
 
     filteredEvents.forEach((event) => {
         // Create a card even when an event has no usable coordinates.
@@ -201,17 +267,15 @@ function displayEvents() {
 
         // Preserve the existing convention:
         // events with a coordinate note use an illustrative regional circle.
-        const marker = event.coordinateNote
-            ? L.circle([latitude, longitude], {
-                radius: 3000,
-                color: "#155e75",
-                fillColor: "#155e75",
-                fillOpacity: 0.15,
-                weight: 2
-            })
-            : L.marker([latitude, longitude]);
+        const marker = L.marker([latitude, longitude]);
 
-        marker.bindPopup(createEventContent(event));
+marker.bindPopup(createEventContent(event), {
+    maxWidth: 280,
+    minWidth: 250,
+    maxHeight: 220,
+    autoPan: false,
+    keepInView: false
+});
         marker.addTo(map);
 
         markers.push(marker);
