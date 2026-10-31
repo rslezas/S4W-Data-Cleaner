@@ -5,6 +5,9 @@ const floodObservationLayer = L.layerGroup().addTo(map);
 layerControl.addOverlay(floodObservationLayer, "Flood evidence");
 
 let approvedObservations = [];
+// Sponsor observations awaiting verification or permission approval.
+// Keep these separate from the public map markers.
+let pendingSponsorObservations = [];
 
 const watershedFilter = document.getElementById("watershedFilter");
 const riverFilter = document.getElementById("riverFilter");
@@ -351,6 +354,20 @@ function loadFloodObservations() {
         skipEmptyLines: true,
 
         complete: function(results) {
+            // Keep public observations restricted to approved records.
+            // Sponsor records marked pending will be previewed separately.
+            pendingSponsorObservations = results.data.filter(
+                observation =>
+                    observation.observation_id?.startsWith("SPONSOR-") &&
+                    (
+                        observation.permission_status?.trim().toLowerCase() !== "approved" ||
+                        observation.verification_status?.trim().toLowerCase() !== "approved"
+                    )
+            );
+            console.log(
+                "Pending sponsor observations:",
+                pendingSponsorObservations.length
+            );
             approvedObservations = results.data.filter(
                 observation =>
                     observation.permission_status
