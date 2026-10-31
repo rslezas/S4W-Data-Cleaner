@@ -375,9 +375,7 @@ function renderSponsorObservations() {
             return;
         }
 
-        const marker = L.marker([lat, lng], {
-            icon: sponsorPreviewIcon
-        });
+        const marker = L.marker([lat, lng]);
 
         const popup = document.createElement("div");
 
