@@ -982,3 +982,82 @@ caption {
     border-radius: 50% 50% 50% 0;
     transform: rotate(-45deg);
 }
+
+/* Popup background, text, and rounded corners. */
+.flood-popup .leaflet-popup-content-wrapper {
+    background: #ffffff;
+    color: #334155;
+    border-radius: 10px;
+}
+
+/* Match the small triangle below the popup. */
+.flood-popup .leaflet-popup-tip {
+    background: #ffffff;
+}
+
+/* Content spacing and typography. */
+.flood-popup .leaflet-popup-content {
+    margin: 16px;
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+/* Assumes popup() creates an h3 title and p field rows. */
+.flood-popup h3 {
+    margin: 0 0 12px;
+    color: #155e75;
+    font-size: 18px;
+}
+
+.flood-popup p {
+    margin: 6px 0;
+}
+
+.flood-popup img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    border-radius: 6px;
+}
+
+/* Remove Leaflet's default content margins. */
+.custom-popup .leaflet-popup-content {
+    margin: 0;
+}
+
+/* Style the outer popup. */
+.custom-popup .leaflet-popup-content-wrapper {
+    padding: 0;
+    overflow: hidden;
+    border-radius: 8px;
+}
+
+/* Your custom content. */
+.evidence-card {
+    padding: 10px;
+    width: 100%;
+    max-height: 320px;
+}
+
+.evidence-title {
+    margin: 0 0 10px;
+    color: #155e75;
+}
+
+.evidence-description {
+    line-height: 1.5;
+}
+
+.evidence-media img,
+.evidence-media video {
+    display: block;
+    width: 100%;
+    max-height: 240px;
+    object-fit: contain;
+    margin: 12px 0;
+}
+
+.evidence-card [hidden] {
+    display: none;
+}

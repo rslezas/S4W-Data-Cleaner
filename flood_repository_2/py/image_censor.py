@@ -17,7 +17,7 @@ def blurBoxes(image, boxes, shift_pixels=(0, 0)):
     shift_x, shift_y = shift_pixels
 
     # Create one blurred version before modifying the original image.
-    blurred_image = cv2.blur(image, (50, 50))
+    blurred_image = cv2.blur(image, (75, 75))
 
     for box in boxes:
         x1, y1, x2, y2 = map(int, box.xyxy[0])
@@ -92,7 +92,7 @@ def censorLicense(image):
 
     return image
 
-def censorImage(path):
+def censorImage(path, output_folder):
 
     # Load your target image
     try:
@@ -105,22 +105,15 @@ def censorImage(path):
     image = censorPeople(image)
     image = censorLicense(image)
 
-    return image
+    filename = Path(path).name.split(".")
+    new_path = dir / Path(output_folder) / Path(f"{filename[0]}_censored.{filename[1]}")
 
-    new_path = f"{path.split(".")[0]}_censored{Path(path).suffix}"
     cv2.imwrite(new_path, image)
 
-def censorImages(paths):
+    return image
 
-    censored_images = []
+def censorImages(paths, output_folder):
 
     for path in paths:
-        censored_image = censorImage(path)
 
-        filename = Path(path).name.split["."]
-
-        new_path = f"{filename[0]}_censored.{filename[1]}"
-
-        cv2.imwrite(f"{}_censored", image)
-
-censorImage(r"C:\Users\rolan\My OneDrive\Desktop\S4W Data Cleaner\flood_repository\flood_repository_2\py\IMG_1796.JPG")
+        censorImage(path, output_folder)

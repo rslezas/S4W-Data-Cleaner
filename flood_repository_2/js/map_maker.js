@@ -3,7 +3,7 @@ const DATA_PATHS = {
     rivers: "data/geojson/rivers.geojson",
     watersheds: "data/geojson/watersheds.geojson",
     events: "data/events.json", // May instead point to data/flood_events.csv.
-    observations: "data/flood_observations.csv"
+    observations: "data/observations.json"
 };
 
 const map = L.map("map").setView([27.7172, 85.3240], 11);
@@ -179,35 +179,68 @@ function makePointLayer(pane, color, isEvent = false) {
             const id = eventId(properties);
             const parentEvent = eventRecords.get(id);
             const fields = [];
-            let title;
 
-            if (isEvent) {
-                title = properties.name || "Flood event";
-                fields.push(["Event ID", id]);
-            } else {
-                title = properties.observation_title || properties.title ||
-                    properties.event_name || properties.name || "Flood evidence";
+            let title = isEvent ? 
+                properties.event_name || "Untitled event" : 
+                properties.observation_title || properties.event_name + " observation";
 
-                fields.push(["Parent event ID", id || "Not linked"]);
-                fields.push([
-                    "Parent event",
-                    parentEvent ? parentEvent.name : "Not linked to a known event"
-                ]);
+            const content = document.createElement("article");
+            content.className = "evidence-card";
+
+            content.innerHTML = `
+                <h3 class="evidence-title"></h3>
+                <div class="evidence-media"></div>
+                <a class="evidence-link" target="_blank"
+                rel="noopener noreferrer" hidden>
+                    View original source ↗
+                </a>
+            `;
+
+            content.querySelector(".evidence-title").textContent = title;
+
+            const media = content.querySelector(".evidence-media");
+            const link = content.querySelector(".evidence-link");
+            const evidenceType =
+                String(properties.evidence_type || "").trim().toLowerCase();
+
+            try {
+                const url = new URL(properties.source_url);
+
+                if (["https:", "http:"].includes(url.protocol)) {
+                    // Always provide a link to the original source.
+                    link.href = url.href;
+                    link.hidden = false;
+
+                    if (evidenceType === "image") {
+                        const image = document.createElement("img");
+
+                        image.src = url.href;
+                        image.alt = properties.description || "Flood evidence";
+                        image.loading = "lazy";
+
+                        // Keep the source link if the image cannot load.
+                        image.addEventListener("error", () => image.remove());
+
+                        media.appendChild(image);
+                    } else if (evidenceType === "video") {
+                        const video = document.createElement("video");
+
+                        video.src = url.href;
+                        video.controls = true;
+                        video.preload = "metadata";
+
+                        media.appendChild(video);
+                    }
+                }
+            } catch {
+                console.warn("Missing or invalid source URL:", properties.source_url);
             }
 
-            fields.push(
-                ["Location", properties.location_name || properties.location],
-                ["Date", properties.date],
-                ["End date", properties.endDate],
-                ["River", properties.river],
-                ["Watershed", properties.watershed],
-                ["Evidence type", properties.evidence_type || properties.evidenceType || "Not Provided"],
-                ["Description", properties.description],
-                ["Verification", properties.verification_status || properties.status],
-                ["Map location", properties.coordinateNote || properties.locationAccuracy]
-            );
-
-            marker.bindPopup(popup(title, fields));
+            // Display your custom element inside Leaflet's popup.
+            marker.bindPopup(content, {
+                className: "custom-popup",
+                maxWidth: 420
+            });
         }
     });
 
@@ -302,32 +335,6 @@ function renderObservationsLayer(selected) {
     replaceFeatures(observationsLayer, matchingEvidence);
 }
 
-// CSV files use Papa Parse. Malformed files report errors instead of silently
-// displaying incorrectly shifted columns. Header names are trimmed.
-function loadCSV(path) {
-    return new Promise((resolve, reject) => {
-        Papa.parse(path, {
-            download: true,
-            header: true,
-            delimiter: ",",
-            skipEmptyLines: "greedy",
-            transformHeader: header => header.replace(/^\uFEFF/, "").trim(),
-            complete(results) {
-                if (results.errors.length) {
-                    reject(new Error(`${path}: ${results.errors[0].message}`));
-                    return;
-                }
-                if (!["latitude", "longitude"].every(key => results.meta.fields?.includes(key))) {
-                    reject(new Error(`${path}: latitude and longitude columns are required.`));
-                    return;
-                }
-                resolve(results.data);
-            },
-            error: error => reject(new Error(`${path}: ${error.message || error}`))
-        });
-    });
-}
-
 // Papa Parse cannot parse JSON/GeoJSON. XMLHttpRequest avoids fetch while
 // retaining the original geographic files and events.json without conversion.
 function loadJSON(path) {
@@ -373,27 +380,23 @@ async function loadWatersheds() {
 async function loadEvents() {
     const events = await loadJSON(DATA_PATHS.events);
 
-    // Index events for dropdown options and parent-event lookups.
     eventRecords.clear();
 
     events.forEach(function (event) {
         eventRecords.set(event.event_id, event);
     });
 
-    // Create the event overview points.
     layerData.events = observationsToGeoJSON(events).features;
 }
 
 async function loadObservations() {
-    const observations = await loadCSV(DATA_PATHS.observations);
+    const observations = await loadJSON(DATA_PATHS.observations);
 
-    // Preserve the supplied script's behavior: display all valid rows.
-    // This does not apply approval-status filtering.
     layerData.observations = observationsToGeoJSON(observations).features;
 }
 
 async function initializeLayers() {
-    // Clear stale HTML options immediately, even if loading later fails.
+
     populateEventFilter();
 
     const loaders = [loadRivers, loadWatersheds, loadEvents, loadObservations];
