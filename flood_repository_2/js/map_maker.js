@@ -276,10 +276,20 @@ const layerData = {
 // Shared refresh reads the controls once; no network calls or new layers.
 function refreshLayers() {
     const selected = getFilters();
+
     renderRiversLayer(selected);
     renderWatershedsLayer(selected);
     renderEventsLayer(selected);
     renderObservationsLayer(selected);
+
+    // Automatically zoom to the selected flood event's observations.
+    if (selected.event !== "all" && observationsLayer.getLayers().length > 0) {
+        map.invalidateSize();
+        map.fitBounds(observationsLayer.getBounds(), {
+            padding: [30, 30],
+            maxZoom: 14
+        });
+    }
 }
 
 function replaceFeatures(layer, features) {
@@ -410,8 +420,8 @@ async function loadEvents() {
     const events = await loadCSV(DATA_PATHS.events);
 
     eventRecords.clear();
-
     events.forEach(function (event) {
+        event.name = event.event_name || "Unnamed Event";
         eventRecords.set(event.event_id, event);
     });
 

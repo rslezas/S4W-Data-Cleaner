@@ -25,7 +25,7 @@ function populateEventFilter() {
     const events = Array.from(eventRecords.values());
 
     events.sort(function (firstEvent, secondEvent) {
-        return firstEvent.name.localeCompare(secondEvent.name);
+       return (firstEvent.name || "").localeCompare(secondEvent.name || "");
     });
 
     // Remove any hard-coded HTML options or previously populated names.
