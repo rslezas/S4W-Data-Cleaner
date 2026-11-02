@@ -12,6 +12,7 @@ function fillDropdown(id, values, label) {
     names.forEach(name => select.add(new Option(name, name)));
     select.value = names.includes(previous) ? previous : "all";
 }
+
 // Display the full event name but store its stable ID as the option value.
 function populateEventFilter() {
     const select = document.getElementById("eventFilter");

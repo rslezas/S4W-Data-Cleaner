@@ -3889,10 +3889,10 @@
       "id": "23",
       "type": "Feature",
       "properties": {
-        "river": "Tukucha Khola",
+        "river": "Bagmati River",
         "original_name": "Putalisadak",
         "section": "Putalisadak",
-        "name": "Tukucha Khola",
+        "name": "Bagmati River",
         "previous_name": "Putalisadak",
         "previous_river": "Putalisadak",
         "name_sources": [
@@ -3905,7 +3905,9 @@
         "name_note": "Published river network and monitoring-site names compared with supplied coordinates. Assignment is an inference, not a surveyed verification of every vertex. Coordinates follow the central Kathmandu Tukucha corridor to the Bagmati.",
         "aliases": [
           "Ichhumati"
-        ]
+        ],
+        "river_before_grouping": "Tukucha Khola",
+        "grouping_note": "User-requested map display grouping; original waterway identity retained in river_before_grouping and section metadata."
       },
       "geometry": {
         "type": "MultiLineString",
@@ -3955,10 +3957,10 @@
       "id": "24",
       "type": "Feature",
       "properties": {
-        "river": "Tukucha Khola",
+        "river": "Bagmati River",
         "original_name": "Kalmochan hat",
         "section": "Kalmochan Hat",
-        "name": "Tukucha Khola",
+        "name": "Bagmati River",
         "previous_name": "Kalmochan Hat",
         "previous_river": "Kalmochan Hat",
         "name_sources": [
@@ -3971,7 +3973,9 @@
         "name_note": "Published river network and monitoring-site names compared with supplied coordinates. Assignment is an inference, not a surveyed verification of every vertex. Coordinates follow the central Kathmandu Tukucha corridor to the Bagmati.",
         "aliases": [
           "Ichhumati"
-        ]
+        ],
+        "river_before_grouping": "Tukucha Khola",
+        "grouping_note": "User-requested map display grouping; original waterway identity retained in river_before_grouping and section metadata."
       },
       "geometry": {
         "type": "MultiLineString",
@@ -4185,10 +4189,10 @@
       "id": "27",
       "type": "Feature",
       "properties": {
-        "river": "Madhu Khola",
+        "river": "Hanumante Khola",
         "original_name": "Madhu",
         "section": "Madhu",
-        "name": "Madhu Khola",
+        "name": "Hanumante Khola",
         "previous_name": "Madhu",
         "previous_river": "Madhu",
         "name_sources": [
@@ -4204,7 +4208,9 @@
         "candidate_rivers": [
           "Madhu Khola",
           "Hanumante Khola"
-        ]
+        ],
+        "river_before_grouping": "Madhu Khola",
+        "grouping_note": "User-requested map display grouping; original waterway identity retained in river_before_grouping and section metadata."
       },
       "geometry": {
         "type": "MultiLineString",
@@ -4282,10 +4288,10 @@
       "id": "28",
       "type": "Feature",
       "properties": {
-        "river": "Bira Khola",
+        "river": "Hanumante Khola",
         "original_name": "Bira",
         "section": "Bira",
-        "name": "Bira Khola",
+        "name": "Hanumante Khola",
         "previous_name": "Bira",
         "previous_river": "Bira",
         "name_sources": [
@@ -4301,7 +4307,9 @@
         "candidate_rivers": [
           "Bira Khola",
           "Hanumante Khola"
-        ]
+        ],
+        "river_before_grouping": "Bira Khola",
+        "grouping_note": "User-requested map display grouping; original waterway identity retained in river_before_grouping and section metadata."
       },
       "geometry": {
         "type": "MultiLineString",
@@ -4567,10 +4575,10 @@
       "id": "30",
       "type": "Feature",
       "properties": {
-        "river": "Kasan Khola",
+        "river": "Hanumante Khola",
         "original_name": "Kasan",
         "section": "Kasan",
-        "name": "Kasan Khola",
+        "name": "Hanumante Khola",
         "previous_name": "Kasan",
         "previous_river": "Kasan",
         "name_sources": [
@@ -4584,7 +4592,9 @@
         "name_note": "Published river network and monitoring-site names compared with supplied coordinates. Assignment is an inference, not a surveyed verification of every vertex. Kasan Khola–Hanumante confluence is listed in the government monitoring report; Bagmati Action Plan uses Khasangkhusungkhola for that confluence. Supplied line approaches the Hanumante from the northeast.",
         "aliases": [
           "Khasangkhusung Khola"
-        ]
+        ],
+        "river_before_grouping": "Kasan Khola",
+        "grouping_note": "User-requested map display grouping; original waterway identity retained in river_before_grouping and section metadata."
       },
       "geometry": {
         "type": "MultiLineString",
@@ -5098,10 +5108,10 @@
       "id": "34",
       "type": "Feature",
       "properties": {
-        "river": "Manohara Khola",
+        "river": "Bagmati River",
         "original_name": "Manohara",
         "section": "Manohara",
-        "name": "Manohara Khola",
+        "name": "Bagmati River",
         "previous_name": "Manohara",
         "previous_river": "Manohara",
         "name_sources": [
@@ -5115,7 +5125,9 @@
         "aliases": [
           "Manahara Khola",
           "Manohara River"
-        ]
+        ],
+        "river_before_grouping": "Manohara Khola",
+        "grouping_note": "User-requested map display grouping; original waterway identity retained in river_before_grouping and section metadata."
       },
       "geometry": {
         "type": "MultiLineString",
@@ -5613,10 +5625,10 @@
       "id": "37",
       "type": "Feature",
       "properties": {
-        "river": "Mahadev Khola",
+        "river": "Bishnumati River",
         "original_name": "Mahadev khola",
         "section": "Mahadev Khola",
-        "name": "Mahadev Khola",
+        "name": "Bishnumati River",
         "previous_name": "Mahadev Khola",
         "previous_river": "Mahadev Khola",
         "name_sources": [
@@ -5627,7 +5639,9 @@
         "name_confidence": "moderate",
         "review_required": false,
         "name_note": "Published river network and monitoring-site names compared with supplied coordinates. Assignment is an inference, not a surveyed verification of every vertex. Short western tributary segment is consistent with Mahadev Khola in the Bishnumati basin. Same-name features are not automatically treated as the same complete river.",
-        "aliases": []
+        "aliases": [],
+        "river_before_grouping": "Mahadev Khola",
+        "grouping_note": "User-requested map display grouping; original waterway identity retained in river_before_grouping and section metadata."
       },
       "geometry": {
         "type": "MultiLineString",
@@ -5697,10 +5711,10 @@
       "id": "38",
       "type": "Feature",
       "properties": {
-        "river": "Mahadev Khola",
+        "river": "Bishnumati River",
         "original_name": "Mahadev Khola",
         "section": "Mahadev Khola — Northwest of Bishnumati Junction",
-        "name": "Mahadev Khola",
+        "name": "Bishnumati River",
         "previous_name": "Mahadev Khola",
         "previous_river": "Mahadev Khola",
         "name_sources": [
@@ -5715,7 +5729,9 @@
         "split_junction": [
           85.30996196586291,
           27.73919887426624
-        ]
+        ],
+        "river_before_grouping": "Mahadev Khola",
+        "grouping_note": "User-requested map display grouping; original waterway identity retained in river_before_grouping and section metadata."
       },
       "geometry": {
         "type": "MultiLineString",

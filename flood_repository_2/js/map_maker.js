@@ -2,8 +2,8 @@
 const DATA_PATHS = {
     rivers: "data/geojson/rivers.geojson",
     watersheds: "data/geojson/watersheds.geojson",
-    events: "data/events.json", // May instead point to data/flood_events.csv.
-    observations: "data/observations.json"
+    events: "data/events.csv",
+    observations: "data/observations.csv"
 };
 
 const map = L.map("map").setView([27.7172, 85.3240], 11);
@@ -359,6 +359,35 @@ function loadJSON(path) {
     });
 }
 
+function loadCSV(path) {
+    return new Promise((resolve, reject) => {
+        Papa.parse(path, {
+            download: true,
+            header: true,
+            skipEmptyLines: "greedy",
+
+            // Remove surrounding spaces and any leading BOM.
+            transformHeader: header =>
+                header.replace(/^\uFEFF/, "").trim(),
+
+            complete: results => {
+                if (results.errors.length > 0) {
+                    reject(new Error(
+                        `${path}: ${results.errors[0].message}`
+                    ));
+                    return;
+                }
+
+                resolve(results.data);
+            },
+
+            error: error => {
+                reject(new Error(`${path}: ${error.message}`));
+            }
+        });
+    });
+}
+
 function geographicFeatures(data) {
     if (data?.type !== "FeatureCollection" || !Array.isArray(data.features)) {
         throw new Error("Expected a GeoJSON FeatureCollection.");
@@ -378,7 +407,7 @@ async function loadWatersheds() {
 }
 
 async function loadEvents() {
-    const events = await loadJSON(DATA_PATHS.events);
+    const events = await loadCSV(DATA_PATHS.events);
 
     eventRecords.clear();
 
@@ -390,7 +419,7 @@ async function loadEvents() {
 }
 
 async function loadObservations() {
-    const observations = await loadJSON(DATA_PATHS.observations);
+    const observations = await loadCSV(DATA_PATHS.observations);
 
     layerData.observations = observationsToGeoJSON(observations).features;
 }

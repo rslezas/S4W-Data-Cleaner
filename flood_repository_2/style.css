@@ -235,6 +235,29 @@ nav a[aria-current] {
   color: white;
   font-size: 13px;
 }
+
+.image-container {
+  border: 1px dashed #94adb7;
+  text-align: center;
+  background-color: #ffffff;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  color: #395d6c;
+}
+
+.image-href {
+  font-size: 0;
+}
+
+.thumbnail {
+  max-height: 525px;
+  width: 100%;
+}
+
 /* Image and embed placeholders. Replace their contents when assets are available. */
 .placeholder {
   border: 1px dashed #94adb7;
@@ -250,7 +273,7 @@ nav a[aria-current] {
   color: #395d6c;
   margin-bottom: 24px;
 }
-.placeholder-label {
+.image-label {
   font-size: 9px;
   letter-spacing: 1.5px;
   font-weight: bold;
@@ -259,14 +282,7 @@ nav a[aria-current] {
   left: 18px;
   color: #466774;
 }
-.placeholder svg {
-  width: 115px;
-  height: 58px;
-  fill: none;
-  stroke: #8ca8b3;
-  stroke-width: 2;
-  margin: 20px 0 12px;
-}
+
 .placeholder strong {
   font-size: 16px;
 }
