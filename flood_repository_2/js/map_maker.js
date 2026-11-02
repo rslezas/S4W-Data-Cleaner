@@ -146,7 +146,64 @@ function getPinIcon(color) {
 
     return icon;
 }
+function createEventPhotoGallery(properties) {
+    const gallery = document.createElement("div");
+    const eventId = String(properties.event_id || "").trim();
 
+    const photos = Object.keys(properties)
+        .filter(key => /^photos\/\d+$/.test(key))
+        .sort((a, b) => Number(a.split("/")[1]) - Number(b.split("/")[1]))
+        .map(key => String(properties[key] || "").trim())
+        .filter(Boolean);
+
+    if (photos.length === 0) {
+        return gallery;
+    }
+
+    let currentPhoto = 0;
+
+    const image = document.createElement("img");
+    image.style.width = "100%";
+    image.style.height = "180px";
+    image.style.objectFit = "contain";
+    image.style.borderRadius = "8px";
+
+    const controls = document.createElement("div");
+    controls.style.display = "flex";
+    controls.style.justifyContent = "space-between";
+    controls.style.alignItems = "center";
+    controls.style.marginTop = "8px";
+
+    const previous = document.createElement("button");
+    previous.textContent = "❮";
+
+    const counter = document.createElement("span");
+
+    const next = document.createElement("button");
+    next.textContent = "❯";
+
+    function showPhoto() {
+        image.src = `media/${encodeURIComponent(eventId)}/${encodeURIComponent(photos[currentPhoto])}`;
+        image.alt = `Flood event photo ${currentPhoto + 1}`;
+        counter.textContent = `${currentPhoto + 1} / ${photos.length}`;
+    }
+
+    previous.onclick = () => {
+        currentPhoto = (currentPhoto - 1 + photos.length) % photos.length;
+        showPhoto();
+    };
+
+    next.onclick = () => {
+        currentPhoto = (currentPhoto + 1) % photos.length;
+        showPhoto();
+    };
+
+    controls.append(previous, counter, next);
+    gallery.append(image, controls);
+
+    showPhoto();
+    return gallery;
+}
 function makePointLayer(pane, color, isEvent = false) {
     const layer = L.geoJSON(null, {
         pointToLayer: function (feature, latlng) {
@@ -197,7 +254,10 @@ function makePointLayer(pane, color, isEvent = false) {
             `;
 
             content.querySelector(".evidence-title").textContent = title;
-
+if (isEvent) {
+    content.querySelector(".evidence-media")
+        .appendChild(createEventPhotoGallery(properties));
+}
             const media = content.querySelector(".evidence-media");
             const link = content.querySelector(".evidence-link");
             const evidenceType =
