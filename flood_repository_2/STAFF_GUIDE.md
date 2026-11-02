@@ -77,116 +77,83 @@ Selecting an approval option in the prototype does not
 constitute independent verification or proof of consent.
 
 
-### 5. Flood Event Data Format
+### 5. Observation Data Format
 
-The newer Flood Event Repository stores flood event
-records in JSON format.
+The updated Flood Event Repository stores sponsor-provided flood observations in:
 
-The event template is located at:
+`flood_repository_2/data/observations.json`
 
-`flood_repository_2/data/event_template.json`
+Each observation contains fields including:
 
-The template includes the following fields:
+- `observation_id` — Unique observation identifier.
+- `event_id` — Associated flood event identifier, if assigned.
+- `observation_title` — Title of the observation.
+- `event_name` — Name or description of the reported flood event.
+- `datetime` — Reported observation date.
+- `river` — Associated river.
+- `watershed` — Associated watershed.
+- `location` — Reported observation location.
+- `latitude` and `longitude` — Geographic coordinates.
+- `description` — Additional details about the observation.
+- `source_url` — Primary evidence or reference link.
+- `author` — Source author or contributor, if recorded.
+- `evidence_type` — Type of supporting evidence.
+- `additional_source_urls` — Additional supporting links.
+- `source_sheet` — Original sponsor data sheet.
+- `qc_flag` — Data quality-control label.
 
-**Event identification**
-- eventId
-- name
-- location
-- river
-- ward
+Some imported records contain missing descriptions, placeholder titles, or incomplete source information. These fields should be reviewed before publication.
 
-**Dates and description**
-- date
-- endDate
-- description
-- status
+**IMPORTANT:** A `qc_flag` value of `CheckedGood` does not, by itself, confirm that the observation has been independently verified or that publication and photograph permissions have been obtained.
 
-**Evidence and sources**
-- evidenceType
-- evidenceSource
-- sourceUrl
-
-**Geographic information**
-- latitude
-- longitude
-- coordinateNote
-
-**Verification information**
-- verifiedBy
-- verificationDate
-
-Fields containing `null` indicate that information
-has not yet been provided.
-
-The `coordinateNote` field should explain whether
-the event location has been verified.
-
-The event template does not include separate
-publication consent or photograph permission fields.
-
-**IMPORTANT:** A completed event record does not
-automatically mean that the event is verified or
-approved for publication. Evidence verification
-and publication permissions must be reviewed
-separately.
-
+The current observation records do not include separate `verified`, `publication_consent`, or `photo_permission` fields. Staff must confirm how these approvals will be recorded and enforced before treating imported observations as approved for public publication.
 
 
 ### 6. Publication Rules
 
-Flood observations and supporting evidence must be
-reviewed before being published.
+Flood observations must be reviewed before being approved for public display.
 
-Before publication, S4W staff should confirm:
+The updated repository stores imported observation records in `flood_repository_2/data/observations.json`.
 
-- The observation is supported by reliable evidence.
-- The event date and location are appropriately documented.
-- Source references and attribution are included.
-- Publication consent has been obtained where required.
-- Photographs have appropriate publication permissions.
-- Personal or sensitive information is protected.
+Staff should confirm the following before publication:
 
-The current event template includes verification
-information but does not independently enforce
-publication permissions.
+- **Data accuracy:** Check observation dates, locations, coordinates, river names, and descriptions.
+- **Source verification:** Review supporting evidence and original data sources.
+- **Quality control:** Review the `qc_flag` value and confirm what it represents.
+- **Publication authorization:** Confirm that S4W has permission to publish the observation.
+- **Photograph permissions:** Verify permission to publish any associated photographs and provide appropriate credit.
+- **Privacy:** Remove or protect sensitive personal information.
 
-**IMPORTANT:** The repository is public. Sensitive,
-unapproved, or private records must not be committed
-to GitHub, even if they are not displayed on the website.
+**IMPORTANT:** A quality-control label such as `CheckedGood` is not equivalent to publication authorization.
 
-Publication approval must be confirmed through an
-authorized staff review process.
+The current JSON format does not establish a complete approval and consent workflow. S4W staff and the repository owner must confirm how these checks will be enforced before operational publication.
 
+Unapproved or sensitive records and photographs must not be committed to the public GitHub repository. Removing records from a website display does not make them private if they remain in the public repository.
 
+### 7. Observation Data Updates and Automation
 
-### 7. Data Updates and Automation
+The updated Flood Event Repository stores imported observations in:
 
-The newer Flood Event Repository stores event and
-evidence information in the `data` directory.
+`flood_repository_2/data/observations.json`
 
-The process for adding, reviewing, and publishing
-new observations must be confirmed with the
-repository owner.
+This file provides observation data for the updated website.
 
-The previous version included a Python script for
-generating an observation manifest and a GitHub
-Actions workflow for updating it.
+The repository also contains an earlier observation manifest workflow involving:
 
-It has not yet been confirmed whether these tools
-are used by the newer website.
+- `scripts/generate_observation_manifest.py`
+- `flood_repository/data/observations/manifest.json`
 
-Before implementing automated publication, verify:
+The earlier workflow was designed to generate a manifest of approved observations. It should not be assumed to control publication of records in the updated website.
 
-- Which data files the new website reads.
-- How approved observations are added.
-- Whether a manifest generator is still required.
-- Which GitHub branch should receive updates.
-- How publication permissions are enforced.
+Before operational use, S4W staff and the repository owner should confirm:
 
-Do not enable automatic publication of unreviewed
-observations.
+- How new observations are added to `observations.json`.
+- Which scripts or automated processes update observation records.
+- How quality-control checks are performed.
+- How verification and publication permissions are recorded.
+- How approved changes are published to the website.
 
-
+**IMPORTANT:** Do not assume that updating an observation file automatically verifies or authorizes its contents for public publication.
 
 ### 8. Current Limitations
 
@@ -210,6 +177,12 @@ implementation or verification:
   boundaries and flood evidence require review.
 - The website has not yet undergone a complete
   operational handoff to S4W staff.
+- Sponsor-provided observations have been imported into
+  `data/observations.json`, but some records contain
+  incomplete descriptions, placeholder titles, or
+  missing attribution. These records require further
+  quality review, evidence verification, and confirmation
+  of publication permissions.
 
 These limitations should be reviewed with the
 repository owner before public operational use.
