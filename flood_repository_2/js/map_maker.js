@@ -509,6 +509,11 @@ loadJSON("data/geojson/kathmandu_municipalities.geojson")
 */
 
 const eventDhmReports = {
+    "FLOOD-2024-003": {
+    url: "https://dhm.gov.np/uploads/dhm/climateService/July_2024-Preliminary_precipitation_and_temperature_summary.pdf",
+    label: "View DHM July 2024 rainfall report"
+    },
+
     "FLOOD-2023-001": {
     url: "https://dhm.gov.np/uploads/dhm/climateService/August_2023-Preliminary_precipitation_and_temperature_summary.pdf",
     label: "View DHM August 2023 rainfall report"
@@ -537,10 +542,10 @@ function createDhmContext(eventId) {
     const explanation = document.createElement("p");
     explanation.textContent = eventId === "FLOOD-2023-001"
     ? "DHM monthly rainfall report for August 2023, providing regional monsoon rainfall context for the Hanumante Khola flood."
-    : eventId === "FLOOD-2024-002"
+    : ["FLOOD-2024-002", "FLOOD-2024-003"].includes(eventId)
     ? "Regional rainfall information from DHM; not a direct measurement at the flood location."
     : "DHM situational report documenting the September 2024 extreme precipitation and flooding.";
-    
+
     const link = document.createElement("a");
     link.href = report.url;
     link.textContent = report.label;
