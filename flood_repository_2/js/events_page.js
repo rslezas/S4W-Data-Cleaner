@@ -130,6 +130,11 @@ const dhmReports = {
     url: "https://dhm.gov.np/uploads/dhm/climateService/July_2024-Preliminary_precipitation_and_temperature_summary.pdf",
     label: "Environmental Context: DHM July 2024 rainfall report"
     },
+    
+    "FLOOD-2024-004": {
+    url: "https://dhm.gov.np/uploads/dhm/climateService/July_2024-Preliminary_precipitation_and_temperature_summary.pdf",
+    label: "Environmental Context: DHM July 2024 rainfall report"
+    }
 };
 
 function updateDhmLink(eventId) {
