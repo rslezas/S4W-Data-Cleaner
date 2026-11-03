@@ -39,86 +39,24 @@
             <label for="event-select">Select an event</label>
             <select id="event-select" class="filter-dropdown">
               <option value="event-1">All Events</option>
-              <option value="event-1">Template Event 1</option>
-              <option value="event-2">Template Event 2</option>
+
             </select>
           </div>
 
           <div>
-            <label for="evidence-type">Item Type</label>
+            <label for="evidence-type">Evidence Type</label>
             <select id="evidence-type" class="filter-dropdown">
-              <option value="evidence-type">All Item Types</option>
-              <option value="evidence-type">Images</option>
-              <option value="evidence-type">Video</option>
+              <option value="evidence-type">All Evidence Types</option>
+
             </select>
           </div>
-
-          <div>
-            <label for="sort-by">Sort By</label>
-            <select id="sort-by" class="filter-dropdown">
-              <option value="sort-by">Most Relevant</option>
-              <option value="sort-by">Newest</option>
-              <option value="sort-by">Oldest</option>
-            </select>
-          </div>
-
         </div>
 
         <br>
 
         <section class="panel">
           
-          <!-- Template evidence cards -->
-          <div class="cards media">
-
-            <!-- Evidence card-->
-            <article>
-              
-              <div class="placeholder image">
-                <strong>Item 1</strong>
-              </div>
-              <div class="media-copy">
-                <h3>Title, Location</h3>
-                <p>Event - Date - Author</p>
-                <p>Caption</p>
-              </div>
-            </article>
-
-            <article>
-              
-              <div class="placeholder image">
-                <strong>Item 2</strong>
-              </div>
-              <div class="media-copy">
-                <h3>Title, Location</h3>
-                <p>Event - Date - Author</p>
-                <p>Caption</p>
-              </div>
-            </article>
-
-            <article>
-              <div class="placeholder image">
-                <strong>Item 3</strong>
-              </div>
-              <div class="media-copy">
-                <h3>Title, Location</h3>
-                <p>Event - Date - Author</p>
-                <p>Caption</p>
-              </div>
-            </article>
-
-            <article>
-              <div class="placeholder image">
-                <strong>Item 4</strong>
-              </div>
-              <div class="media-copy">
-                <h3>Title, Location</h3>
-                <p>Event - Date - Author</p>
-                <p>Caption</p>
-              </div>
-            </article>
-
-          </div>
+          <div id="gallery" class="gallery"></div>
 
           <!-- DHM Report -->
           <div class="panel report">
@@ -144,6 +82,10 @@
     
     <div id="site-footer"></div>
 
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+
+    <script src="js/load_data.js"></script>
+    <script src="js/populate_gallery_filters.js"></script>
     <script src="js/shared_layout.js"></script>
 
   </body>
