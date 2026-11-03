@@ -1,4 +1,4 @@
-
+﻿
 const DATA_PATHS = {
     rivers: "data/geojson/rivers.geojson",
     watersheds: "data/geojson/watersheds.geojson",
@@ -175,12 +175,12 @@ function createEventPhotoGallery(properties) {
     controls.style.marginTop = "8px";
 
     const previous = document.createElement("button");
-    previous.textContent = "❮";
+    previous.textContent = "â®";
 
     const counter = document.createElement("span");
 
     const next = document.createElement("button");
-    next.textContent = "❯";
+    next.textContent = "â¯";
 
     function showPhoto() {
         image.src = `media/${encodeURIComponent(eventId)}/${encodeURIComponent(photos[currentPhoto])}`;
@@ -243,13 +243,14 @@ function makePointLayer(pane, color, isEvent = false) {
 
             const content = document.createElement("article");
             content.className = "evidence-card";
+            if (isEvent) { content.style.maxHeight = "260px"; content.style.overflowY = "auto"; content.style.paddingRight = "8px"; }
 
             content.innerHTML = `
                 <h3 class="evidence-title"></h3>
                 <div class="evidence-media"></div>
                 <a class="evidence-link" target="_blank"
                 rel="noopener noreferrer" hidden>
-                    View original source ↗
+                    View original source â†—
                 </a>
             `;
 
@@ -296,10 +297,13 @@ if (isEvent) {
                 console.warn("Missing or invalid source URL:", properties.source_url);
             }
 
-            // Display your custom element inside Leaflet's popup.
+            if (isEvent) { const dhmContext = createDhmContext(id); if (dhmContext) content.appendChild(dhmContext); }
+
+        // Display your custom element inside Leaflet's popup.
             marker.bindPopup(content, {
                 className: "custom-popup",
-                maxWidth: 420
+                maxWidth: 420,
+                maxHeight: 350
             });
         }
     });
@@ -554,3 +558,42 @@ loadJSON("data/geojson/kathmandu_municipalities.geojson")
     })
     .catch(error => console.error("Municipality loading error:", error));
 */
+
+const eventDhmReports = {
+    "FLOOD-2024-001": {
+        url: "https://dhm.gov.np/uploads/dhm/downloads/Situational_Report_on_Extreme_Precipitation_and_Flooding_Event_of_27-29_September_2024.pdf",
+        label: "View DHM flood report"
+    },
+    "FLOOD-2024-002": {
+        url: "https://dhm.gov.np/uploads/dhm/climateService/July_2024-Preliminary_precipitation_and_temperature_summary.pdf",
+        label: "View DHM July 2024 rainfall report"
+    }
+};
+
+function createDhmContext(eventId) {
+    const report = eventDhmReports[eventId];
+    if (!report) return null;
+
+    const section = document.createElement("div");
+    section.style.cssText = "margin-top:12px;padding-top:10px;border-top:1px solid #ddd;";
+
+    const heading = document.createElement("strong");
+    heading.textContent = "Environmental Context";
+
+    const explanation = document.createElement("p");
+    explanation.textContent = eventId === "FLOOD-2024-002"
+        ? "Regional rainfall information from DHM; not a direct measurement at the flood location."
+        : "DHM situational report documenting the September 2024 extreme precipitation and flooding.";
+
+    const link = document.createElement("a");
+    link.href = report.url;
+    link.textContent = report.label;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+
+    section.append(heading, explanation, link);
+    return section;
+}
+
+
+
