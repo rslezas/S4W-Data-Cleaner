@@ -263,12 +263,16 @@ if (isEvent) {
 }
             const media = content.querySelector(".evidence-media");
             const link = content.querySelector(".evidence-link");
-            const evidenceType =
-                String(properties.evidence_type || "").trim().toLowerCase();
+            const evidenceType = String(
+    properties.evidence_type || properties.evidenceType || ""
+).trim().toLowerCase();
 
-            try {
-                const url = new URL(properties.source_url);
+const sourceUrl = isEvent
+    ? properties.sourceUrl
+    : properties.source_url;
 
+try {
+    const url = new URL(sourceUrl);
                 if (["https:", "http:"].includes(url.protocol)) {
                     // Always provide a link to the original source.
                     link.href = url.href;
@@ -296,11 +300,15 @@ if (isEvent) {
                     }
                 }
             } catch {
-                console.warn("Missing or invalid source URL:", properties.source_url);
-            }
+    if (sourceUrl) {
+        console.warn("Missing or invalid source URL:", sourceUrl);
+    }
+}
 
-            if (isEvent) { const dhmContext = createDhmContext(id); if (dhmContext) content.appendChild(dhmContext); }
-
+if (isEvent) {
+    const dhmContext = createDhmContext(id);
+    if (dhmContext) content.appendChild(dhmContext);
+}
         // Display your custom element inside Leaflet's popup.
             marker.bindPopup(content, {
                 className: "custom-popup",
@@ -531,7 +539,12 @@ const eventDhmReports = {
     "FLOOD-2024-002": {
         url: "https://dhm.gov.np/uploads/dhm/climateService/July_2024-Preliminary_precipitation_and_temperature_summary.pdf",
         label: "View DHM July 2024 rainfall report"
-    }
+    },
+
+    "FLOOD-2024-005": {
+    url: "https://dhm.gov.np/uploads/dhm/climateService/July_2024-Preliminary_precipitation_and_temperature_summary.pdf",
+    label: "Environmental Context: DHM July 2024 rainfall report"
+    },
 };
 
 function createDhmContext(eventId) {
@@ -547,7 +560,7 @@ function createDhmContext(eventId) {
     const explanation = document.createElement("p");
     explanation.textContent = eventId === "FLOOD-2023-001"
     ? "DHM monthly rainfall report for August 2023, providing regional monsoon rainfall context for the Hanumante Khola flood."
-   : ["FLOOD-2024-002", "FLOOD-2024-003"].includes(eventId)
+   : ["FLOOD-2024-002", "FLOOD-2024-003", "FLOOD-2024-004", "FLOOD-2024-005"].includes(eventId)
     ? "Regional rainfall information from DHM; not a direct measurement at the flood location."
     : "DHM situational report documenting the September 2024 extreme precipitation and flooding.";
 

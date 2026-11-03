@@ -54,11 +54,18 @@ function showEventPhotos(event) {
     if (!gallery) return;
 
     const photos = Object.keys(event)
-        .filter(key => /^photos\/\d+$/.test(key))
-        .sort((a, b) => Number(a.split("/")[1]) - Number(b.split("/")[1]))
-        .map(key => event[key])
-        .filter(photo => photo && photo.trim());
+    .filter(key => /^photos\/\d+$/.test(key))
+    .sort((a, b) => Number(a.split("/")[1]) - Number(b.split("/")[1]))
+    .map(key => event[key])
+    .filter(photo => photo && photo.trim());
 
+if (
+    photos.length === 0 &&
+    event.evidenceType === "Image" &&
+    /^https?:\/\/.+\.(jpg|jpeg|png|webp)(\?.*)?$/i.test(event.sourceUrl || "")
+) {
+    photos.push(event.sourceUrl);
+}
     gallery.innerHTML = "";
 
     if (!photos.length) {
@@ -76,9 +83,13 @@ function showEventPhotos(event) {
     counter.style.textAlign = "center";
 
     function updatePhoto() {
-        image.src = "media/" +
-            encodeURIComponent(event.event_id) + "/" +
-            encodeURIComponent(photos[current]);
+        const photo = photos[current];
+
+        image.src = /^https?:\/\//i.test(photo)
+            ? photo
+            : "media/" +
+                encodeURIComponent(event.event_id) + "/" +
+                encodeURIComponent(photo);
 
         counter.textContent = `Photo ${current + 1} of ${photos.length}`;
     }
@@ -130,8 +141,13 @@ const dhmReports = {
     url: "https://dhm.gov.np/uploads/dhm/climateService/July_2024-Preliminary_precipitation_and_temperature_summary.pdf",
     label: "Environmental Context: DHM July 2024 rainfall report"
     },
-    
+
     "FLOOD-2024-004": {
+    url: "https://dhm.gov.np/uploads/dhm/climateService/July_2024-Preliminary_precipitation_and_temperature_summary.pdf",
+    label: "Environmental Context: DHM July 2024 rainfall report"
+    },
+
+    "FLOOD-2024-005": {
     url: "https://dhm.gov.np/uploads/dhm/climateService/July_2024-Preliminary_precipitation_and_temperature_summary.pdf",
     label: "Environmental Context: DHM July 2024 rainfall report"
     }
