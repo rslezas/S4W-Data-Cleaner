@@ -10,7 +10,7 @@ const map = L.map("map").setView([27.7172, 85.3240], 11);
 for (const [name, zIndex] of Object.entries({
     watershedsPane: 410,
     riversPane: 420,
-    eventsPane: 430,
+    eventsPane: 450,
     observationsPane: 440
 })) {
     map.createPane(name);
