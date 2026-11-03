@@ -175,12 +175,12 @@ function createEventPhotoGallery(properties) {
     controls.style.marginTop = "8px";
 
     const previous = document.createElement("button");
-    previous.textContent = "â®";
+    previous.textContent = "Previous";
 
     const counter = document.createElement("span");
 
     const next = document.createElement("button");
-    next.textContent = "â¯";
+    next.textContent = "Next";
 
     function showPhoto() {
         image.src = `media/${encodeURIComponent(eventId)}/${encodeURIComponent(photos[currentPhoto])}`;
@@ -560,6 +560,11 @@ loadJSON("data/geojson/kathmandu_municipalities.geojson")
 */
 
 const eventDhmReports = {
+    "FLOOD-2023-001": {
+    url: "https://dhm.gov.np/uploads/dhm/climateService/August_2023-Preliminary_precipitation_and_temperature_summary.pdf",
+    label: "View DHM August 2023 rainfall report"
+    },
+
     "FLOOD-2024-001": {
         url: "https://dhm.gov.np/uploads/dhm/downloads/Situational_Report_on_Extreme_Precipitation_and_Flooding_Event_of_27-29_September_2024.pdf",
         label: "View DHM flood report"
@@ -581,10 +586,12 @@ function createDhmContext(eventId) {
     heading.textContent = "Environmental Context";
 
     const explanation = document.createElement("p");
-    explanation.textContent = eventId === "FLOOD-2024-002"
-        ? "Regional rainfall information from DHM; not a direct measurement at the flood location."
-        : "DHM situational report documenting the September 2024 extreme precipitation and flooding.";
-
+    explanation.textContent = eventId === "FLOOD-2023-001"
+    ? "DHM monthly rainfall report for August 2023, providing regional monsoon rainfall context for the Hanumante Khola flood."
+    : eventId === "FLOOD-2024-002"
+    ? "Regional rainfall information from DHM; not a direct measurement at the flood location."
+    : "DHM situational report documenting the September 2024 extreme precipitation and flooding.";
+    
     const link = document.createElement("a");
     link.href = report.url;
     link.textContent = report.label;

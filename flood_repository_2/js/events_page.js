@@ -112,6 +112,11 @@ function showEventPhotos(event) {
 
 
 const dhmReports = {
+    "FLOOD-2023-001": {
+    url: "https://dhm.gov.np/uploads/dhm/climateService/August_2023-Preliminary_precipitation_and_temperature_summary.pdf",
+    label: "Environmental Context: DHM August 2023 rainfall report"
+    },
+    
     "FLOOD-2024-001": {
         url: "https://dhm.gov.np/uploads/dhm/downloads/Situational_Report_on_Extreme_Precipitation_and_Flooding_Event_of_27-29_September_2024.pdf",
         label: "Read DHM flood report"
