@@ -184,7 +184,11 @@ function createEventPhotoGallery(properties) {
     next.textContent = "Next";
 
     function showPhoto() {
-        image.src = `media/${encodeURIComponent(eventId)}/${encodeURIComponent(photos[currentPhoto])}`;
+        const photo = photos[currentPhoto];
+
+image.src = /^https?:\/\//i.test(photo)
+    ? photo
+    : `media/${encodeURIComponent(eventId)}/${encodeURIComponent(photo)}`;
         image.alt = `Flood event photo ${currentPhoto + 1}`;
         counter.textContent = `${currentPhoto + 1} / ${photos.length}`;
     }
@@ -252,7 +256,7 @@ function makePointLayer(pane, color, isEvent = false) {
                 <div class="evidence-media"></div>
                 <a class="evidence-link" target="_blank"
                 rel="noopener noreferrer" hidden>
-                    View original source â†—
+                    View original source
                 </a>
             `;
 
@@ -278,7 +282,7 @@ try {
                     link.href = url.href;
                     link.hidden = false;
 
-                    if (evidenceType === "image") {
+                    if (evidenceType === "image" && !isEvent) {
                         const image = document.createElement("img");
 
                         image.src = url.href;
@@ -532,6 +536,11 @@ const eventDhmReports = {
     label: "View DHM August 2023 rainfall report"
     },
 
+    "FLOOD-2023-002": {
+    url: "https://dhm.gov.np/uploads/dhm/climateService/August_2023-Preliminary_precipitation_and_temperature_summary.pdf",
+    label: "Environmental Context: DHM August 2023 rainfall report"
+    },
+
     "FLOOD-2024-001": {
         url: "https://dhm.gov.np/uploads/dhm/downloads/Situational_Report_on_Extreme_Precipitation_and_Flooding_Event_of_27-29_September_2024.pdf",
         label: "View DHM flood report"
@@ -560,7 +569,7 @@ function createDhmContext(eventId) {
     const explanation = document.createElement("p");
     explanation.textContent = eventId === "FLOOD-2023-001"
     ? "DHM monthly rainfall report for August 2023, providing regional monsoon rainfall context for the Hanumante Khola flood."
-   : ["FLOOD-2024-002", "FLOOD-2024-003", "FLOOD-2024-004", "FLOOD-2024-005"].includes(eventId)
+   : ["FLOOD-2023-002", "FLOOD-2024-002", "FLOOD-2024-003", "FLOOD-2024-004", "FLOOD-2024-005"].includes(eventId)
     ? "Regional rainfall information from DHM; not a direct measurement at the flood location."
     : "DHM situational report documenting the September 2024 extreme precipitation and flooding.";
 
