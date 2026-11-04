@@ -7,13 +7,27 @@
         skipEmptyLines: "greedy",
         transformHeader: header => header.replace(/^\uFEFF/, "").trim(),
 
-        complete: results => {
+        complete: async results => {
             if (results.errors.length) {
                 console.error("Error loading events:", results.errors);
                 return;
             }
 
             const events = results.data.filter(e => e.event_id && e.event_name);
+            // Load the 100-word event summaries from a separate CSV file.
+const summaryResults = await new Promise((resolve, reject) => {
+    Papa.parse("data/event_summaries.csv", {
+        download: true,
+        header: true,
+        skipEmptyLines: true,
+        complete: resolve,
+        error: reject
+    });
+});
+
+const eventSummaries = Object.fromEntries(
+    summaryResults.data.map(row => [row.event_id, row.summary])
+);
 
             dropdown.innerHTML = "";
 
@@ -33,6 +47,56 @@
                     [event.datetime, event.location].filter(Boolean).join(" - ");
                 document.getElementById("event-description").textContent =
                     event.description || "No description available.";
+                // Display the event-specific summary on the Flood Events page.
+
+
+document.getElementById("event-summary").textContent =
+    eventSummaries[event.event_id] ||
+    "An event summary is being prepared."; 
+    // Original evidence links for each flood event.
+const eventSources = {
+    "FLOOD-2023-002": [
+        {
+            label: "Setopati - Siddhitol flood photograph",
+            url: "https://en.setopati.com/uploads/editor/Kathmandu-Flood-2023/Bishnumati-Flood-03.jpeg"
+        },
+        {
+            label: "Setopati - Tokha flood photograph",
+            url: "https://en.setopati.com/uploads/editor/Kathmandu-Flood-2023/Bishnumati-Flood-13.jpeg"
+        },
+        {
+            label: "DHM - August 2023 rainfall report",
+            url: "https://dhm.gov.np/uploads/dhm/climateService/August_2023-Preliminary_precipitation_and_temperature_summary.pdf"
+        }
+    ]
+};
+
+// Display sources only on the Flood Events page.
+const sourcesContainer = document.getElementById("event-sources");
+sourcesContainer.replaceChildren();
+
+const sources = [];
+
+if (sources.length === 0) {
+    sourcesContainer.textContent = "Evidence sources are being reviewed.";
+} else {
+    const sourceList = document.createElement("ul");
+
+    sources.forEach(source => {
+        const item = document.createElement("li");
+        const link = document.createElement("a");
+
+        link.href = source.url;
+        link.textContent = source.label;
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+
+        item.appendChild(link);
+        sourceList.appendChild(item);
+    });
+
+    sourcesContainer.appendChild(sourceList);
+}
                 showEventPhotos(event);
                 updateDhmLink(event.event_id);
                 updateEventTimeline(event);
