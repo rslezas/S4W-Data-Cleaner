@@ -550,9 +550,18 @@ const eventDhmReports = {
         label: "View DHM July 2024 rainfall report"
     },
 
-    "FLOOD-2024-005": {
+    "FLOOD-2024-006": {
     url: "https://dhm.gov.np/uploads/dhm/climateService/July_2024-Preliminary_precipitation_and_temperature_summary.pdf",
     label: "Environmental Context: DHM July 2024 rainfall report"
+  },
+
+  "FLOOD-2024-005": {
+    url: "https://dhm.gov.np/uploads/dhm/climateService/July_2024-Preliminary_precipitation_and_temperature_summary.pdf",
+    label: "Environmental Context: DHM July 2024 rainfall report"
+    },
+    "FLOOD-2025-001": {
+    url: "https://dhm.gov.np/uploads/dhm/climateService/Monthly_Report_August_2025.pdf",
+    label: "Environmental Context: DHM August 2025 rainfall report"
     },
 };
 
@@ -565,11 +574,19 @@ function createDhmContext(eventId) {
 
     const heading = document.createElement("strong");
     heading.textContent = "Environmental Context";
-
+    
     const explanation = document.createElement("p");
     explanation.textContent = eventId === "FLOOD-2023-001"
     ? "DHM monthly rainfall report for August 2023, providing regional monsoon rainfall context for the Hanumante Khola flood."
-   : ["FLOOD-2023-002", "FLOOD-2024-002", "FLOOD-2024-003", "FLOOD-2024-004", "FLOOD-2024-005"].includes(eventId)
+    : [
+        "FLOOD-2023-002",
+        "FLOOD-2024-002",
+        "FLOOD-2024-003",
+        "FLOOD-2024-004",
+        "FLOOD-2024-005",
+        "FLOOD-2024-006",
+        "FLOOD-2025-001"
+      ].includes(eventId)
     ? "Regional rainfall information from DHM; not a direct measurement at the flood location."
     : "DHM situational report documenting the September 2024 extreme precipitation and flooding.";
 
@@ -582,6 +599,8 @@ function createDhmContext(eventId) {
     section.append(heading, explanation, link);
     return section;
 }
+
+
 
 
 

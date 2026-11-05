@@ -134,6 +134,19 @@ if (
 
     if (!photos.length) {
         gallery.textContent = "No photographs available for this event.";
+
+        if (
+            event.evidenceType === "Video" &&
+            /^https?:\/\//i.test(event.sourceUrl || "")
+        ) {
+            const videoLink = document.createElement("a");
+            videoLink.href = event.sourceUrl;
+            videoLink.textContent = "Watch Video Evidence";
+            videoLink.target = "_blank";
+            videoLink.rel = "noopener noreferrer";
+            videoLink.style.cssText = "display:block;margin-top:10px;";
+            gallery.appendChild(videoLink);
+        }
         return;
     }
 
@@ -215,10 +228,19 @@ const dhmReports = {
     label: "Environmental Context: DHM July 2024 rainfall report"
     },
 
-    "FLOOD-2024-005": {
+    "FLOOD-2024-006": {
     url: "https://dhm.gov.np/uploads/dhm/climateService/July_2024-Preliminary_precipitation_and_temperature_summary.pdf",
     label: "Environmental Context: DHM July 2024 rainfall report"
-    }
+  },
+
+  "FLOOD-2024-005": {
+    url: "https://dhm.gov.np/uploads/dhm/climateService/July_2024-Preliminary_precipitation_and_temperature_summary.pdf",
+    label: "Environmental Context: DHM July 2024 rainfall report"
+    },
+    "FLOOD-2025-001": {
+    url: "https://dhm.gov.np/uploads/dhm/climateService/Monthly_Report_August_2025.pdf",
+    label: "Environmental Context: DHM August 2025 rainfall report"
+    },
 };
 
 function updateDhmLink(eventId) {
@@ -285,4 +307,6 @@ function updateEventTimeline(event) {
         timeline.appendChild(context);
     }
 }
+
+
 
