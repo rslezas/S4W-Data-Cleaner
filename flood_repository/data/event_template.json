@@ -1,0 +1,20 @@
+
+{
+  "eventId": "FLOOD-YYYY-XXX",
+  "name": "Flood Event Name",
+  "location": "Location Name",
+  "river": null,
+  "ward": null,
+  "date": null,
+  "endDate": null,
+  "description": "Add a summary of the flood event.",
+  "status": "Pending documentation",
+  "evidenceType": null,
+  "evidenceSource": null,
+  "sourceUrl": null,
+  "latitude": null,
+  "longitude": null,
+  "coordinateNote": "Location not yet verified",
+  "verifiedBy": null,
+  "verificationDate": null
+}

@@ -1,0 +1,104 @@
+
+[
+  
+{
+  "eventId": "DEMO-001",
+  "name": "Demo Event 1",
+  "location": "Kathmandu",
+  "river": null,
+  "ward": null,
+  "author": null,
+  "rights": null,
+  "locationAccuracy": null,
+  "date": null,
+  "description": "Demonstration record for testing the flood repository.",
+  "status": "DEMO - Not verified",
+  "evidenceType": "Field Observation",
+  "evidenceSource": "Demonstration data only",
+  "sourceUrl": null,
+  "evidenceDate": null,
+  "verifiedBy": null,
+  "verificationDate": null,
+  "photoUrl": null,
+  "latitude": 27.7172,
+  "longitude": 85.3240
+},
+
+  {
+    "eventId": "DEMO-002",
+    "name": "Demo Event 2",
+    "location": "Lalitpur",
+    "river": null,
+    "ward": null,
+    "author": null,
+    "rights": null,
+    "locationAccuracy": null,
+    "date": null,
+    "description": "Second demonstration record.",
+    "status": "DEMO - Not verified",
+    "evidenceType": null,
+    "evidenceSource": null,
+    "sourceUrl": null,
+    "evidenceDate": null,
+    "verifiedBy": null,
+    "verificationDate": null,
+    "photoUrl": null,
+    "latitude": 27.6644,
+    "longitude": 85.3188
+  },
+  {
+    "eventId": "DEMO-003",
+    "name": "Demo Event 3",
+    "location": "Bhaktapur",
+    "river": null,
+    "ward": null,
+    "author": null,
+    "rights": null,
+    "locationAccuracy": null,
+    "date": null,
+    "description": "Third demonstration record.",
+    "status": "DEMO - Not verified",
+    "evidenceType": null,
+    "evidenceSource": null,
+    "sourceUrl": null,
+    "evidenceDate": null,
+    "verifiedBy": null,
+    "verificationDate": null,
+    "photoUrl": null,
+    "latitude": 27.6710,
+    "longitude": 85.4298
+  },
+  
+{
+  "eventId": "FLOOD-2024-001",
+  "name": "September 2024 Kathmandu Valley Floods",
+  "location": "Kathmandu Valley",
+  "river": null,
+  "ward": null,
+  "author": "Department of Hydrology and Meteorology, Nepal",
+  "rights": null,
+  "locationAccuracy": "Kathmandu city-center reference point; not a verified flood location.",
+  "date": "2024-09-27",
+  "endDate": "2024-09-29",
+  "description": "Major flooding associated with extreme rainfall across Kathmandu Valley and surrounding areas from September 27–29, 2024.",
+  "status": "Documented by official source",
+  "evidenceType": "Government Report",
+  "evidenceSource": "Department of Hydrology and Meteorology, Nepal",
+  "sourceUrl": "https://dhm.gov.np/uploads/dhm/downloads/Situational_Report_on_Extreme_Precipitation_and_Flooding_Event_of_27-29_September_2024.pdf",
+  "evidenceDate": null,
+  "verifiedBy": null,
+  "verificationDate": null,
+  "photoUrl": null,
+  "latitude": 27.7172,
+  "longitude": 85.3240,
+  "coordinateNote": "Kathmandu city-center reference point; not a verified flood location.",
+  "linkedS4WMeasurements": [
+    {
+      "dataset": "Flow_SW_Clean",
+      "date": "2024-09-26",
+      "relationship": "Pre-flood context only"
+    }
+  ]
+}
+
+]

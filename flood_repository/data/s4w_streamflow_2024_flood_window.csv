@@ -1,0 +1,3 @@
+﻿observationId,streamSource,measurementDateTime,waterFlowCms,waterLevelM,latitude,longitude,sourceWorkbook,sourceSheet,sourceExcelRow,relationshipToFlood
+S4W-FLOW-864,HM01,2024-09-26T10:13:00,0.2043,0.43,27.705705,85.4868364,Flow_SW_Clean(1).xlsx,Cleaned Data,864,Pre-event contextual observation; not proof of flooding
+S4W-FLOW-1585,MH01,2024-09-26T11:23:00,0.8094,,27.7468297,85.4801517,Flow_SW_Clean(1).xlsx,Cleaned Data,1585,Pre-event contextual observation; not proof of flooding

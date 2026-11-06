@@ -1,0 +1,26 @@
+GW_ID,Location,Watershed,District,qualifying_years,first_year,last_year,depth_change_per_year_m,r_squared,trend_direction,absolute_slope
+GW019,Kritipur Ring Road,Balkhu,Kathmandu,8,2018,2025,-0.5197,0.782,Decreasing depth,0.5197
+GW035,Adarsha,Hanumante,Bhaktapur,6,2018,2024,-0.461,0.621,Decreasing depth,0.461
+GW030,Ekantakuna,Nakkhu,Lalitpur,8,2018,2025,-0.3653,0.624,Decreasing depth,0.3653
+GW062,Kusunti,Nakkhu,Lalitpur,6,2019,2025,-0.2866,0.863,Decreasing depth,0.2866
+GW051,Saatdobato,Nakkhu,Lalitpur,8,2018,2025,-0.2861,0.798,Decreasing depth,0.2861
+GW025,Madyapur Thimi,Hanumante,Bhaktapur,8,2018,2025,-0.2652,0.594,Decreasing depth,0.2652
+GW045,Nalinchok,Hanumante,Bhaktapur,6,2018,2025,-0.244,0.485,Decreasing depth,0.244
+GW057,Nayapati,Bagmati,Kathmandu,6,2019,2025,-0.2095,0.337,Decreasing depth,0.2095
+GW021,Basantapur Durbar Square,Bagmati low,Kathmandu,6,2019,2025,-0.1864,0.798,Decreasing depth,0.1864
+GW047,Balkot,Godawari,Bhaktapur,6,2018,2025,0.1536,0.574,Increasing depth,0.1536
+GW044,Sipadol,Hanumante,Bhaktapur,7,2018,2025,-0.1469,0.683,Decreasing depth,0.1469
+GW013,Bhumthali,Bagmati,Kathmandu,7,2018,2025,0.1261,0.421,Increasing depth,0.1261
+GW014,Thali,Bagmati,Kathmandu,7,2019,2025,0.0887,0.458,Increasing depth,0.0887
+GW048,Suryamadi,Hanumante,Bhaktapur,7,2018,2025,-0.0714,0.346,Decreasing depth,0.0714
+GW038,Khokana,Bagmati low,Lalitpur,8,2018,2025,0.0473,0.155,Increasing depth,0.0473
+GW046,Tathali,Hanumante,Bhaktapur,7,2018,2025,0.0451,0.091,Increasing depth,0.0451
+GW053,Madhyapur Thimi,Hanumanthe,Bhaktapur,6,2018,2025,-0.0447,0.545,Decreasing depth,0.0447
+GW020,Panga,Bagmati low,Kathmandu,7,2018,2025,0.0312,0.016,Increasing depth,0.0312
+GW029,Chhaling,Hanumante,Bhaktapur,7,2018,2025,0.0295,0.443,Increasing depth,0.0295
+GW039,Thecho,Kodku,Lalitpur,6,2019,2025,0.0246,0.096,Increasing depth,0.0246
+GW001,Jhor,Bishnumati,Kathmandu,6,2019,2025,0.0235,0.291,Increasing depth,0.0235
+GW026,Duwakot,Hanumante,Bhaktapur,6,2018,2023,-0.0213,0.022,Decreasing depth,0.0213
+GW024,Jadibuti,Mahonara,Bhaktapur,7,2018,2025,-0.019,0.055,Decreasing depth,0.019
+GW016,Thankot,Balkhu,Kathmandu,7,2019,2025,-0.0102,0.002,Decreasing depth,0.0102
+GW005,Tokha Saraswati,Bishnumati,Kathmandu,6,2019,2025,0.0012,0.0,Increasing depth,0.0012

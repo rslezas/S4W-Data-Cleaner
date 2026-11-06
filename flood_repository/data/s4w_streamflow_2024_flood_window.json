@@ -1,0 +1,28 @@
+[
+  {
+    "observationId": "S4W-FLOW-864",
+    "streamSource": "HM01",
+    "measurementDateTime": "2024-09-26T10:13:00",
+    "waterFlowCms": 0.2043,
+    "waterLevelM": 0.43,
+    "latitude": 27.705705,
+    "longitude": 85.4868364,
+    "sourceWorkbook": "Flow_SW_Clean(1).xlsx",
+    "sourceSheet": "Cleaned Data",
+    "sourceExcelRow": 864,
+    "relationshipToFlood": "Pre-event contextual observation; not proof of flooding"
+  },
+  {
+    "observationId": "S4W-FLOW-1585",
+    "streamSource": "MH01",
+    "measurementDateTime": "2024-09-26T11:23:00",
+    "waterFlowCms": 0.8094,
+    "waterLevelM": null,
+    "latitude": 27.7468297,
+    "longitude": 85.4801517,
+    "sourceWorkbook": "Flow_SW_Clean(1).xlsx",
+    "sourceSheet": "Cleaned Data",
+    "sourceExcelRow": 1585,
+    "relationshipToFlood": "Pre-event contextual observation; not proof of flooding"
+  }
+]

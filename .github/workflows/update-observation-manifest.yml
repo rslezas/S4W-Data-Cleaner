@@ -1,0 +1,41 @@
+
+name: Update Flood Observation Manifest
+
+on:
+  push:
+    branches:
+      - groundwater-sql-analysis
+    paths:
+      - "flood_repository/data/observations/**"
+      - "scripts/generate_observation_manifest.py"
+      - ".github/workflows/update-observation-manifest.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  update-manifest:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: Generate observation manifest
+        run: python3 scripts/generate_observation_manifest.py
+
+      - name: Commit updated manifest
+        run: |
+          if git diff --quiet -- flood_repository/data/observations/manifest.json; then
+            echo "Manifest is already up to date."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add flood_repository/data/observations/manifest.json
+          git commit -m "Automatically update flood observation manifest"
+          git push

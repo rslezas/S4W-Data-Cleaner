@@ -1,0 +1,199 @@
+GW_ID,Location,District,Watershed,Latitude,Longitude,Year,average_groundwater,months_measured,coverage_percent
+GW013,Bhumthali,Kathmandu,Bagmati,27.74128,85.40544,2017,1.978,6,50.0
+GW013,Bhumthali,Kathmandu,Bagmati,27.74128,85.40544,2018,1.847,12,100.0
+GW013,Bhumthali,Kathmandu,Bagmati,27.74128,85.40544,2019,1.659,12,100.0
+GW013,Bhumthali,Kathmandu,Bagmati,27.74128,85.40544,2020,1.631,9,75.0
+GW013,Bhumthali,Kathmandu,Bagmati,27.74128,85.40544,2021,1.615,11,91.7
+GW013,Bhumthali,Kathmandu,Bagmati,27.74128,85.40544,2022,2.133,12,100.0
+GW013,Bhumthali,Kathmandu,Bagmati,27.74128,85.40544,2023,2.109,11,91.7
+GW013,Bhumthali,Kathmandu,Bagmati,27.74128,85.40544,2024,1.791,11,91.7
+GW013,Bhumthali,Kathmandu,Bagmati,27.74128,85.40544,2025,3.066,12,100.0
+GW014,Thali,Kathmandu,Bagmati,27.73229,85.40812,2017,3.6,6,50.0
+GW014,Thali,Kathmandu,Bagmati,27.73229,85.40812,2018,4.562,8,66.7
+GW014,Thali,Kathmandu,Bagmati,27.73229,85.40812,2019,4.583,12,100.0
+GW014,Thali,Kathmandu,Bagmati,27.73229,85.40812,2020,4.155,11,91.7
+GW014,Thali,Kathmandu,Bagmati,27.73229,85.40812,2021,4.647,12,100.0
+GW014,Thali,Kathmandu,Bagmati,27.73229,85.40812,2022,4.3,12,100.0
+GW014,Thali,Kathmandu,Bagmati,27.73229,85.40812,2023,4.725,12,100.0
+GW014,Thali,Kathmandu,Bagmati,27.73229,85.40812,2024,4.908,12,100.0
+GW014,Thali,Kathmandu,Bagmati,27.73229,85.40812,2025,4.883,12,100.0
+GW020,Panga,Kathmandu,Bagmati low,27.6703,85.27853,2017,1.938,6,50.0
+GW020,Panga,Kathmandu,Bagmati low,27.6703,85.27853,2018,3.108,10,83.3
+GW020,Panga,Kathmandu,Bagmati low,27.6703,85.27853,2019,2.917,12,100.0
+GW020,Panga,Kathmandu,Bagmati low,27.6703,85.27853,2020,2.179,11,91.7
+GW020,Panga,Kathmandu,Bagmati low,27.6703,85.27853,2021,2.178,11,91.7
+GW020,Panga,Kathmandu,Bagmati low,27.6703,85.27853,2022,3.147,12,100.0
+GW020,Panga,Kathmandu,Bagmati low,27.6703,85.27853,2023,3.123,4,33.3
+GW020,Panga,Kathmandu,Bagmati low,27.6703,85.27853,2024,3.912,11,91.7
+GW020,Panga,Kathmandu,Bagmati low,27.6703,85.27853,2025,2.334,11,91.7
+GW021,Basantapur Durbar Square,Kathmandu,Bagmati low,27.70115,85.30807,2017,3.308,6,50.0
+GW021,Basantapur Durbar Square,Kathmandu,Bagmati low,27.70115,85.30807,2018,3.686,9,75.0
+GW021,Basantapur Durbar Square,Kathmandu,Bagmati low,27.70115,85.30807,2019,3.536,12,100.0
+GW021,Basantapur Durbar Square,Kathmandu,Bagmati low,27.70115,85.30807,2020,3.159,9,75.0
+GW021,Basantapur Durbar Square,Kathmandu,Bagmati low,27.70115,85.30807,2021,2.879,11,91.7
+GW021,Basantapur Durbar Square,Kathmandu,Bagmati low,27.70115,85.30807,2022,3.031,12,100.0
+GW021,Basantapur Durbar Square,Kathmandu,Bagmati low,27.70115,85.30807,2023,2.545,12,100.0
+GW021,Basantapur Durbar Square,Kathmandu,Bagmati low,27.70115,85.30807,2024,2.83,12,100.0
+GW021,Basantapur Durbar Square,Kathmandu,Bagmati low,27.70115,85.30807,2025,2.202,10,83.3
+GW038,Khokana,Lalitpur,Bagmati low,27.63638,85.29957,2017,0.742,6,50.0
+GW038,Khokana,Lalitpur,Bagmati low,27.63638,85.29957,2018,1.0,12,100.0
+GW038,Khokana,Lalitpur,Bagmati low,27.63638,85.29957,2019,0.757,12,100.0
+GW038,Khokana,Lalitpur,Bagmati low,27.63638,85.29957,2020,0.73,12,100.0
+GW038,Khokana,Lalitpur,Bagmati low,27.63638,85.29957,2021,0.77,12,100.0
+GW038,Khokana,Lalitpur,Bagmati low,27.63638,85.29957,2022,0.68,12,100.0
+GW038,Khokana,Lalitpur,Bagmati low,27.63638,85.29957,2023,0.778,12,100.0
+GW038,Khokana,Lalitpur,Bagmati low,27.63638,85.29957,2024,1.58,12,100.0
+GW038,Khokana,Lalitpur,Bagmati low,27.63638,85.29957,2025,0.972,12,100.0
+GW016,Thankot,Kathmandu,Balkhu,27.70002,85.21507,2017,5.97,5,41.7
+GW016,Thankot,Kathmandu,Balkhu,27.70002,85.21507,2018,3.994,9,75.0
+GW016,Thankot,Kathmandu,Balkhu,27.70002,85.21507,2019,3.388,10,83.3
+GW016,Thankot,Kathmandu,Balkhu,27.70002,85.21507,2020,2.351,12,100.0
+GW016,Thankot,Kathmandu,Balkhu,27.70002,85.21507,2021,1.973,12,100.0
+GW016,Thankot,Kathmandu,Balkhu,27.70002,85.21507,2022,2.295,12,100.0
+GW016,Thankot,Kathmandu,Balkhu,27.70002,85.21507,2023,1.966,12,100.0
+GW016,Thankot,Kathmandu,Balkhu,27.70002,85.21507,2024,3.064,12,100.0
+GW016,Thankot,Kathmandu,Balkhu,27.70002,85.21507,2025,2.82,12,100.0
+GW019,Kritipur Ring Road,Kathmandu,Balkhu,27.68075,85.27976,2017,3.841,6,50.0
+GW019,Kritipur Ring Road,Kathmandu,Balkhu,27.68075,85.27976,2018,6.789,12,100.0
+GW019,Kritipur Ring Road,Kathmandu,Balkhu,27.68075,85.27976,2019,5.342,12,100.0
+GW019,Kritipur Ring Road,Kathmandu,Balkhu,27.68075,85.27976,2020,6.241,12,100.0
+GW019,Kritipur Ring Road,Kathmandu,Balkhu,27.68075,85.27976,2021,6.077,12,100.0
+GW019,Kritipur Ring Road,Kathmandu,Balkhu,27.68075,85.27976,2022,4.114,12,100.0
+GW019,Kritipur Ring Road,Kathmandu,Balkhu,27.68075,85.27976,2023,3.835,12,100.0
+GW019,Kritipur Ring Road,Kathmandu,Balkhu,27.68075,85.27976,2024,4.389,12,100.0
+GW019,Kritipur Ring Road,Kathmandu,Balkhu,27.68075,85.27976,2025,2.545,11,91.7
+GW001,Jhor,Kathmandu,Bishnumati,27.79869,85.33005,2017,1.25,4,33.3
+GW001,Jhor,Kathmandu,Bishnumati,27.79869,85.33005,2018,1.903,6,50.0
+GW001,Jhor,Kathmandu,Bishnumati,27.79869,85.33005,2019,1.752,12,100.0
+GW001,Jhor,Kathmandu,Bishnumati,27.79869,85.33005,2020,1.719,9,75.0
+GW001,Jhor,Kathmandu,Bishnumati,27.79869,85.33005,2021,1.792,11,91.7
+GW001,Jhor,Kathmandu,Bishnumati,27.79869,85.33005,2022,1.65,11,91.7
+GW001,Jhor,Kathmandu,Bishnumati,27.79869,85.33005,2023,1.912,12,100.0
+GW001,Jhor,Kathmandu,Bishnumati,27.79869,85.33005,2024,1.862,12,100.0
+GW001,Jhor,Kathmandu,Bishnumati,27.79869,85.33005,2025,1.856,12,100.0
+GW005,Tokha Saraswati,Kathmandu,Bishnumati,27.76008,85.32971,2017,2.267,6,50.0
+GW005,Tokha Saraswati,Kathmandu,Bishnumati,27.76008,85.32971,2018,3.432,9,75.0
+GW005,Tokha Saraswati,Kathmandu,Bishnumati,27.76008,85.32971,2019,3.415,11,91.7
+GW005,Tokha Saraswati,Kathmandu,Bishnumati,27.76008,85.32971,2020,3.241,11,91.7
+GW005,Tokha Saraswati,Kathmandu,Bishnumati,27.76008,85.32971,2021,3.391,12,100.0
+GW005,Tokha Saraswati,Kathmandu,Bishnumati,27.76008,85.32971,2022,2.928,11,91.7
+GW005,Tokha Saraswati,Kathmandu,Bishnumati,27.76008,85.32971,2023,3.199,7,58.3
+GW005,Tokha Saraswati,Kathmandu,Bishnumati,27.76008,85.32971,2024,3.049,10,83.3
+GW005,Tokha Saraswati,Kathmandu,Bishnumati,27.76008,85.32971,2025,3.594,11,91.7
+GW047,Balkot,Bhaktapur,Godawari,27.66414,85.36466,2017,1.316,5,41.7
+GW047,Balkot,Bhaktapur,Godawari,27.66414,85.36466,2018,1.261,10,83.3
+GW047,Balkot,Bhaktapur,Godawari,27.66414,85.36466,2019,0.52,4,33.3
+GW047,Balkot,Bhaktapur,Godawari,27.66414,85.36466,2020,1.2,2,16.7
+GW047,Balkot,Bhaktapur,Godawari,27.66414,85.36466,2021,1.276,11,91.7
+GW047,Balkot,Bhaktapur,Godawari,27.66414,85.36466,2022,1.601,12,100.0
+GW047,Balkot,Bhaktapur,Godawari,27.66414,85.36466,2023,1.834,12,100.0
+GW047,Balkot,Bhaktapur,Godawari,27.66414,85.36466,2024,2.615,11,91.7
+GW047,Balkot,Bhaktapur,Godawari,27.66414,85.36466,2025,1.914,12,100.0
+GW025,Madyapur Thimi,Bhaktapur,Hanumante,27.67801,85.38603,2017,5.917,6,50.0
+GW025,Madyapur Thimi,Bhaktapur,Hanumante,27.67801,85.38603,2018,6.332,12,100.0
+GW025,Madyapur Thimi,Bhaktapur,Hanumante,27.67801,85.38603,2019,5.324,12,100.0
+GW025,Madyapur Thimi,Bhaktapur,Hanumante,27.67801,85.38603,2020,4.445,11,91.7
+GW025,Madyapur Thimi,Bhaktapur,Hanumante,27.67801,85.38603,2021,3.921,12,100.0
+GW025,Madyapur Thimi,Bhaktapur,Hanumante,27.67801,85.38603,2022,4.365,12,100.0
+GW025,Madyapur Thimi,Bhaktapur,Hanumante,27.67801,85.38603,2023,3.902,12,100.0
+GW025,Madyapur Thimi,Bhaktapur,Hanumante,27.67801,85.38603,2024,4.079,11,91.7
+GW025,Madyapur Thimi,Bhaktapur,Hanumante,27.67801,85.38603,2025,4.208,12,100.0
+GW029,Chhaling,Bhaktapur,Hanumante,27.69735,85.45652,2017,1.17,5,41.7
+GW029,Chhaling,Bhaktapur,Hanumante,27.69735,85.45652,2018,0.991,11,91.7
+GW029,Chhaling,Bhaktapur,Hanumante,27.69735,85.45652,2019,1.094,12,100.0
+GW029,Chhaling,Bhaktapur,Hanumante,27.69735,85.45652,2020,1.13,9,75.0
+GW029,Chhaling,Bhaktapur,Hanumante,27.69735,85.45652,2021,1.302,12,100.0
+GW029,Chhaling,Bhaktapur,Hanumante,27.69735,85.45652,2022,1.217,12,100.0
+GW029,Chhaling,Bhaktapur,Hanumante,27.69735,85.45652,2023,1.149,12,100.0
+GW029,Chhaling,Bhaktapur,Hanumante,27.69735,85.45652,2024,1.311,12,100.0
+GW029,Chhaling,Bhaktapur,Hanumante,27.69735,85.45652,2025,1.194,12,100.0
+GW035,Adarsha,Bhaktapur,Hanumante,27.6669,85.43325,2017,8.458,6,50.0
+GW035,Adarsha,Bhaktapur,Hanumante,27.6669,85.43325,2018,7.913,11,91.7
+GW035,Adarsha,Bhaktapur,Hanumante,27.6669,85.43325,2019,8.111,12,100.0
+GW035,Adarsha,Bhaktapur,Hanumante,27.6669,85.43325,2020,6.791,12,100.0
+GW035,Adarsha,Bhaktapur,Hanumante,27.6669,85.43325,2021,5.206,12,100.0
+GW035,Adarsha,Bhaktapur,Hanumante,27.6669,85.43325,2022,4.598,9,75.0
+GW035,Adarsha,Bhaktapur,Hanumante,27.6669,85.43325,2023,4.883,11,91.7
+GW035,Adarsha,Bhaktapur,Hanumante,27.6669,85.43325,2024,6.042,10,83.3
+GW035,Adarsha,Bhaktapur,Hanumante,27.6669,85.43325,2025,2.605,9,75.0
+GW044,Sipadol,Bhaktapur,Hanumante,27.65319,85.44188,2017,3.138,5,41.7
+GW044,Sipadol,Bhaktapur,Hanumante,27.65319,85.44188,2018,3.409,12,100.0
+GW044,Sipadol,Bhaktapur,Hanumante,27.65319,85.44188,2019,3.165,12,100.0
+GW044,Sipadol,Bhaktapur,Hanumante,27.65319,85.44188,2020,3.203,10,83.3
+GW044,Sipadol,Bhaktapur,Hanumante,27.65319,85.44188,2021,3.232,12,100.0
+GW044,Sipadol,Bhaktapur,Hanumante,27.65319,85.44188,2022,3.286,11,91.7
+GW044,Sipadol,Bhaktapur,Hanumante,27.65319,85.44188,2023,3.315,6,50.0
+GW044,Sipadol,Bhaktapur,Hanumante,27.65319,85.44188,2024,2.799,11,91.7
+GW044,Sipadol,Bhaktapur,Hanumante,27.65319,85.44188,2025,2.084,10,83.3
+GW045,Nalinchok,Bhaktapur,Hanumante,27.65427,85.45884,2017,5.238,6,50.0
+GW045,Nalinchok,Bhaktapur,Hanumante,27.65427,85.45884,2018,6.602,12,100.0
+GW045,Nalinchok,Bhaktapur,Hanumante,27.65427,85.45884,2019,4.774,8,66.7
+GW045,Nalinchok,Bhaktapur,Hanumante,27.65427,85.45884,2020,6.575,4,33.3
+GW045,Nalinchok,Bhaktapur,Hanumante,27.65427,85.45884,2021,4.985,11,91.7
+GW045,Nalinchok,Bhaktapur,Hanumante,27.65427,85.45884,2022,4.043,12,100.0
+GW045,Nalinchok,Bhaktapur,Hanumante,27.65427,85.45884,2023,5.166,12,100.0
+GW045,Nalinchok,Bhaktapur,Hanumante,27.65427,85.45884,2024,5.177,12,100.0
+GW045,Nalinchok,Bhaktapur,Hanumante,27.65427,85.45884,2025,4.475,12,100.0
+GW046,Tathali,Bhaktapur,Hanumante,27.66354,85.46472,2017,0.578,6,50.0
+GW046,Tathali,Bhaktapur,Hanumante,27.66354,85.46472,2018,0.97,12,100.0
+GW046,Tathali,Bhaktapur,Hanumante,27.66354,85.46472,2019,0.983,11,91.7
+GW046,Tathali,Bhaktapur,Hanumante,27.66354,85.46472,2020,0.971,7,58.3
+GW046,Tathali,Bhaktapur,Hanumante,27.66354,85.46472,2021,0.698,11,91.7
+GW046,Tathali,Bhaktapur,Hanumante,27.66354,85.46472,2022,0.528,12,100.0
+GW046,Tathali,Bhaktapur,Hanumante,27.66354,85.46472,2023,1.67,10,83.3
+GW046,Tathali,Bhaktapur,Hanumante,27.66354,85.46472,2024,1.346,12,100.0
+GW046,Tathali,Bhaktapur,Hanumante,27.66354,85.46472,2025,0.966,12,100.0
+GW048,Suryamadi,Bhaktapur,Hanumante,27.67386,85.43722,2017,5.11,6,50.0
+GW048,Suryamadi,Bhaktapur,Hanumante,27.67386,85.43722,2018,5.693,11,91.7
+GW048,Suryamadi,Bhaktapur,Hanumante,27.67386,85.43722,2019,5.357,12,100.0
+GW048,Suryamadi,Bhaktapur,Hanumante,27.67386,85.43722,2020,5.156,11,91.7
+GW048,Suryamadi,Bhaktapur,Hanumante,27.67386,85.43722,2021,5.34,12,100.0
+GW048,Suryamadi,Bhaktapur,Hanumante,27.67386,85.43722,2022,5.054,12,100.0
+GW048,Suryamadi,Bhaktapur,Hanumante,27.67386,85.43722,2023,5.603,10,83.3
+GW048,Suryamadi,Bhaktapur,Hanumante,27.67386,85.43722,2024,5.209,8,66.7
+GW048,Suryamadi,Bhaktapur,Hanumante,27.67386,85.43722,2025,4.874,12,100.0
+GW053,Madhyapur Thimi,Bhaktapur,Hanumanthe,27.68254,85.38714,2017,5.905,4,33.3
+GW053,Madhyapur Thimi,Bhaktapur,Hanumanthe,27.68254,85.38714,2018,5.875,12,100.0
+GW053,Madhyapur Thimi,Bhaktapur,Hanumanthe,27.68254,85.38714,2019,5.772,11,91.7
+GW053,Madhyapur Thimi,Bhaktapur,Hanumanthe,27.68254,85.38714,2020,5.736,9,75.0
+GW053,Madhyapur Thimi,Bhaktapur,Hanumanthe,27.68254,85.38714,2021,5.919,11,91.7
+GW053,Madhyapur Thimi,Bhaktapur,Hanumanthe,27.68254,85.38714,2022,5.688,11,91.7
+GW053,Madhyapur Thimi,Bhaktapur,Hanumanthe,27.68254,85.38714,2023,5.515,12,100.0
+GW053,Madhyapur Thimi,Bhaktapur,Hanumanthe,27.68254,85.38714,2024,5.664,9,75.0
+GW053,Madhyapur Thimi,Bhaktapur,Hanumanthe,27.68254,85.38714,2025,5.605,12,100.0
+GW039,Thecho,Lalitpur,Kodku,27.61231,85.32014,2017,7.035,4,33.3
+GW039,Thecho,Lalitpur,Kodku,27.61231,85.32014,2018,7.502,5,41.7
+GW039,Thecho,Lalitpur,Kodku,27.61231,85.32014,2019,7.766,10,83.3
+GW039,Thecho,Lalitpur,Kodku,27.61231,85.32014,2020,7.419,7,58.3
+GW039,Thecho,Lalitpur,Kodku,27.61231,85.32014,2021,7.936,11,91.7
+GW039,Thecho,Lalitpur,Kodku,27.61231,85.32014,2022,7.99,11,91.7
+GW039,Thecho,Lalitpur,Kodku,27.61231,85.32014,2023,7.848,12,100.0
+GW039,Thecho,Lalitpur,Kodku,27.61231,85.32014,2024,8.228,11,91.7
+GW039,Thecho,Lalitpur,Kodku,27.61231,85.32014,2025,7.785,12,100.0
+GW024,Jadibuti,Bhaktapur,Mahonara,27.68005,85.36236,2017,7.807,6,50.0
+GW024,Jadibuti,Bhaktapur,Mahonara,27.68005,85.36236,2018,7.843,12,100.0
+GW024,Jadibuti,Bhaktapur,Mahonara,27.68005,85.36236,2019,7.657,12,100.0
+GW024,Jadibuti,Bhaktapur,Mahonara,27.68005,85.36236,2020,7.485,7,58.3
+GW024,Jadibuti,Bhaktapur,Mahonara,27.68005,85.36236,2021,7.806,12,100.0
+GW024,Jadibuti,Bhaktapur,Mahonara,27.68005,85.36236,2022,7.251,11,91.7
+GW024,Jadibuti,Bhaktapur,Mahonara,27.68005,85.36236,2023,7.497,12,100.0
+GW024,Jadibuti,Bhaktapur,Mahonara,27.68005,85.36236,2024,7.653,11,91.7
+GW024,Jadibuti,Bhaktapur,Mahonara,27.68005,85.36236,2025,7.772,12,100.0
+GW030,Ekantakuna,Lalitpur,Nakkhu,27.66809,85.30815,2017,5.975,6,50.0
+GW030,Ekantakuna,Lalitpur,Nakkhu,27.66809,85.30815,2018,7.472,12,100.0
+GW030,Ekantakuna,Lalitpur,Nakkhu,27.66809,85.30815,2019,6.551,12,100.0
+GW030,Ekantakuna,Lalitpur,Nakkhu,27.66809,85.30815,2020,5.312,12,100.0
+GW030,Ekantakuna,Lalitpur,Nakkhu,27.66809,85.30815,2021,6.026,12,100.0
+GW030,Ekantakuna,Lalitpur,Nakkhu,27.66809,85.30815,2022,6.77,12,100.0
+GW030,Ekantakuna,Lalitpur,Nakkhu,27.66809,85.30815,2023,5.889,12,100.0
+GW030,Ekantakuna,Lalitpur,Nakkhu,27.66809,85.30815,2024,4.284,11,91.7
+GW030,Ekantakuna,Lalitpur,Nakkhu,27.66809,85.30815,2025,4.354,12,100.0
+GW051,Saatdobato,Lalitpur,Nakkhu,27.65571,85.32127,2017,3.545,6,50.0
+GW051,Saatdobato,Lalitpur,Nakkhu,27.65571,85.32127,2018,5.524,10,83.3
+GW051,Saatdobato,Lalitpur,Nakkhu,27.65571,85.32127,2019,5.439,12,100.0
+GW051,Saatdobato,Lalitpur,Nakkhu,27.65571,85.32127,2020,3.965,12,100.0
+GW051,Saatdobato,Lalitpur,Nakkhu,27.65571,85.32127,2021,4.496,12,100.0
+GW051,Saatdobato,Lalitpur,Nakkhu,27.65571,85.32127,2022,4.279,12,100.0
+GW051,Saatdobato,Lalitpur,Nakkhu,27.65571,85.32127,2023,3.845,12,100.0
+GW051,Saatdobato,Lalitpur,Nakkhu,27.65571,85.32127,2024,3.799,12,100.0
+GW051,Saatdobato,Lalitpur,Nakkhu,27.65571,85.32127,2025,3.345,12,100.0

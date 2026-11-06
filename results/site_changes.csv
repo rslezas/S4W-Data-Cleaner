@@ -1,0 +1,22 @@
+GW_ID,Location,Watershed,District,average_2019,average_2025,months_2019,months_2025,change_value,absolute_change
+GW019,Kritipur Ring Road,Balkhu,Kathmandu,5.342,2.545,12,11,-2.798,2.798
+GW030,Ekantakuna,Nakkhu,Lalitpur,6.551,4.354,12,12,-2.198,2.198
+GW051,Saatdobato,Nakkhu,Lalitpur,5.439,3.345,12,12,-2.095,2.095
+GW057,Nayapati,Bagmati,Kathmandu,4.58,2.608,12,12,-1.972,1.972
+GW062,Kusunti,Nakkhu,Lalitpur,6.414,4.847,12,12,-1.568,1.568
+GW013,Bhumthali,Bagmati,Kathmandu,1.659,3.066,12,12,1.407,1.407
+GW021,Basantapur Durbar Square,Bagmati low,Kathmandu,3.536,2.202,12,10,-1.333,1.333
+GW025,Madyapur Thimi,Hanumante,Bhaktapur,5.324,4.208,12,12,-1.115,1.115
+GW044,Sipadol,Hanumante,Bhaktapur,3.165,2.084,12,10,-1.08,1.08
+GW020,Panga,Bagmati low,Kathmandu,2.917,2.334,12,11,-0.583,0.583
+GW016,Thankot,Balkhu,Kathmandu,3.388,2.82,10,12,-0.568,0.568
+GW048,Suryamadi,Hanumante,Bhaktapur,5.357,4.874,12,12,-0.483,0.483
+GW014,Thali,Bagmati,Kathmandu,4.583,4.883,12,12,0.3,0.3
+GW038,Khokana,Bagmati low,Lalitpur,0.757,0.972,12,12,0.215,0.215
+GW005,Tokha Saraswati,Bishnumati,Kathmandu,3.415,3.594,11,11,0.178,0.178
+GW053,Madhyapur Thimi,Hanumanthe,Bhaktapur,5.772,5.605,11,12,-0.167,0.167
+GW024,Jadibuti,Mahonara,Bhaktapur,7.657,7.772,12,12,0.116,0.116
+GW001,Jhor,Bishnumati,Kathmandu,1.752,1.856,12,12,0.104,0.104
+GW029,Chhaling,Hanumante,Bhaktapur,1.094,1.194,12,12,0.1,0.1
+GW039,Thecho,Kodku,Lalitpur,7.766,7.785,10,12,0.019,0.019
+GW046,Tathali,Hanumante,Bhaktapur,0.983,0.966,11,12,-0.017,0.017

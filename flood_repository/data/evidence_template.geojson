@@ -1,0 +1,29 @@
+
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [85.3240, 27.7172]
+      },
+      "properties": {
+        "evidenceId": "EXAMPLE-001",
+        "eventId": "FLOOD-2024-001",
+        "description": "EXAMPLE ONLY - Replace with actual evidence description",
+        "evidence_type": "Photo",
+        "observed_date": null,
+        "location_description": null,
+        "river": null,
+        "ward": null,
+        "photoUrl": null,
+        "videoUrl": null,
+        "sourceUrl": null,
+        "rights_owner": null,
+        "verification_status": "pending",
+        "publication_consent": false
+      }
+    }
+  ]
+}

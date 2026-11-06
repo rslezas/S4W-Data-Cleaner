@@ -1,0 +1,6 @@
+Add loaded observations in a list below map page
+
+Add video, news report, etc. types to gallery page
+Sort newest to oldest
+
+Add events to flood events page
