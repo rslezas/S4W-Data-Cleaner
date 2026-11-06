@@ -280,38 +280,12 @@ function createGalleryCard(observation) {
     // Keep URL names distinct from HTML element names.
     const sourceURL = getSourceURL(observation.source_url);
     const imageURL = getSourceURL(observation.image_src);
-    const videoURL = getSourceURL(observation.video_url);
+    const videoURL = getSourceURL(observation.video_src);
     const type = normalize(getEvidenceType(observation));
 
-
     if (type == "video" && videoURL) {
-        const video = document.createElement("video");
 
-        video.controls = true;
-        video.preload = "metadata";
-        video.playsInline = true;
-        video.setAttribute(
-            "aria-label",
-            observation.description || title.textContent
-        );
-
-        video.style.width = "100%";
-        video.style.display = "block";
-
-        // Remove failed media while keeping the observation card.
-        video.addEventListener("error", () => {
-            video.remove();
-            const message = document.createElement("p");
-            message.textContent = "Video currently unavailable.";
-            card.appendChild(message)
-        }, { once: true });
-
-        video.src = videoURL;
-        card.appendChild(video);
-    }
-    else if (type == "social media link" && sourceURL) {
-
-        if (sourceURL.includes("youtube") || sourceURL.includes("youtu.be"))
+        if (videoURL.includes("youtube") || videoURL.includes("youtu.be"))
         {
             const embed = document.createElement("iframe");
 
@@ -331,6 +305,35 @@ function createGalleryCard(observation) {
 
             card.appendChild(embed)
         }
+        else
+        {
+            const video = document.createElement("video");
+
+            video.controls = true;
+            video.preload = "metadata";
+            video.playsInline = true;
+            video.setAttribute(
+                "aria-label",
+                observation.description || title.textContent
+            );
+
+            video.style.width = "100%";
+            video.style.display = "block";
+
+            // Remove failed media while keeping the observation card.
+            video.addEventListener("error", () => {
+                video.remove();
+                const message = document.createElement("p");
+                message.textContent = "Video currently unavailable.";
+                card.appendChild(message)
+            }, { once: true });
+
+            video.src = videoURL;
+            card.appendChild(video);
+        }
+    }
+    else if (type == "social media link" && sourceURL) {
+        // Something here
     }
     else if (imageURL) {
         const image = document.createElement("img");

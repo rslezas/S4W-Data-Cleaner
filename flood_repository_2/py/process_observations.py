@@ -30,7 +30,7 @@ for _, entry in observations.iterrows():
     type = entry["evidence_type"].lower()
     link = entry["source_url"]
 
-    entry["image_src"] = placeholder_src
+    entry["image_src"] = ""
     entry["video_src"] = ""
 
     if type == "image":
