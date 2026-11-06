@@ -5,34 +5,6 @@ const placeholder_src = "https://media.istockphoto.com/id/1980276924/vector/no-p
 let galleryObservations = [];
 let galleryEvents = [];
 
-function loadCSV(path) {
-    return new Promise((resolve, reject) => {
-        Papa.parse(path, {
-            download: true,
-            header: true,
-            skipEmptyLines: "greedy",
-
-            transformHeader: header =>
-                header.replace(/^\uFEFF/, "").trim(),
-
-            complete: results => {
-                if (results.errors.length > 0) {
-                    reject(new Error(
-                        `${path}: ${results.errors[0].message}`
-                    ));
-                    return;
-                }
-
-                resolve(results.data);
-            },
-
-            error: error => {
-                reject(new Error(`${path}: ${error.message}`));
-            }
-        });
-    });
-}
-
 function normalize(value) {
     return String(value ?? "").trim().toLowerCase();
 }
@@ -48,6 +20,36 @@ function getSourceURL(source) {
 
         if (["https:", "http:"].includes(url.protocol)) {
             return url.href;
+        }
+    } catch {
+        // Missing or invalid URL.
+    }
+
+    return null;
+}
+
+function getYouTubeEmbedURL(source) {
+    try {
+        const url = new URL(source);
+        const host = url.hostname.replace(/^www\./, "");
+        let videoId;
+
+        // Shortened links: https://youtu.be/VIDEO_ID
+        if (host === "youtu.be") {
+            videoId = url.pathname.split("/")[1];
+        } else if (["youtube.com", "m.youtube.com"].includes(host)) {
+            // Standard links: https://youtube.com/watch?v=VIDEO_ID
+            if (url.pathname === "/watch") {
+                videoId = url.searchParams.get("v");
+            } else if (/^\/(shorts|embed)\//.test(url.pathname)) {
+                // Shorts and existing embed links.
+                videoId = url.pathname.split("/")[2];
+            }
+        }
+
+        // YouTube video IDs contain 11 letters, numbers, underscores, or hyphens.
+        if (/^[a-zA-Z0-9_-]{11}$/.test(videoId || "")) {
+            return `https://www.youtube.com/embed/${videoId}`;
         }
     } catch {
         // Missing or invalid URL.
@@ -287,6 +289,7 @@ function createGalleryCard(observation) {
 
         if (videoURL.includes("youtube") || videoURL.includes("youtu.be"))
         {
+            const youtubeURL = getYouTubeEmbedURL(videoURL)
             const embed = document.createElement("iframe");
 
             embed.alt = observation.description || title.textContent;
@@ -301,7 +304,7 @@ function createGalleryCard(observation) {
                 card.appendChild(message)
             }, { once: true });
 
-            embed.src = sourceURL
+            embed.src = youtubeURL
 
             card.appendChild(embed)
         }

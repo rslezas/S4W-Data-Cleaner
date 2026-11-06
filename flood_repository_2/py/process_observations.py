@@ -3,6 +3,7 @@ import pandas as pd
 import datetime as dt
 import pathlib
 import time
+import requests
 from pathlib import Path
 from fetch_metadata import verify_image_location
 from image_censor import censorImage, censorImages
@@ -14,6 +15,21 @@ observations_output_path = Path(r"data/passed_observations.csv")
 observations = pd.read_csv(observations_path, low_memory=False)
 
 placeholder_src = r"https://media.istockphoto.com/id/1980276924/vector/no-photo-thumbnail-graphic-element-no-found-or-available-image-in-the-gallery-or-album-flat.jpg"
+
+def get_youtube_info(video_url):
+    response = requests.get(
+        "https://www.youtube.com/oembed",
+        params={
+            "url": video_url,
+            "format": "json"
+        },
+        timeout=15
+    )
+
+    response.raise_for_status()
+    data = response.json()
+
+    return data.get("author_name"), data.get("title")
 
 passed_entries = []
 
@@ -40,6 +56,13 @@ for _, entry in observations.iterrows():
     elif type == "video":
 
         entry["video_src"] = link
+
+        if "youtube" in link or "youtu.be" in link:
+            channel, title = get_youtube_info(link)
+
+            entry["observation_title"] = title
+            entry["author"] = channel
+             
 
     elif type == "news report":
 
@@ -81,4 +104,3 @@ passed_observations = (
 )
 
 passed_observations.to_csv(observations_output_path, index=False, encoding="utf-8-sig")
-
