@@ -1,9 +1,9 @@
-const recent_days = 365;
-const image_timeout = 10000;
 const placeholder_src = "https://media.istockphoto.com/id/1980276924/vector/no-photo-thumbnail-graphic-element-no-found-or-available-image-in-the-gallery-or-album-flat.jpg"
 
 let galleryObservations = [];
 let galleryEvents = [];
+
+const desc_word_limit = 20;
 
 function normalize(value) {
     return String(value ?? "").trim().toLowerCase();
@@ -11,6 +11,10 @@ function normalize(value) {
 
 function getEvidenceType(observation) {
     return String(observation.evidence_type || "").trim() || "Not Provided";
+}
+
+function getQCFlag(observation) {
+    return String(observation.qc_flag || "").trim() || "None";
 }
 
 // Accept online URLs only, not names or local file paths.
@@ -88,184 +92,60 @@ function parseDate(value) {
     return date;
 }
 
-function fillDropdown(id, values, label) {
-    const select = document.getElementById(id);
-    if (!select) return;
+function getFilteredObservations() {
+    const allowedFlags = ["AutoPassed", "HumanPassed"];
+    const errorElement = document.getElementById("dateFilterError");
 
-    const previousSelection = select.value;
-
-    const names = [...new Set(
-        values
-            .map(value => String(value ?? "").trim())
-            .filter(Boolean)
-    )].sort((a, b) => a.localeCompare(b));
-
-    select.replaceChildren(new Option(label, "all"));
-
-    for (const name of names) {
-        select.add(new Option(name, name));
+    // Clear any previous date-range error.
+    if (errorElement) {
+        errorElement.hidden = true;
+        errorElement.textContent = "";
     }
 
-    select.value = names.includes(previousSelection)
-        ? previousSelection
-        : "all";
-}
-
-function populateEventFilter() {
-    const select = document.getElementById("event-select");
-    if (!select) return;
-
-    const previousSelection = select.value;
-
-    const options = galleryEvents
-        .map(event => ({
-            id: String(event.event_id || "").trim(),
-            name: String(event.event_name || event.name || "").trim()
-        }))
-        .filter(event =>
-            event.id &&
-            !["all", "recent"].includes(event.id) &&
-            event.name
-        )
-        .sort((a, b) => a.name.localeCompare(b.name));
-
-    select.replaceChildren(
-        new Option("All Events", "all"),
-        new Option("Recent Events", "recent")
+    const approvedObservations = galleryObservations.filter(observation =>
+        allowedFlags.includes(getQCFlag(observation))
     );
 
-    for (const event of options) {
-        select.add(new Option(event.name, event.id));
-    }
+    let filteredObservations;
 
-    const selectionExists =
-        previousSelection === "recent" ||
-        options.some(event => event.id === previousSelection);
-
-    select.value = selectionExists ? previousSelection : "all";
-}
-
-function populateFilters() {
-    fillDropdown(
-        "evidence-type",
-        galleryObservations.map(getEvidenceType),
-        "All Evidence Types"
-    );
-
-    populateEventFilter();
-}
-
-function imageIsAccessible(source) {
-    const url = getSourceURL(source);
-
-    if (!url) {
-        return Promise.resolve(false);
-    }
-
-    return new Promise(resolve => {
-        const image = new Image();
-
-        const timeout = setTimeout(
-            () => finish(false),
-            image_timeout
+    try {
+        // The shared function validates and applies the date range.
+        filteredObservations = get_filtered_observations(
+            approvedObservations,
+            {
+                event:
+                    document.getElementById("event-select")?.value || "all",
+                observationType:
+                    document.getElementById("evidence-type")?.value || "all",
+                startDate:
+                    document.getElementById("startDateFilter")?.value || "",
+                endDate:
+                    document.getElementById("endDateFilter")?.value || ""
+            }
         );
-
-        function finish(accessible) {
-            clearTimeout(timeout);
-            image.onload = null;
-            image.onerror = null;
-            resolve(accessible);
+    } catch (error) {
+        if (errorElement) {
+            errorElement.textContent = error.message;
+            errorElement.hidden = false;
         }
 
-        image.onload = () => finish(image.naturalWidth > 0);
-        image.onerror = () => finish(false);
-        image.src = url;
-    });
-}
+        return [];
+    }
 
-async function removeUnavailableImages(observations) {
-    // Reuse the same check when multiple observations share an image URL.
-    const checks = new Map();
-
-    const results = await Promise.all(
-        observations.map(observation => {
-            if (normalize(getEvidenceType(observation)) !== "image") {
-                return true;
-            }
-
-            const source = String(observation.source_url || "").trim();
-
-            if (!checks.has(source)) {
-                checks.set(source, imageIsAccessible(source));
-            }
-
-            return checks.get(source);
-        })
-    );
-
-    return observations.filter((observation, index) => results[index]);
-}
-
-function getRecentEventIds() {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    const cutoff = new Date(today);
-    cutoff.setDate(cutoff.getDate() - recent_days);
-
-    return new Set(
-        galleryEvents
-            .filter(event => {
-                const date = parseDate(event.datetime || event.date);
-
-                return date && date >= cutoff && date <= today;
-            })
-            .map(event => String(event.event_id || "").trim())
-            .filter(Boolean)
-    );
-}
-
-function getFilteredObservations() {
-    const selectedEvent =
-        document.getElementById("event-select")?.value || "all";
-
-    const selectedEvidence =
-        document.getElementById("evidence-type")?.value || "all";
-
-    const recentEventIds = getRecentEventIds();
-
-    return galleryObservations.filter(observation => {
-        const eventId = String(observation.event_id || "").trim();
-
-        const matchesEvent =
-            selectedEvent === "all" ||
-            (
-                selectedEvent === "recent"
-                    ? recentEventIds.has(eventId)
-                    : eventId === selectedEvent
-            );
-
-        const matchesEvidence =
-            selectedEvidence === "all" ||
-            normalize(getEvidenceType(observation)) ===
-                normalize(selectedEvidence);
-
-        return matchesEvent && matchesEvidence;
-    }).sort((a, b) => {
+    // Show newest observations first, with missing or invalid dates last.
+    return filteredObservations.sort((a, b) => {
         const dateA = parseDate(a.datetime);
         const dateB = parseDate(b.datetime);
 
-        if (Number.isNaN(dateA) && Number.isNaN(dateB)) return 0;
-        if (Number.isNaN(dateA)) return 1;
-        if (Number.isNaN(dateB)) return -1;
+        const missingA = dateA == null || Number.isNaN(dateA);
+        const missingB = dateB == null || Number.isNaN(dateB);
 
-        return dateB - dateA; // Newest first.
+        if (missingA && missingB) return 0;
+        if (missingA) return 1;
+        if (missingB) return -1;
+
+        return dateB - dateA;
     });
-}
-
-function parseDate(value) {
-    const [month, day, year] = String(value ?? "").trim().split("/");
-    return Date.UTC(Number(year), Number(month) - 1, Number(day));
 }
 
 function createGalleryCard(observation) {
@@ -281,8 +161,8 @@ function createGalleryCard(observation) {
 
     // Keep URL names distinct from HTML element names.
     const sourceURL = getSourceURL(observation.source_url);
-    const imageURL = getSourceURL(observation.image_src);
-    const videoURL = getSourceURL(observation.video_src);
+    const imageURL = getSourceURL(observation.image_url);
+    const videoURL = getSourceURL(observation.video_url);
     const type = normalize(getEvidenceType(observation));
 
     if (type == "video" && videoURL) {
@@ -292,17 +172,10 @@ function createGalleryCard(observation) {
             const youtubeURL = getYouTubeEmbedURL(videoURL)
             const embed = document.createElement("iframe");
 
-            embed.alt = observation.description || title.textContent;
+            embed.title = observation.description || title.textContent;
             embed.style.width = "100%";
             embed.style.height = "auto";
             embed.style.display = "block";
-
-            embed.addEventListener("error", () => {
-                embed.remove();
-                const message = document.createElement("p");
-                message.textContent = "Embed currently unavailable.";
-                card.appendChild(message)
-            }, { once: true });
 
             embed.src = youtubeURL
 
@@ -317,7 +190,7 @@ function createGalleryCard(observation) {
             video.playsInline = true;
             video.setAttribute(
                 "aria-label",
-                observation.description || title.textContent
+                title.textContent
             );
 
             video.style.width = "100%";
@@ -336,49 +209,43 @@ function createGalleryCard(observation) {
         }
     }
     else if (type == "social media link" && sourceURL) {
-        // Something here
-    }
-    else if (imageURL) {
         const image = document.createElement("img");
 
         image.alt = observation.description || title.textContent;
         image.style.width = "100%";
-        image.style.height = "auto";
         image.style.display = "block";
 
-        image.addEventListener("load", () => {
-            console.log("Image loaded:", image.src);
-        }, { once: true });
-
-        image.addEventListener("error", () => {
-            console.error("Image failed:", image.src);
-
-            // Keep the card and show why its preview is missing.
-            image.src = placeholder_src;
-        }, { once: true });
-
-        image.src = imageURL;
+        image.src = "images/social_media_placeholder.png";
         card.appendChild(image);
+    }
+    else if (imageURL) {
+        const image = document.createElement("img");
+
+        image.alt = title.textContent;
+        image.style.width = "100%";
+        image.style.display = "block";
 
         image.src = imageURL;
         card.appendChild(image);
     }
 
-    details_str = details_str = [
+    let details_str = [
         observation.author || "Author Unknown",
         observation.datetime,
         observation.location
     ].filter(Boolean).join(" · ");
 
-    if (type == "news report")
+    if (["social media link", "news report"].includes(type))
     {
-        details_str = observation.author || "Author Unknown";
-    }
-    else if (type == "social media link")
-    {
-        site_name = (new URL(sourceURL).hostname || "").replace(/^www\./, '');
+        const site_name = sourceURL
+            ? new URL(sourceURL).hostname.replace(/^www\./, "")
+            : "Unknown Source";
 
-        details_str = site_name || "Unknown Source";
+        details_str = 
+        [
+            site_name,
+            observation.datetime
+        ].filter(Boolean).join(" · ");;
     }
 
     const details = document.createElement("p");
@@ -386,10 +253,17 @@ function createGalleryCard(observation) {
 
     card.appendChild(details);
 
-    if (observation.description)
-    {
+    if (observation.description) {
+        const maxWords = desc_word_limit;
+        const words = String(observation.description).trim().split(/\s+/);
+
         const description = document.createElement("p");
-        description.textContent = observation.description;
+
+        description.textContent = words.slice(0, maxWords).join(" ");
+
+        if (words.length > maxWords) {
+            description.textContent += "…";
+        }
 
         card.appendChild(description);
     }
@@ -437,21 +311,23 @@ async function initializeGallery() {
 
     try {
         const [observations, events] = await Promise.all([
-            loadCSV("data/passed_observations.csv"),
+            loadCSV("data/processed_observations.csv"),
             loadCSV("data/events.csv")
         ]);
 
         galleryEvents = events;
-        galleryObservations = await removeUnavailableImages(observations);
+        galleryObservations = observations;
 
-        populateFilters();
+        populateGalleryFilters(galleryObservations);
 
         // Register one listener per dropdown.
-        ["event-select", "evidence-type"].forEach(id => {
-            document.getElementById(id)?.addEventListener(
-                "change",
-                renderGallery
-            );
+        [
+            "event-select",
+            "evidence-type",
+            "startDateFilter",
+            "endDateFilter"
+        ].forEach(id => {
+            document.getElementById(id)?.addEventListener("change", renderGallery);
         });
 
         renderGallery();

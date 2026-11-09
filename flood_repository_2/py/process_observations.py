@@ -5,102 +5,59 @@ import pathlib
 import time
 import requests
 from pathlib import Path
-from fetch_metadata import verify_image_location
 from image_censor import censorImage, censorImages
-from fetch_news_article import get_article_elements
+from tqdm import tqdm
+
+from observation_checks import common_passes, type_passes, populate_location
 
 observations_path = Path(r"data/observations.csv")
-observations_output_path = Path(r"data/passed_observations.csv")
+observations_output_path = Path(r"data/processed_observations.csv")
 
 observations = pd.read_csv(observations_path, low_memory=False)
-
-placeholder_src = r"https://media.istockphoto.com/id/1980276924/vector/no-photo-thumbnail-graphic-element-no-found-or-available-image-in-the-gallery-or-album-flat.jpg"
-
-def get_youtube_info(video_url):
-    response = requests.get(
-        "https://www.youtube.com/oembed",
-        params={
-            "url": video_url,
-            "format": "json"
-        },
-        timeout=15
-    )
-
-    response.raise_for_status()
-    data = response.json()
-
-    return data.get("author_name"), data.get("title")
+records = observations.to_dict("records")
 
 passed_entries = []
+rejected_entries = []
 
-records = len(observations)
-i = 0
+# Create a function that only processes new observations every so often
 
-for _, entry in observations.iterrows():
+def process_observation(entry):
+    evidence_type = str(entry.get("evidence_type") or "").strip().lower()
 
-    i += 1
-    print(f"{i} / {records} observations processed")
+    if evidence_type not in type_passes:
+        return "Unsupported evidence type."
 
-    time.sleep(0.05)
+    passes = common_passes + type_passes[evidence_type]
 
-    type = entry["evidence_type"].lower()
-    link = entry["source_url"]
+    for processing_pass in passes:
+        rejection_reason = processing_pass(entry)
 
-    entry["image_src"] = ""
-    entry["video_src"] = ""
+        if rejection_reason is not None:
+            return rejection_reason
 
-    if type == "image":
+    return None
 
-        entry["image_src"] = link
+for observation in tqdm(records, desc="Processing observations", unit="entry"):
 
-    elif type == "video":
+    entry = observation.copy()
 
-        entry["video_src"] = link
+    rejection_reason = process_observation(entry)
 
-        if "youtube" in link or "youtu.be" in link:
-            channel, title = get_youtube_info(link)
+    rejection_reason = process_observation(entry)
 
-            entry["observation_title"] = title
-            entry["author"] = channel
-             
+    if rejection_reason is None:
+        populate_location(entry)
 
-    elif type == "news report":
+        entry["qc_flag"] = "AutoPassed"
+        passed_entries.append(entry)
+    else:
+        entry["qc_flag"] = "AutoRejected"
+        entry["rejection_reason"] = rejection_reason
+        rejected_entries.append(entry)
 
-        try:
-
-            title, date, thumbnail, caption, attribution = get_article_elements(link)
-
-            if title is not None: 
-                entry["observation_title"] = title
-            if date is not None:
-                entry["datetime"] = date
-            if thumbnail is not None:
-                entry["image_src"] = thumbnail
-            if caption is not None:
-                entry["description"] = caption
-            if attribution is not None:
-                entry["author"] = attribution
-
-        except Exception as e:
-
-            print(f"Failed to get article elements: {e}")
-
-            entry["image_src"] = placeholder_src
-            entry["description"] = str(e)
-
-    #elif type == "social media link":
-
-        # Look into scraping images from social media links
-
-    #elif type == "Other":
-
-        # Figure out what to do here
-
-    passed_entries.append(entry)
-
-passed_observations = (
-    pd.DataFrame(passed_entries)
+processed_observations = (
+    pd.DataFrame(passed_entries + rejected_entries)
     .reset_index(drop=True)
 )
 
-passed_observations.to_csv(observations_output_path, index=False, encoding="utf-8-sig")
+processed_observations.to_csv(observations_output_path, index=False, encoding="utf-8-sig")

@@ -1088,14 +1088,22 @@ caption {
 
 .filter-row > div {
     flex: 1;
-    min-width: 300px;
+    min-width: 200px;
 }
 
 .filter-row .filter-dropdown {
     width: 100%;
 }
 
-/* Keep filters readable; let the map column shrink to fit. */
+select.filter-dropdown,
+input.filter-dropdown {
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background-color: white;
+    color: var(--ink);
+    padding: 10px;
+    box-sizing: border-box;
+}
 
 /* 
    31. Map Layout and Panel Overrides
