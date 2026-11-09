@@ -3,7 +3,8 @@ const data_paths = {
     rivers: "data/geojson/rivers.geojson",
     watersheds: "data/geojson/watersheds.geojson",
     events: "data/events.csv",
-    observations: "data/processed_observations.csv"
+    observations: "data/processed_observations.csv",
+    dhmReports: "data/event_dhm_reports.csv"
 };
 
 const map = L.map("map").setView([27.7172, 85.3240], 11);
@@ -578,8 +579,8 @@ async function initializeLayers() {
 
     populateEventFilter();
 
-    const loaders = [loadRivers, loadWatersheds, loadEvents, loadObservations];
-    const labels = ["Rivers", "Watersheds", "Events", "Evidence"];
+    const loaders = [loadRivers, loadWatersheds, loadEvents, loadObservations, loadDhmReports];
+    const labels = ["Rivers", "Watersheds", "Events", "Evidence", "DHM Reports"];
     const results = await Promise.allSettled(loaders.map(function (load) {
         return load();
     }));
@@ -630,57 +631,22 @@ async function initializeLayers() {
 });
 
 initializeLayers();
+// DHM environmental context reports are loaded from CSV.
+const eventDhmReports = {};
 
-// TODO: Convert this data and read from a csv
-const eventDhmReports = {
-    "FLOOD-2024-003": {
-    url: "https://dhm.gov.np/uploads/dhm/climateService/July_2024-Preliminary_precipitation_and_temperature_summary.pdf",
-    label: "View DHM July 2024 rainfall report"
-    },
-    
-    "FLOOD-2024-004": {
-    url: "https://dhm.gov.np/uploads/dhm/climateService/July_2024-Preliminary_precipitation_and_temperature_summary.pdf",
-    label: "View DHM July 2024 rainfall report"
-    },
+async function loadDhmReports() {
+    const reports = await loadCSV(data_paths.dhmReports);
 
-    "FLOOD-2023-001": {
-    url: "https://dhm.gov.np/uploads/dhm/climateService/August_2023-Preliminary_precipitation_and_temperature_summary.pdf",
-    label: "View DHM August 2023 rainfall report"
-    },
+    reports.forEach(report => {
+        if (report.event_id && report.url) {
+            eventDhmReports[report.event_id] = {
+                url: report.url,
+                label: report.label
+            };
+        }
+    });
+}
 
-    "FLOOD-2023-002": {
-    url: "https://dhm.gov.np/uploads/dhm/climateService/August_2023-Preliminary_precipitation_and_temperature_summary.pdf",
-    label: "Environmental Context: DHM August 2023 rainfall report"
-    },
-
-    "FLOOD-2024-001": {
-        url: "https://dhm.gov.np/uploads/dhm/downloads/Situational_Report_on_Extreme_Precipitation_and_Flooding_Event_of_27-29_September_2024.pdf",
-        label: "View DHM flood report"
-    },
-    "FLOOD-2024-002": {
-        url: "https://dhm.gov.np/uploads/dhm/climateService/July_2024-Preliminary_precipitation_and_temperature_summary.pdf",
-        label: "View DHM July 2024 rainfall report"
-    },
-
-    "FLOOD-2024-007": {
-    url: "https://dhm.gov.np/uploads/dhm/climateService/July_2024-Preliminary_precipitation_and_temperature_summary.pdf",
-    label: "Environmental Context: DHM July 2024 rainfall report"
-  },
-
-  "FLOOD-2024-006": {
-    url: "https://dhm.gov.np/uploads/dhm/climateService/July_2024-Preliminary_precipitation_and_temperature_summary.pdf",
-    label: "Environmental Context: DHM July 2024 rainfall report"
-  },
-
-  "FLOOD-2024-005": {
-    url: "https://dhm.gov.np/uploads/dhm/climateService/July_2024-Preliminary_precipitation_and_temperature_summary.pdf",
-    label: "Environmental Context: DHM July 2024 rainfall report"
-    },
-    "FLOOD-2025-001": {
-    url: "https://dhm.gov.np/uploads/dhm/climateService/Monthly_Report_August_2025.pdf",
-    label: "Environmental Context: DHM August 2025 rainfall report"
-    },
-};
 
 function createDhmContext(eventId) {
     const report = eventDhmReports[eventId];

@@ -1,4 +1,5 @@
-﻿document.addEventListener("DOMContentLoaded", () => {
+﻿let dhmReports = {};
+document.addEventListener("DOMContentLoaded", () => {
     const dropdown = document.getElementById("event-select");
 
     Papa.parse("data/events.csv", {
@@ -27,6 +28,33 @@ const summaryResults = await new Promise((resolve, reject) => {
 
 const eventSummaries = Object.fromEntries(
     summaryResults.data.map(row => [row.event_id, row.summary])
+);
+// Load DHM environmental context reports from CSV.
+const dhmResults = await new Promise((resolve, reject) => {
+    Papa.parse("data/event_dhm_reports.csv", {
+        download: true,
+        header: true,
+        skipEmptyLines: "greedy",
+        transformHeader: header => header.replace(/^\uFEFF/, "").trim(),
+        complete: resolve,
+        error: reject
+    });
+});
+
+if (dhmResults.errors.length) {
+    console.error("Error parsing DHM reports:", dhmResults.errors);
+}
+
+dhmReports = Object.fromEntries(
+    dhmResults.data
+        .filter(row => row.event_id && row.url)
+        .map(row => [
+            row.event_id,
+            {
+                url: row.url,
+                label: row.label
+            }
+        ])
 );
 
             dropdown.innerHTML = "";
@@ -260,61 +288,7 @@ if (
 }
 
 
-const dhmReports = {
-    "FLOOD-2023-001": {
-    url: "https://dhm.gov.np/uploads/dhm/climateService/August_2023-Preliminary_precipitation_and_temperature_summary.pdf",
-    label: "Environmental Context: DHM August 2023 rainfall report"
-    },
-    "FLOOD-2023-002": {
-    url: "https://dhm.gov.np/uploads/dhm/climateService/August_2023-Preliminary_precipitation_and_temperature_summary.pdf",
-    label: "Environmental Context: DHM August 2023 rainfall report"
-    },
 
-    "FLOOD-2024-001": {
-        url: "https://dhm.gov.np/uploads/dhm/downloads/Situational_Report_on_Extreme_Precipitation_and_Flooding_Event_of_27-29_September_2024.pdf",
-        label: "Read DHM flood report"
-    },
-    "FLOOD-2024-002": {
-        url: "https://dhm.gov.np/uploads/dhm/climateService/July_2024-Preliminary_precipitation_and_temperature_summary.pdf",
-        label: "Environmental Context: DHM July 2024 rainfall report"
-    },
-
-    "FLOOD-2024-003": {
-    url: "https://dhm.gov.np/uploads/dhm/climateService/July_2024-Preliminary_precipitation_and_temperature_summary.pdf",
-    label: "Environmental Context: DHM July 2024 rainfall report"
-    },
-
-    "FLOOD-2024-004": {
-    url: "https://dhm.gov.np/uploads/dhm/climateService/July_2024-Preliminary_precipitation_and_temperature_summary.pdf",
-    label: "Environmental Context: DHM July 2024 rainfall report"
-    },
-
-    "FLOOD-2024-007": {
-    url: "https://dhm.gov.np/uploads/dhm/climateService/July_2024-Preliminary_precipitation_and_temperature_summary.pdf",
-    label: "Environmental Context: DHM July 2024 rainfall report"
-  },
-
-  "FLOOD-2024-006": {
-    url: "https://dhm.gov.np/uploads/dhm/climateService/July_2024-Preliminary_precipitation_and_temperature_summary.pdf",
-    label: "Environmental Context: DHM July 2024 rainfall report"
-  },
-
-  "FLOOD-2024-005": {
-    url: "https://dhm.gov.np/uploads/dhm/climateService/July_2024-Preliminary_precipitation_and_temperature_summary.pdf",
-    label: "Environmental Context: DHM July 2024 rainfall report"
-    },
-    "FLOOD-2025-001": {
-    url: "https://dhm.gov.np/uploads/dhm/climateService/Monthly_Report_August_2025.pdf",
-    label: "Environmental Context: DHM August 2025 rainfall report"
-    },
-    "FLOOD-2024-008": {
-        url: "https://dhm.gov.np/uploads/dhm/downloads/Situational_Report_on_Extreme_Precipitation_and_Flooding_Event_of_27-29_September_2024.pdf",
-        label: "Environmental Context: DHM September 2024 flood report (regional context)"
-    },
-    "FLOOD-2023-004": {
-        url: "https://dhm.gov.np/uploads/dhm/climateService/August_2023-Preliminary_precipitation_and_temperature_summary.pdf",
-        label: "Environmental Context: DHM August 2023 rainfall report (regional context)"
-    },};
 
 function updateDhmLink(eventId) {
     const link = document.getElementById("event-dhm-link");
