@@ -1,9 +1,9 @@
 ﻿
-const DATA_PATHS = {
+const data_paths = {
     rivers: "data/geojson/rivers.geojson",
     watersheds: "data/geojson/watersheds.geojson",
     events: "data/events.csv",
-    observations: "data/observations.csv"
+    observations: "data/processed_observations.csv"
 };
 
 const map = L.map("map").setView([27.7172, 85.3240], 11);
@@ -32,7 +32,9 @@ function getFilters() {
         event: document.getElementById("eventFilter")?.value || "all",
         river: document.getElementById("riverFilter")?.value || "all",
         watershed: document.getElementById("watershedFilter")?.value || "all",
-        evidence: document.getElementById("evidenceFilter")?.value || "all"
+        evidence: document.getElementById("evidenceFilter")?.value || "all",
+        startDate: document.getElementById("startDateFilter")?.value || "",
+        endDate: document.getElementById("endDateFilter")?.value || "",
     };
 }
 
