@@ -1088,14 +1088,22 @@ caption {
 
 .filter-row > div {
     flex: 1;
-    min-width: 300px;
+    min-width: 200px;
 }
 
 .filter-row .filter-dropdown {
     width: 100%;
 }
 
-/* Keep filters readable; let the map column shrink to fit. */
+select.filter-dropdown,
+input.filter-dropdown {
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background-color: white;
+    color: var(--ink);
+    padding: 10px;
+    box-sizing: border-box;
+}
 
 /* 
    31. Map Layout and Panel Overrides
@@ -1446,4 +1454,63 @@ caption {
 .card h3 {
     margin: 0;
     line-height: normal;
+}
+
+/* Navigation cards: three equal columns */
+.navigation-cards {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.navigation-card {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    padding: 24px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: #f4f8fa;
+    color: var(--ink);
+    text-decoration: none;
+}
+
+.navigation-card:hover {
+    border-color: #327f96;
+    background: #eaf3f6;
+}
+
+.navigation-card:focus-visible {
+    outline: 3px solid #327f96;
+    outline-offset: 4px;
+}
+
+.navigation-card .number {
+    font-size: 24px;
+    font-weight: bold;
+    color: #155e75;
+}
+
+.navigation-card h3 {
+    margin: 12px 0 8px;
+}
+
+.navigation-card p {
+    margin: 0 0 20px;
+    color: var(--muted);
+    line-height: 1.5;
+}
+
+/* Align the links at the bottom of each card. */
+.navigation-card .textlink {
+    margin-top: auto;
+    font-weight: bold;
+    color: #155e75;
+}
+
+/* Stack cards on smaller screens. */
+@media (max-width: 700px) {
+    .navigation-cards {
+        grid-template-columns: 1fr;
+    }
 }

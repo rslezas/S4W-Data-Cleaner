@@ -50,6 +50,19 @@
 
             </select>
           </div>
+
+          <div>
+              <label for="startDateFilter">Start date</label>
+              <input type="date" id="startDateFilter" class="filter-dropdown">
+          </div>
+
+          <div>
+              <label for="endDateFilter">End date</label>
+              <input type="date" id="endDateFilter" class="filter-dropdown">
+          </div>
+
+          <p id="dateFilterError" role="alert" hidden></p>
+
         </div>
 
         <br>
@@ -85,6 +98,8 @@
     <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 
     <script src="js/load_data.js"></script>
+    <script src="js/populate_gallery_filters.js"></script>
+    <script src="js/observation_filters.js"></script>
     <script src="js/populate_gallery.js"></script>
     <script src="js/shared_layout.js"></script>
 
