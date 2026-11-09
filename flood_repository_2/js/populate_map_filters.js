@@ -1,4 +1,4 @@
-function fillDropdown(id, values, label) {
+﻿function fillDropdown(id, values, label) {
     const select = document.getElementById(id);
     if (!select) {
         return;
@@ -60,7 +60,13 @@ function populateFilters() {
     }
 
     for (const feature of layerData.observations) {
-        evidenceTypes.push(feature.properties.evidence_type || "Not Provided");
+        const type = String(feature.properties.evidence_type || "")
+    .trim()
+    .toLowerCase();
+
+if (type === "image" || type === "video") {
+    evidenceTypes.push(type === "image" ? "Image" : "Video");
+}
     }
 
     fillDropdown("riverFilter", riverNames, "All Rivers");

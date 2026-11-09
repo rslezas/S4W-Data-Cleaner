@@ -95,12 +95,7 @@ const watershedsLayer = L.geoJSON(null, {
 // Pin colours for each evidence category.
 const evidenceColors = {
     "image": "#2563eb",
-    "video": "#dc2626",
-    "social media link": "#9333ea",
-    "news report": "#16a34a",
-    "official report": "#d97706",
-    "government report": "#d97706",
-    "not provided": "#64748b"
+    "video": "#dc2626"
 };
 
 const evidenceLegend = createEvidenceLegend(evidenceColors);
@@ -225,7 +220,7 @@ function makePointLayer(pane, color, isEvent = false) {
 
             // Events retain their layer colour.
             // Evidence receives a colour based on its type.
-            const pinColor = isEvent ? color : evidenceColors[evidenceType] || evidenceColors["not provided"];
+            const pinColor = isEvent ? color : evidenceColors[evidenceType] || evidenceColors["image"];
 
             return L.marker(latlng, {
                 pane: pane,
@@ -294,14 +289,38 @@ try {
 
                         media.appendChild(image);
                     } else if (evidenceType === "video") {
-                        const video = document.createElement("video");
+    let videoId = null;
 
-                        video.src = url.href;
-                        video.controls = true;
-                        video.preload = "metadata";
+    if (
+        url.hostname === "youtube.com" ||
+        url.hostname === "www.youtube.com" ||
+        url.hostname === "m.youtube.com"
+    ) {
+        videoId = url.searchParams.get("v");
+    } else if (url.hostname === "youtu.be") {
+        videoId = url.pathname.slice(1);
+    }
 
-                        media.appendChild(video);
-                    }
+    if (videoId && /^[A-Za-z0-9_-]{11}$/.test(videoId)) {
+        const iframe = document.createElement("iframe");
+
+        iframe.src = "https://www.youtube-nocookie.com/embed/" + videoId;
+        iframe.title = "Flood video evidence";
+        iframe.style.cssText = "width:100%;aspect-ratio:16/9;border:0;";
+        iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+        iframe.allowFullscreen = true;
+
+        media.appendChild(iframe);
+    } else if (/\.(mp4|webm|ogg)$/i.test(url.pathname)) {
+        const video = document.createElement("video");
+
+        video.src = url.href;
+        video.controls = true;
+        video.preload = "metadata";
+
+        media.appendChild(video);
+    }
+}
                 }
             } catch {
     if (sourceUrl) {
@@ -411,12 +430,17 @@ function renderObservationsLayer(selected) {
             normalizeRiverName
         );
         const matchesWatershed = matches(selected.watershed, properties.watershed);
-        const matchesEvidenceType = matches(
-            selected.evidence,
-            properties.evidence_type || "Not Provided"
-        );
+        const evidenceType = String(properties.evidence_type || "")
+            .trim()
+            .toLowerCase();
 
-        return matchesParentEvent && matchesRiver &&
+        const isSupportedEvidence = ["image", "video"].includes(evidenceType);
+
+        const matchesEvidenceType =
+            selected.evidence === "all" ||
+            evidenceType === selected.evidence.toLowerCase();
+
+        return isSupportedEvidence && matchesParentEvent && matchesRiver &&
             matchesWatershed && matchesEvidenceType;
     });
 
@@ -550,7 +574,12 @@ const eventDhmReports = {
         label: "View DHM July 2024 rainfall report"
     },
 
-    "FLOOD-2024-006": {
+    "FLOOD-2024-007": {
+    url: "https://dhm.gov.np/uploads/dhm/climateService/July_2024-Preliminary_precipitation_and_temperature_summary.pdf",
+    label: "Environmental Context: DHM July 2024 rainfall report"
+  },
+
+  "FLOOD-2024-006": {
     url: "https://dhm.gov.np/uploads/dhm/climateService/July_2024-Preliminary_precipitation_and_temperature_summary.pdf",
     label: "Environmental Context: DHM July 2024 rainfall report"
   },
@@ -585,6 +614,7 @@ function createDhmContext(eventId) {
         "FLOOD-2024-004",
         "FLOOD-2024-005",
         "FLOOD-2024-006",
+        "FLOOD-2024-007",
         "FLOOD-2025-001"
       ].includes(eventId)
     ? "Regional rainfall information from DHM; not a direct measurement at the flood location."
@@ -599,6 +629,11 @@ function createDhmContext(eventId) {
     section.append(heading, explanation, link);
     return section;
 }
+
+
+
+
+
 
 
 

@@ -1,4 +1,4 @@
-function createEvidenceLegend(evidenceColors)
+﻿function createEvidenceLegend(evidenceColors)
 {
     const evidenceLegend = L.control({
         position: "bottomright"
@@ -18,11 +18,7 @@ function createEvidenceLegend(evidenceColors)
         const entries = [
             ["Flood Event", "#000000"],
             ["Image", evidenceColors["image"]],
-            ["Video", evidenceColors["video"]],
-            ["Social Media Link", evidenceColors["social media link"]],
-            ["News Report", evidenceColors["news report"]],
-            ["Official Report", evidenceColors["official report"]],
-            ["Other", evidenceColors["not provided"]]
+            ["Video", evidenceColors["video"]]
         ];
 
         entries.forEach(function ([label, color]) {

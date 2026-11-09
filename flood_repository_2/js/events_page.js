@@ -77,6 +77,28 @@ sourcesContainer.replaceChildren();
 
 const sources = [];
 
+if (
+    event.sourceUrl &&
+    /^https?:\/\//i.test(event.sourceUrl.trim())
+) {
+    sources.push({
+        label: (() => {
+            const url = event.sourceUrl.toLowerCase();
+
+            if (url.includes("kathmandupost.com")) return "The Kathmandu Post - News Article";
+            if (url.includes("onlinekhabar.com")) return "Onlinekhabar - News Article";
+            if (url.includes("nepallive.com")) return "Nepal Live - News Article";
+            if (url.includes("setopati.com")) return "Setopati - News Article";
+            if (url.includes("youtube.com") || url.includes("youtu.be")) return "Watch Video Evidence";
+            if (url.includes("dhm.gov.np")) return "Department of Hydrology and Meteorology - Report";
+            if (/\.(jpg|jpeg|png|webp)(\?|$)/i.test(url)) return "View Original Photograph";
+
+            return event.evidenceSource || "View Original Evidence Source";
+        })(),
+        url: event.sourceUrl.trim()
+    });
+}
+
 if (sources.length === 0) {
     sourcesContainer.textContent = "Evidence sources are being reviewed.";
 } else {
@@ -133,7 +155,39 @@ if (
     gallery.innerHTML = "";
 
     if (!photos.length) {
-        gallery.textContent = "No photographs available for this event.";
+        gallery.textContent = "";
+
+        if (
+            event.evidenceType === "Video" &&
+            /^https?:\/\//i.test(event.sourceUrl || "")
+        ) {
+            const videoUrl = new URL(event.sourceUrl);
+            let videoId = null;
+
+            if (
+                videoUrl.hostname === "www.youtube.com" ||
+                videoUrl.hostname === "youtube.com"
+            ) {
+                videoId = videoUrl.searchParams.get("v");
+            } else if (videoUrl.hostname === "youtu.be") {
+                videoId = videoUrl.pathname.slice(1);
+            }
+
+            if (videoId && /^[A-Za-z0-9_-]{11}$/.test(videoId)) {
+                const iframe = document.createElement("iframe");
+                iframe.src = "https://www.youtube-nocookie.com/embed/" + videoId;
+                iframe.title = "Flood video evidence";
+                iframe.style.cssText = "width:100%;aspect-ratio:16/9;border:0;";
+                iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+                iframe.allowFullscreen = true;
+                iframe.loading = "lazy";
+                gallery.appendChild(iframe);
+            } else {
+                gallery.textContent = "Video preview unavailable.";
+            }
+        } else {
+            gallery.textContent = "No photographs available for this event.";
+        }
 
         if (
             event.evidenceType === "Video" &&
@@ -191,8 +245,15 @@ if (
             updatePhoto();
         };
 
-        gallery.appendChild(previous);
-        gallery.appendChild(next);
+        const navigation = document.createElement("div");
+        navigation.style.cssText = "display:flex;justify-content:center;align-items:center;gap:12px;margin-top:8px;";
+
+        previous.style.cssText = "padding:6px 14px;cursor:pointer;";
+        next.style.cssText = "padding:6px 14px;cursor:pointer;";
+
+        navigation.appendChild(previous);
+        navigation.appendChild(next);
+        gallery.appendChild(navigation);
     }
 
     updatePhoto();
@@ -228,7 +289,12 @@ const dhmReports = {
     label: "Environmental Context: DHM July 2024 rainfall report"
     },
 
-    "FLOOD-2024-006": {
+    "FLOOD-2024-007": {
+    url: "https://dhm.gov.np/uploads/dhm/climateService/July_2024-Preliminary_precipitation_and_temperature_summary.pdf",
+    label: "Environmental Context: DHM July 2024 rainfall report"
+  },
+
+  "FLOOD-2024-006": {
     url: "https://dhm.gov.np/uploads/dhm/climateService/July_2024-Preliminary_precipitation_and_temperature_summary.pdf",
     label: "Environmental Context: DHM July 2024 rainfall report"
   },
@@ -241,7 +307,14 @@ const dhmReports = {
     url: "https://dhm.gov.np/uploads/dhm/climateService/Monthly_Report_August_2025.pdf",
     label: "Environmental Context: DHM August 2025 rainfall report"
     },
-};
+    "FLOOD-2024-008": {
+        url: "https://dhm.gov.np/uploads/dhm/downloads/Situational_Report_on_Extreme_Precipitation_and_Flooding_Event_of_27-29_September_2024.pdf",
+        label: "Environmental Context: DHM September 2024 flood report (regional context)"
+    },
+    "FLOOD-2023-004": {
+        url: "https://dhm.gov.np/uploads/dhm/climateService/August_2023-Preliminary_precipitation_and_temperature_summary.pdf",
+        label: "Environmental Context: DHM August 2023 rainfall report (regional context)"
+    },};
 
 function updateDhmLink(eventId) {
     const link = document.getElementById("event-dhm-link");
@@ -307,6 +380,12 @@ function updateEventTimeline(event) {
         timeline.appendChild(context);
     }
 }
+
+
+
+
+
+
 
 
 
