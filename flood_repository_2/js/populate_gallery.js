@@ -1,36 +1,9 @@
-const RECENT_DAYS = 365;
-const IMAGE_TIMEOUT = 10000;
+const recent_days = 365;
+const image_timeout = 10000;
+const placeholder_src = "https://media.istockphoto.com/id/1980276924/vector/no-photo-thumbnail-graphic-element-no-found-or-available-image-in-the-gallery-or-album-flat.jpg"
 
 let galleryObservations = [];
 let galleryEvents = [];
-
-function loadCSV(path) {
-    return new Promise((resolve, reject) => {
-        Papa.parse(path, {
-            download: true,
-            header: true,
-            skipEmptyLines: "greedy",
-
-            transformHeader: header =>
-                header.replace(/^\uFEFF/, "").trim(),
-
-            complete: results => {
-                if (results.errors.length > 0) {
-                    reject(new Error(
-                        `${path}: ${results.errors[0].message}`
-                    ));
-                    return;
-                }
-
-                resolve(results.data);
-            },
-
-            error: error => {
-                reject(new Error(`${path}: ${error.message}`));
-            }
-        });
-    });
-}
 
 function normalize(value) {
     return String(value ?? "").trim().toLowerCase();
@@ -47,6 +20,36 @@ function getSourceURL(source) {
 
         if (["https:", "http:"].includes(url.protocol)) {
             return url.href;
+        }
+    } catch {
+        // Missing or invalid URL.
+    }
+
+    return null;
+}
+
+function getYouTubeEmbedURL(source) {
+    try {
+        const url = new URL(source);
+        const host = url.hostname.replace(/^www\./, "");
+        let videoId;
+
+        // Shortened links: https://youtu.be/VIDEO_ID
+        if (host === "youtu.be") {
+            videoId = url.pathname.split("/")[1];
+        } else if (["youtube.com", "m.youtube.com"].includes(host)) {
+            // Standard links: https://youtube.com/watch?v=VIDEO_ID
+            if (url.pathname === "/watch") {
+                videoId = url.searchParams.get("v");
+            } else if (/^\/(shorts|embed)\//.test(url.pathname)) {
+                // Shorts and existing embed links.
+                videoId = url.pathname.split("/")[2];
+            }
+        }
+
+        // YouTube video IDs contain 11 letters, numbers, underscores, or hyphens.
+        if (/^[a-zA-Z0-9_-]{11}$/.test(videoId || "")) {
+            return `https://www.youtube.com/embed/${videoId}`;
         }
     } catch {
         // Missing or invalid URL.
@@ -164,7 +167,7 @@ function imageIsAccessible(source) {
 
         const timeout = setTimeout(
             () => finish(false),
-            IMAGE_TIMEOUT
+            image_timeout
         );
 
         function finish(accessible) {
@@ -208,7 +211,7 @@ function getRecentEventIds() {
     today.setHours(0, 0, 0, 0);
 
     const cutoff = new Date(today);
-    cutoff.setDate(cutoff.getDate() - RECENT_DAYS);
+    cutoff.setDate(cutoff.getDate() - recent_days);
 
     return new Set(
         galleryEvents
@@ -248,69 +251,159 @@ function getFilteredObservations() {
                 normalize(selectedEvidence);
 
         return matchesEvent && matchesEvidence;
+    }).sort((a, b) => {
+        const dateA = parseDate(a.datetime);
+        const dateB = parseDate(b.datetime);
+
+        if (Number.isNaN(dateA) && Number.isNaN(dateB)) return 0;
+        if (Number.isNaN(dateA)) return 1;
+        if (Number.isNaN(dateB)) return -1;
+
+        return dateB - dateA; // Newest first.
     });
 }
 
+function parseDate(value) {
+    const [month, day, year] = String(value ?? "").trim().split("/");
+    return Date.UTC(Number(year), Number(month) - 1, Number(day));
+}
+
 function createGalleryCard(observation) {
+
     const card = document.createElement("article");
     card.className = "card";
 
     const title = document.createElement("h3");
-    title.textContent = observation.observation_title || "Flood observation";
+    title.textContent =
+        observation.observation_title || "Flood observation";
 
     card.appendChild(title);
 
-    const source = getSourceURL(observation.source_url);
+    // Keep URL names distinct from HTML element names.
+    const sourceURL = getSourceURL(observation.source_url);
+    const imageURL = getSourceURL(observation.image_src);
+    const videoURL = getSourceURL(observation.video_src);
     const type = normalize(getEvidenceType(observation));
 
-    if (type === "image" && source) {
-        const image = document.createElement("img");
+    if (type == "video" && videoURL) {
 
-        image.src = source;
-        image.alt = observation.description || title.textContent;
-        image.loading = "lazy";
+        if (videoURL.includes("youtube") || videoURL.includes("youtu.be"))
+        {
+            const youtubeURL = getYouTubeEmbedURL(videoURL)
+            const embed = document.createElement("iframe");
 
-        // If a previously checked image later fails, exclude its entire card.
-        image.addEventListener("error", () => {
-            galleryObservations = galleryObservations.filter(
-                entry => entry !== observation
+            embed.alt = observation.description || title.textContent;
+            embed.style.width = "100%";
+            embed.style.height = "auto";
+            embed.style.display = "block";
+
+            embed.addEventListener("error", () => {
+                embed.remove();
+                const message = document.createElement("p");
+                message.textContent = "Embed currently unavailable.";
+                card.appendChild(message)
+            }, { once: true });
+
+            embed.src = youtubeURL
+
+            card.appendChild(embed)
+        }
+        else
+        {
+            const video = document.createElement("video");
+
+            video.controls = true;
+            video.preload = "metadata";
+            video.playsInline = true;
+            video.setAttribute(
+                "aria-label",
+                observation.description || title.textContent
             );
 
-            renderGallery();
+            video.style.width = "100%";
+            video.style.display = "block";
+
+            // Remove failed media while keeping the observation card.
+            video.addEventListener("error", () => {
+                video.remove();
+                const message = document.createElement("p");
+                message.textContent = "Video currently unavailable.";
+                card.appendChild(message)
+            }, { once: true });
+
+            video.src = videoURL;
+            card.appendChild(video);
+        }
+    }
+    else if (type == "social media link" && sourceURL) {
+        // Something here
+    }
+    else if (imageURL) {
+        const image = document.createElement("img");
+
+        image.alt = observation.description || title.textContent;
+        image.style.width = "100%";
+        image.style.height = "auto";
+        image.style.display = "block";
+
+        image.addEventListener("load", () => {
+            console.log("Image loaded:", image.src);
         }, { once: true });
 
+        image.addEventListener("error", () => {
+            console.error("Image failed:", image.src);
+
+            // Keep the card and show why its preview is missing.
+            image.src = placeholder_src;
+        }, { once: true });
+
+        image.src = imageURL;
+        card.appendChild(image);
+
+        image.src = imageURL;
         card.appendChild(image);
     }
 
-    if (type == "video" && source)
-    {
-
-    }
-
-    const details = document.createElement("p");
-    details.textContent = [
+    details_str = details_str = [
         observation.author || "Author Unknown",
         observation.datetime,
         observation.location
     ].filter(Boolean).join(" · ");
 
-    card.appendChild(details);
+    if (type == "news report")
+    {
+        details_str = observation.author || "Author Unknown";
+    }
+    else if (type == "social media link")
+    {
+        site_name = (new URL(sourceURL).hostname || "").replace(/^www\./, '');
 
-    // Non-image evidence remains accessible through its source link.
-
-    function capitalizeWords(text) {
-        return String(text ?? "").replace(/\b[a-z]/gi, letter =>
-            letter.toUpperCase()
-        );
+        details_str = site_name || "Unknown Source";
     }
 
-    type_name = capitalizeWords(type)
+    const details = document.createElement("p");
+    details.textContent = details_str
 
-    if (source) {
+    card.appendChild(details);
+
+    if (observation.description)
+    {
+        const description = document.createElement("p");
+        description.textContent = observation.description;
+
+        card.appendChild(description);
+    }
+
+    if (sourceURL) {
+        const typeName = type.replace(
+            /\b[a-z]/gi,
+            letter => letter.toUpperCase()
+        );
+
         const link = document.createElement("a");
 
-        link.href = source;
-        link.textContent = `${type_name} | View source ↗`;
+        link.href = sourceURL;
+        link.textContent = `${typeName} | View source ↗`;
         link.target = "_blank";
         link.rel = "noopener noreferrer";
 
@@ -344,7 +437,7 @@ async function initializeGallery() {
 
     try {
         const [observations, events] = await Promise.all([
-            loadCSV("data/observations.csv"),
+            loadCSV("data/passed_observations.csv"),
             loadCSV("data/events.csv")
         ]);
 
