@@ -111,7 +111,7 @@ function get_filtered_observations(
             (
                 normalizeFilterValue(river) === "all" ||
                 riverNormalizer(river) === riverNormalizer(observation.river ?? "")
-            ),
+            ) &&
             matches(observationType, evidenceType) &&
             matchesDate
         );
