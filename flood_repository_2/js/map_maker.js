@@ -207,134 +207,197 @@ image.src = /^https?:\/\//i.test(photo)
     return gallery;
 }
 
+// Return a valid HTTP/HTTPS URL, or null.
+function getPopupURL(value) {
+    try {
+        const url = new URL(String(value ?? "").trim());
+
+        return ["http:", "https:"].includes(url.protocol)
+            ? url
+            : null;
+    } catch {
+        return null;
+    }
+}
+
+// Read the evidence type consistently for both pins and popups.
+function getPopupEvidenceType(properties) {
+    return String(
+        properties.evidence_type ||
+        properties.evidenceType ||
+        "Not Provided"
+    ).trim().toLowerCase();
+}
+
+// Add a YouTube embed or a directly hosted video.
+function appendPopupVideo(container, url, title) {
+    const hostname = url.hostname.toLowerCase();
+
+    const isYouTube = [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "youtu.be",
+        "www.youtu.be",
+        "youtube-nocookie.com",
+        "www.youtube-nocookie.com"
+    ].includes(hostname);
+
+    if (isYouTube) {
+        const parts = url.pathname.split("/").filter(Boolean);
+        let videoId = url.searchParams.get("v");
+
+        // Handle short links, Shorts, live streams, and embed URLs.
+        if (hostname === "youtu.be" || hostname === "www.youtu.be") {
+            videoId = parts[0];
+        } else if (["shorts", "live", "embed"].includes(parts[0])) {
+            videoId = parts[1];
+        }
+
+        if (!videoId || !/^[A-Za-z0-9_-]{11}$/.test(videoId)) {
+            const message = document.createElement("p");
+            message.textContent = "YouTube preview unavailable.";
+            container.appendChild(message);
+            return;
+        }
+
+        const iframe = document.createElement("iframe");
+
+        iframe.src = "https://www.youtube-nocookie.com/embed/" + videoId;
+        iframe.title = title;
+        iframe.style.cssText = "width:100%;height:200px;border:0;";
+        iframe.allow = "encrypted-media; picture-in-picture; fullscreen";
+        iframe.allowFullscreen = true;
+
+        container.appendChild(iframe);
+        return;
+    }
+
+    // Direct video URLs do not always end with a file extension.
+    const video = document.createElement("video");
+
+    video.controls = true;
+    video.preload = "metadata";
+    video.playsInline = true;
+    video.setAttribute("aria-label", title);
+    video.style.cssText = "display:block;width:100%;max-height:240px;";
+
+    video.addEventListener("error", () => {
+        const message = document.createElement("p");
+        message.textContent = "Video preview unavailable.";
+
+        video.replaceWith(message);
+    }, { once: true });
+
+    video.src = url.href;
+    container.appendChild(video);
+}
+
+// Create a point layer with coloured pins and custom popups.
 function makePointLayer(pane, color, isEvent = false) {
     const layer = L.geoJSON(null, {
         pointToLayer: function (feature, latlng) {
             const properties = feature.properties || {};
+            const evidenceType = getPopupEvidenceType(properties);
 
-            const evidenceType = String(
-                properties.evidence_type ||
-                properties.evidenceType ||
-                "Not Provided"
-            )
-                .trim()
-                .toLowerCase();
+            // Events keep their assigned colour; observations use their type.
+            const pinColor = isEvent
+                ? color
+                : evidenceColors[evidenceType] || evidenceColors.image || color;
 
-            // Events retain their layer colour.
-            // Evidence receives a colour based on its type.
-            const pinColor = isEvent ? color : evidenceColors[evidenceType] || evidenceColors["image"];
+            const label = isEvent
+                ? "Flood event"
+                : `Flood evidence: ${evidenceType}`;
 
             return L.marker(latlng, {
                 pane: pane,
                 icon: getPinIcon(pinColor),
-
-                // Text available on hover and to assistive technology.
-                title: isEvent ? "Flood event" : `Flood evidence: ${evidenceType}`,
-                alt: isEvent ? "Flood event" : `Flood evidence: ${evidenceType}`
+                title: label,
+                alt: label
             });
         },
 
         onEachFeature: function (feature, marker) {
-            const properties = feature.properties;
-            const id = eventId(properties);
-            const parentEvent = eventRecords.get(id);
-            const fields = [];
+            const properties = feature.properties || {};
+            const evidenceType = getPopupEvidenceType(properties);
 
-            let title = isEvent ? 
-                properties.event_name || "Untitled event" : 
-                properties.observation_title || properties.event_name + " observation";
+            const title = isEvent
+                ? properties.event_name || "Untitled event"
+                : properties.observation_title || "Flood observation";
 
+            // Build the popup structure. Insert submitted text with textContent.
             const content = document.createElement("article");
             content.className = "evidence-card";
-            if (isEvent) { content.style.maxHeight = "260px"; content.style.overflowY = "auto"; content.style.paddingRight = "8px"; }
 
             content.innerHTML = `
                 <h3 class="evidence-title"></h3>
                 <div class="evidence-media"></div>
-                <a class="evidence-link" target="_blank"
-                rel="noopener noreferrer" hidden>
+                <a
+                    class="evidence-link"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    hidden
+                >
                     View original source
                 </a>
             `;
 
-            content.querySelector(".evidence-title").textContent = title;
-if (isEvent) {
-    content.querySelector(".evidence-media")
-        .appendChild(createEventPhotoGallery(properties));
-}
             const media = content.querySelector(".evidence-media");
             const link = content.querySelector(".evidence-link");
-            const evidenceType = String(
-    properties.evidence_type || properties.evidenceType || ""
-).trim().toLowerCase();
 
-const sourceUrl = isEvent
-    ? properties.sourceUrl
-    : properties.source_url;
+            content.querySelector(".evidence-title").textContent = title;
 
-try {
-    const url = new URL(sourceUrl);
-                if (["https:", "http:"].includes(url.protocol)) {
-                    // Always provide a link to the original source.
-                    link.href = url.href;
-                    link.hidden = false;
+            // The source link is independent of image and video URLs.
+            const sourceURL = getPopupURL(properties.source_url) ||
+                getPopupURL(properties.sourceUrl);
 
-                    if (evidenceType === "image" && !isEvent) {
-                        const image = document.createElement("img");
+            if (sourceURL) {
+                link.href = sourceURL.href;
+                link.hidden = false;
+            }
 
-                        image.src = url.href;
-                        image.alt = properties.description || "Flood evidence";
-                        image.loading = "lazy";
+            if (isEvent) {
+                // Events display their photo gallery and environmental context.
+                content.style.maxHeight = "260px";
+                content.style.overflowY = "auto";
+                content.style.paddingRight = "8px";
 
-                        // Keep the source link if the image cannot load.
-                        image.addEventListener("error", () => image.remove());
+                media.appendChild(createEventPhotoGallery(properties));
 
-                        media.appendChild(image);
-                    } else if (evidenceType === "video") {
-    let videoId = null;
+                const dhmContext = createDhmContext(eventId(properties));
 
-    if (
-        url.hostname === "youtube.com" ||
-        url.hostname === "www.youtube.com" ||
-        url.hostname === "m.youtube.com"
-    ) {
-        videoId = url.searchParams.get("v");
-    } else if (url.hostname === "youtu.be") {
-        videoId = url.pathname.slice(1);
-    }
-
-    if (videoId && /^[A-Za-z0-9_-]{11}$/.test(videoId)) {
-        const iframe = document.createElement("iframe");
-
-        iframe.src = "https://www.youtube-nocookie.com/embed/" + videoId;
-        iframe.title = "Flood video evidence";
-        iframe.style.cssText = "width:100%;aspect-ratio:16/9;border:0;";
-        iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
-        iframe.allowFullscreen = true;
-
-        media.appendChild(iframe);
-    } else if (/\.(mp4|webm|ogg)$/i.test(url.pathname)) {
-        const video = document.createElement("video");
-
-        video.src = url.href;
-        video.controls = true;
-        video.preload = "metadata";
-
-        media.appendChild(video);
-    }
-}
+                if (dhmContext) {
+                    content.appendChild(dhmContext);
                 }
-            } catch {
-    if (sourceUrl) {
-        console.warn("Missing or invalid source URL:", sourceUrl);
-    }
-}
+            } else if (evidenceType === "image") {
+                // Prefer the processed image URL, falling back to the source.
+                const imageURL = getPopupURL(properties.image_url) || sourceURL;
 
-if (isEvent) {
-    const dhmContext = createDhmContext(id);
-    if (dhmContext) content.appendChild(dhmContext);
-}
-        // Display your custom element inside Leaflet's popup.
+                if (imageURL) {
+                    const image = document.createElement("img");
+
+                    image.alt = properties.description || title;
+                    image.loading = "lazy";
+                    image.style.cssText =
+                        "display:block;width:100%;max-height:240px;object-fit:contain;";
+
+                    // Keep the card and source link if the image fails.
+                    image.addEventListener("error", () => {
+                        image.remove();
+                    }, { once: true });
+
+                    image.src = imageURL.href;
+                    media.appendChild(image);
+                }
+            } else if (evidenceType === "video") {
+                // Prefer the processed video URL, falling back to the source.
+                const videoURL = getPopupURL(properties.video_url) || sourceURL;
+
+                if (videoURL) {
+                    appendPopupVideo(media, videoURL, title);
+                }
+            }
+
             marker.bindPopup(content, {
                 className: "custom-popup",
                 maxWidth: 420,
@@ -421,44 +484,28 @@ function renderEventsLayer(selected) {
 }
 
 function renderObservationsLayer(selected) {
-    const matchingEvidence = layerData.observations.filter(function (feature) {
-        const properties = feature.properties;
     const errorBox = document.getElementById("dateFilterError");
 
-        // Link evidence to its parent event by ID, never by its title.
-        const matchesParentEvent = matchesEvent(selected.event, properties);
-        const matchesRiver = matches(
-            selected.river,
-            properties.river,
-            normalizeRiverName
-        );
-        const matchesWatershed = matches(selected.watershed, properties.watershed);
-        const evidenceType = String(properties.evidence_type || "")
-            .trim()
-            .toLowerCase();
-
-        const isSupportedEvidence = ["image", "video"].includes(evidenceType);
-
-        const matchesEvidenceType =
-            selected.evidence === "all" ||
-            evidenceType === selected.evidence.toLowerCase();
-
-        return isSupportedEvidence && matchesParentEvent && matchesRiver &&
-            matchesWatershed && matchesEvidenceType;
-    });
+    // Clear the previous error message.
     if (errorBox) {
         errorBox.hidden = true;
         errorBox.textContent = "";
     }
 
     try {
-        // Pass observation properties to the shared filter.
-        const observations = layerData.observations.map(
-            feature => feature.properties
-        );
+        // Only images and videos belong on the map.
+        // News reports and social media links remain available in the gallery.
+        const supportedFeatures = layerData.observations.filter(feature => {
+            const evidenceType = normalize(
+                feature.properties?.evidence_type
+            );
 
+            return ["image", "video"].includes(evidenceType);
+        });
+
+        // Apply the shared event, river, watershed, type, and date filters.
         const filteredObservations = get_filtered_observations(
-            observations,
+            supportedFeatures.map(feature => feature.properties),
             {
                 event: selected.event,
                 river: selected.river,
@@ -466,28 +513,27 @@ function renderObservationsLayer(selected) {
                 observationType: selected.evidence,
                 startDate: selected.startDate,
                 endDate: selected.endDate,
-                riverNormalizer: normalizeRiverName,
+                riverNormalizer: normalizeRiverName
             }
         );
 
-        // Keep the original GeoJSON features, including their geometry.
+        // Preserve each matching observation's original GeoJSON geometry.
         const matchingProperties = new Set(filteredObservations);
 
-        const matchingFeatures = layerData.observations.filter(
-            feature => matchingProperties.has(feature.properties)
+        const matchingFeatures = supportedFeatures.filter(feature =>
+            matchingProperties.has(feature.properties)
         );
 
         replaceFeatures(observationsLayer, matchingFeatures);
-
     } catch (error) {
-        // Clear old results so they do not appear to match invalid filters.
+        // Clear stale markers and display the error.
         replaceFeatures(observationsLayer, []);
+
+        console.error("Could not display observations:", error);
 
         if (errorBox) {
             errorBox.hidden = false;
             errorBox.textContent = error.message;
-        } else {
-            console.error("Could not filter observations:", error);
         }
     }
 }

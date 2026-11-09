@@ -108,7 +108,10 @@ function get_filtered_observations(
         return (
             matchesEvent &&
             matches(watershed, observation.watershed) &&
-            matches(river, observation.river) &&
+            (
+                normalizeFilterValue(river) === "all" ||
+                riverNormalizer(river) === riverNormalizer(observation.river ?? "")
+            ),
             matches(observationType, evidenceType) &&
             matchesDate
         );
