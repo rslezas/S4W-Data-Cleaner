@@ -421,6 +421,7 @@ function renderEventsLayer(selected) {
 function renderObservationsLayer(selected) {
     const matchingEvidence = layerData.observations.filter(function (feature) {
         const properties = feature.properties;
+    const errorBox = document.getElementById("dateFilterError");
 
         // Link evidence to its parent event by ID, never by its title.
         const matchesParentEvent = matchesEvent(selected.event, properties);
@@ -443,8 +444,50 @@ function renderObservationsLayer(selected) {
         return isSupportedEvidence && matchesParentEvent && matchesRiver &&
             matchesWatershed && matchesEvidenceType;
     });
+    if (errorBox) {
+        errorBox.hidden = true;
+        errorBox.textContent = "";
+    }
 
-    replaceFeatures(observationsLayer, matchingEvidence);
+    try {
+        // Pass observation properties to the shared filter.
+        const observations = layerData.observations.map(
+            feature => feature.properties
+        );
+
+        const filteredObservations = get_filtered_observations(
+            observations,
+            {
+                event: selected.event,
+                river: selected.river,
+                watershed: selected.watershed,
+                observationType: selected.evidence,
+                startDate: selected.startDate,
+                endDate: selected.endDate,
+                riverNormalizer: normalizeRiverName,
+            }
+        );
+
+        // Keep the original GeoJSON features, including their geometry.
+        const matchingProperties = new Set(filteredObservations);
+
+        const matchingFeatures = layerData.observations.filter(
+            feature => matchingProperties.has(feature.properties)
+        );
+
+        replaceFeatures(observationsLayer, matchingFeatures);
+
+    } catch (error) {
+        // Clear old results so they do not appear to match invalid filters.
+        replaceFeatures(observationsLayer, []);
+
+        if (errorBox) {
+            errorBox.hidden = false;
+            errorBox.textContent = error.message;
+        } else {
+            console.error("Could not filter observations:", error);
+        }
+    }
 }
 
 function geographicFeatures(data) {
@@ -456,17 +499,17 @@ function geographicFeatures(data) {
 
 // Load independent files once. Each loader stores data in its own collection.
 async function loadRivers() {
-    const data = await loadJSON(DATA_PATHS.rivers);
+    const data = await loadJSON(data_paths.rivers);
     layerData.rivers = geographicFeatures(data);
 }
 
 async function loadWatersheds() {
-    const data = await loadJSON(DATA_PATHS.watersheds);
+    const data = await loadJSON(data_paths.watersheds);
     layerData.watersheds = geographicFeatures(data);
 }
 
 async function loadEvents() {
-    const events = await loadCSV(DATA_PATHS.events);
+    const events = await loadCSV(data_paths.events);
 
     eventRecords.clear();
     events.forEach(function (event) {
@@ -478,7 +521,7 @@ async function loadEvents() {
 }
 
 async function loadObservations() {
-    const observations = await loadCSV(DATA_PATHS.observations);
+    const observations = await loadCSV(data_paths.observations);
 
     layerData.observations = observationsToGeoJSON(observations).features;
 }
@@ -524,26 +567,23 @@ async function initializeLayers() {
     refreshLayers();
 }
 
-["eventFilter", "riverFilter", "watershedFilter", "evidenceFilter"]
-    .forEach(id => document.getElementById(id)?.addEventListener("change", refreshLayers));
+[
+    "eventFilter",
+    "riverFilter",
+    "watershedFilter",
+    "evidenceFilter",
+    "startDateFilter",
+    "endDateFilter",
+].forEach(id => {
+    document.getElementById(id)?.addEventListener(
+        "change",
+        refreshLayers
+    );
+});
+
 initializeLayers();
 
-/* Municipality loading remains disabled.
-loadJSON("data/geojson/kathmandu_municipalities.geojson")
-    .then(data => {
-        const municipalityLayer = L.geoJSON(data, {
-            pane: "municipalitiesPane",
-            style: { color: "#8b5cf6", weight: 2, opacity: 0.8, fillOpacity: 0.03 },
-            filter: feature => ["Polygon", "MultiPolygon"].includes(feature.geometry?.type),
-            onEachFeature: (feature, layer) => layer.bindPopup(
-                popup("Municipality: " + featureName(feature, "name"))
-            )
-        });
-        layerControl.addOverlay(municipalityLayer, "Municipalities");
-    })
-    .catch(error => console.error("Municipality loading error:", error));
-*/
-
+// TODO: Convert this data and read from a csv
 const eventDhmReports = {
     "FLOOD-2024-003": {
     url: "https://dhm.gov.np/uploads/dhm/climateService/July_2024-Preliminary_precipitation_and_temperature_summary.pdf",
