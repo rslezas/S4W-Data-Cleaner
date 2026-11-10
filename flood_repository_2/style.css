@@ -432,16 +432,6 @@ p {
     margin: 0 0 18px;
 }
 
-/* 
-   14. Gallery Layout
-    */
-
-.gallery {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
-}
-
 .number {
     color: var(--blue);
     font-size: 12px;
@@ -1512,5 +1502,143 @@ input.filter-dropdown {
 @media (max-width: 700px) {
     .navigation-cards {
         grid-template-columns: 1fr;
+    }
+}
+
+/* One spacious card per row. */
+.observation-list {
+    display: grid;
+    gap: 20px;
+}
+
+/* Title and text on the left; media spans both rows on the right. */
+.observation {
+    box-sizing: border-box;
+    min-width: 0;
+    padding: 24px;
+
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    grid-template-rows: auto 1fr;
+    grid-template-areas:
+        "title media"
+        "text  media";
+    gap: 12px 28px;
+
+    border: 1px solid var(--line, #dbe3e8);
+    border-radius: 12px;
+    background: #fff;
+    color: var(--ink, #183440);
+}
+
+/* Keep titles prominent without crowding the description. */
+.observation > h3 {
+    grid-area: title;
+    margin: 0;
+    font-size: 20px;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+}
+
+.observation-text {
+    grid-area: text;
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.observation p {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.65;
+    color: var(--muted, #586b75);
+    overflow-wrap: anywhere;
+}
+
+/* Author, date, and location appear above the description. */
+.observation-text > p:first-child {
+    font-size: 12px;
+    color: var(--muted, #586b75);
+}
+
+/* Keep the source link near the bottom of the text area. */
+.observation-text > a {
+    margin-top: auto;
+    padding-top: 8px;
+    color: #155e75;
+    font-size: 14px;
+    font-weight: 600;
+    text-underline-offset: 3px;
+}
+
+.observation-text > a:focus-visible {
+    outline: 2px solid #327f96;
+    outline-offset: 4px;
+}
+
+/* A consistent preview size, independent of description length. */
+.observation-media {
+    grid-area: media;
+    min-width: 0;
+    align-self: start;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    border-radius: 8px;
+    background: #eef3f5;
+}
+
+.observation-media img,
+.observation-media video,
+.observation-media iframe {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+
+.observation-media img {
+    object-fit: cover;
+}
+
+.observation-media video {
+    object-fit: contain;
+    background: #000;
+}
+
+/* Keep media error messages readable. */
+.observation-media > p {
+    padding: 16px;
+}
+
+/* Cards without media use the full width for text. */
+.observation:has(.observation-media:empty) {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+        "title"
+        "text";
+}
+
+.observation-media:empty {
+    display: none;
+}
+
+/* On smaller screens: title, preview, then details. */
+@media (max-width: 700px) {
+    .observation {
+        padding: 18px;
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: auto;
+        grid-template-areas:
+            "title"
+            "media"
+            "text";
+        gap: 16px;
+    }
+
+    .observation > h3 {
+        font-size: 18px;
     }
 }
