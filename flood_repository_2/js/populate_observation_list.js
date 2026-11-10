@@ -126,6 +126,11 @@ function createObservationCard(observation) {
     const card = document.createElement("article");
     card.className = "observation";
 
+    const title = document.createElement("h3");
+    title.textContent = observation.observation_title || "Flood observation";
+
+    card.appendChild(title);
+
     const textContent = document.createElement("div");
     textContent.className = "observation-text";
 
@@ -133,12 +138,6 @@ function createObservationCard(observation) {
     mediaContent.className = "observation-media";
 
     card.append(textContent, mediaContent);
-
-    const title = document.createElement("h2");
-    title.textContent =
-        observation.observation_title || "Flood observation";
-
-    textContent.appendChild(title);
 
     // Keep URL names distinct from HTML element names.
     const sourceURL = getSourceURL(observation.source_url);
@@ -208,7 +207,7 @@ function createObservationCard(observation) {
     const details = document.createElement("p");
     details.textContent = details_str
 
-    card.appendChild(details);
+    textContent.appendChild(details);
 
     if (observation.description) {
         const maxWords = desc_word_limit;

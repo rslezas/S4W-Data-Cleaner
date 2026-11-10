@@ -1505,45 +1505,89 @@ input.filter-dropdown {
     }
 }
 
+/* One spacious card per row. */
 .observation-list {
-    display: column;
-    gap: 24px;
-}
-
-/* Text on the left, media on the right. */
-.observation {
-    box-sizing: border-box;
-    height: 360px;
-    min-width: 0;
-    padding: 20px;
-    border: 1px solid var(--line);
-    color: var(--ink);
-
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: 20px;
 }
 
-/* Scroll long text without shrinking the media. */
-.observation-text {
+/* Title and text on the left; media spans both rows on the right. */
+.observation {
+    box-sizing: border-box;
     min-width: 0;
-    min-height: 0;
-    overflow-y: auto;
+    padding: 24px;
+
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    grid-template-rows: auto 1fr;
+    grid-template-areas:
+        "title media"
+        "text  media";
+    gap: 12px 28px;
+
+    border: 1px solid var(--line, #dbe3e8);
+    border-radius: 12px;
+    background: #fff;
+    color: var(--ink, #183440);
+}
+
+/* Keep titles prominent without crowding the description. */
+.observation > h3 {
+    grid-area: title;
+    margin: 0;
+    font-size: 20px;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+}
+
+.observation-text {
+    grid-area: text;
+    min-width: 0;
 
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    align-items: flex-start;
+    gap: 12px;
 }
 
-.observation-text > * {
-    flex-shrink: 0;
+.observation p {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.65;
+    color: var(--muted, #586b75);
+    overflow-wrap: anywhere;
 }
 
+/* Author, date, and location appear above the description. */
+.observation-text > p:first-child {
+    font-size: 12px;
+    color: var(--muted, #586b75);
+}
+
+/* Keep the source link near the bottom of the text area. */
+.observation-text > a {
+    margin-top: auto;
+    padding-top: 8px;
+    color: #155e75;
+    font-size: 14px;
+    font-weight: 600;
+    text-underline-offset: 3px;
+}
+
+.observation-text > a:focus-visible {
+    outline: 2px solid #327f96;
+    outline-offset: 4px;
+}
+
+/* A consistent preview size, independent of description length. */
 .observation-media {
+    grid-area: media;
     min-width: 0;
-    min-height: 0;
+    align-self: start;
+    aspect-ratio: 16 / 10;
     overflow: hidden;
     border-radius: 8px;
+    background: #eef3f5;
 }
 
 .observation-media img,
@@ -1564,38 +1608,37 @@ input.filter-dropdown {
     background: #000;
 }
 
-.observation:hover {
-    border-color: #327f96;
-    background: #f8fbfc;
+/* Keep media error messages readable. */
+.observation-media > p {
+    padding: 16px;
 }
 
-.observation p {
-    margin: 0;
-    font-size: 14px;
-    color: var(--muted);
-}
-
-.observation h3 {
-    margin: 0;
-}
-
-/* Give text the full width when no media was added. */
+/* Cards without media use the full width for text. */
 .observation:has(.observation-media:empty) {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+        "title"
+        "text";
 }
 
 .observation-media:empty {
     display: none;
 }
 
-/* Stack text and media on smaller screens. */
-@media (max-width: 600px) {
+/* On smaller screens: title, preview, then details. */
+@media (max-width: 700px) {
     .observation {
-        height: auto;
-        grid-template-columns: 1fr;
+        padding: 18px;
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: auto;
+        grid-template-areas:
+            "title"
+            "media"
+            "text";
+        gap: 16px;
     }
 
-    .observation-media:not(:empty) {
-        height: 220px;
+    .observation > h3 {
+        font-size: 18px;
     }
 }
