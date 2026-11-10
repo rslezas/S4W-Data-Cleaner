@@ -432,16 +432,6 @@ p {
     margin: 0 0 18px;
 }
 
-/* 
-   14. Gallery Layout
-    */
-
-.gallery {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
-}
-
 .number {
     color: var(--blue);
     font-size: 12px;
@@ -1512,5 +1502,100 @@ input.filter-dropdown {
 @media (max-width: 700px) {
     .navigation-cards {
         grid-template-columns: 1fr;
+    }
+}
+
+.observation-list {
+    display: column;
+    gap: 24px;
+}
+
+/* Text on the left, media on the right. */
+.observation {
+    box-sizing: border-box;
+    height: 360px;
+    min-width: 0;
+    padding: 20px;
+    border: 1px solid var(--line);
+    color: var(--ink);
+
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 20px;
+}
+
+/* Scroll long text without shrinking the media. */
+.observation-text {
+    min-width: 0;
+    min-height: 0;
+    overflow-y: auto;
+
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.observation-text > * {
+    flex-shrink: 0;
+}
+
+.observation-media {
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
+    border-radius: 8px;
+}
+
+.observation-media img,
+.observation-media video,
+.observation-media iframe {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+
+.observation-media img {
+    object-fit: cover;
+}
+
+.observation-media video {
+    object-fit: contain;
+    background: #000;
+}
+
+.observation:hover {
+    border-color: #327f96;
+    background: #f8fbfc;
+}
+
+.observation p {
+    margin: 0;
+    font-size: 14px;
+    color: var(--muted);
+}
+
+.observation h3 {
+    margin: 0;
+}
+
+/* Give text the full width when no media was added. */
+.observation:has(.observation-media:empty) {
+    grid-template-columns: 1fr;
+}
+
+.observation-media:empty {
+    display: none;
+}
+
+/* Stack text and media on smaller screens. */
+@media (max-width: 600px) {
+    .observation {
+        height: auto;
+        grid-template-columns: 1fr;
+    }
+
+    .observation-media:not(:empty) {
+        height: 220px;
     }
 }
