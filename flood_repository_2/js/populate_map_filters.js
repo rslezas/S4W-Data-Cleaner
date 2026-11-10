@@ -19,24 +19,49 @@ function populateEventFilter() {
     }
 
     const previousSelection = select.value;
-    const events = Array.from(eventRecords.values());
+    const selectedRiver = document.getElementById("riverFilter")?.value || "all";
+    const selectedWatershed = document.getElementById("watershedFilter")?.value || "all";
 
-    events.sort(function (firstEvent, secondEvent) {
-       return (firstEvent.name || "").localeCompare(secondEvent.name || "");
+    const events = Array.from(eventRecords.values()).filter(event => {
+        const id = eventId(event);
+
+        const observations = layerData.observations.filter(feature =>
+            eventId(feature.properties) === id
+        );
+
+        const watershedMatches = selectedWatershed === "all" ||
+            observations.some(feature =>
+                matches(selectedWatershed, feature.properties.watershed)
+            );
+
+        const riverMatches = selectedRiver === "all" ||
+            observations.some(feature =>
+                matches(
+                    selectedRiver,
+                    feature.properties.river,
+                    normalizeRiverName
+                )
+            ) ||
+            String(event.river || "").split(";").some(river =>
+                matches(selectedRiver, river, normalizeRiverName)
+            );
+
+        return watershedMatches && riverMatches;
     });
+
+    events.sort((a, b) =>
+        (a.name || "").localeCompare(b.name || "")
+    );
 
     select.replaceChildren(new Option("All Events", "all"));
 
     for (const event of events) {
-        const option = new Option(event.name, eventId(event));
-        select.add(option);
+        select.add(new Option(event.name, eventId(event)));
     }
 
-    if (eventRecords.has(previousSelection)) {
-        select.value = previousSelection;
-    } else {
-        select.value = "all";
-    }
+    select.value = events.some(event =>
+        eventId(event) === previousSelection
+    ) ? previousSelection : "all";
 }
 
 function populateFilters() {

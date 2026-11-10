@@ -8,6 +8,24 @@ const data_paths = {
 };
 
 const map = L.map("map").setView([27.7172, 85.3240], 11);
+
+const spiderfier = typeof OverlappingMarkerSpiderfier !== "undefined"
+    ? new OverlappingMarkerSpiderfier(map, {
+        keepSpiderfied: false,
+        nearbyDistance: 20,
+        circleSpiralSwitchover: 9
+    })
+    : {
+        addMarker() {},
+        removeMarker() {},
+        addListener() {}
+    };
+spiderfier.addListener("click", function (marker) {
+    setTimeout(function () {
+        marker.openPopup();
+    }, 100);
+});
+
 for (const [name, zIndex] of Object.entries({
     watershedsPane: 410,
     riversPane: 420,
@@ -310,12 +328,19 @@ function makePointLayer(pane, color, isEvent = false) {
                 ? "Flood event"
                 : `Flood evidence: ${evidenceType}`;
 
-            return L.marker(latlng, {
-                pane: pane,
-                icon: getPinIcon(pinColor),
-                title: label,
-                alt: label
-            });
+const marker = L.marker(latlng, {
+    pane: pane,
+    icon: getPinIcon(pinColor),
+    title: label,
+    alt: label
+});
+
+if (!isEvent) {
+    spiderfier.addMarker(marker);
+}
+
+return marker;
+
         },
 
         onEachFeature: function (feature, marker) {
@@ -438,6 +463,8 @@ const layerData = {
 
 // Shared refresh reads the controls once; no network calls or new layers.
 function refreshLayers() {
+    populateEventFilter();
+
     const selected = getFilters();
 
     renderRiversLayer(selected);
@@ -445,17 +472,54 @@ function refreshLayers() {
     renderEventsLayer(selected);
     renderObservationsLayer(selected);
 
-    // Automatically zoom to the selected flood event's observations.
-    if (selected.event !== "all" && observationsLayer.getLayers().length > 0) {
+    // Zoom to all geolocated observations linked to the selected event,
+// even when their evidence types are not displayed as map markers.
+if (selected.event !== "all") {
+    const eventObservations = layerData.observations.filter(feature =>
+        eventId(feature.properties) === selected.event
+    );
+
+    const bounds = L.geoJSON({
+        type: "FeatureCollection",
+        features: eventObservations
+    }).getBounds();
+
+    // Fall back to the event marker when no observations have coordinates.
+    if (!bounds.isValid()) {
+        const eventFeatures = layerData.events.filter(feature =>
+            eventId(feature.properties) === selected.event
+        );
+
+        const eventBounds = L.geoJSON({
+            type: "FeatureCollection",
+            features: eventFeatures
+        }).getBounds();
+
+        if (eventBounds.isValid()) {
+            map.invalidateSize();
+            map.fitBounds(eventBounds, {
+                padding: [30, 30],
+                maxZoom: 14
+            });
+        }
+    } else {
         map.invalidateSize();
-        map.fitBounds(observationsLayer.getBounds(), {
+        map.fitBounds(bounds, {
             padding: [30, 30],
             maxZoom: 14
         });
     }
 }
+}
 
 function replaceFeatures(layer, features) {
+    // Remove old point markers from the spiderfier before clearing the layer.
+    if (layer === eventsLayer || layer === observationsLayer) {
+        layer.eachLayer(function (marker) {
+            spiderfier.removeMarker(marker);
+        });
+    }
+
     layer.clearLayers();
     layer.addData({ type: "FeatureCollection", features });
 }
@@ -477,11 +541,19 @@ function renderWatershedsLayer(selected) {
 }
 
 function renderEventsLayer(selected) {
-    // Event selection controls regional event references; evidence-specific
-    // filters apply to observations, not the regional reference marker.
-    replaceFeatures(eventsLayer, layerData.events.filter(feature =>
-        matchesEvent(selected.event, feature.properties)
-    ));
+    // Show only events available under the selected watershed and river.
+    const availableEventIds = new Set(
+        Array.from(document.getElementById("eventFilter").options)
+            .map(option => option.value)
+            .filter(id => id !== "all")
+    );
+
+    replaceFeatures(eventsLayer, layerData.events.filter(feature => {
+        const id = eventId(feature.properties);
+
+        return availableEventIds.has(id) &&
+            matchesEvent(selected.event, feature.properties);
+    }));
 }
 
 function renderObservationsLayer(selected) {
