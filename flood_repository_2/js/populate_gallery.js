@@ -2,6 +2,7 @@ const placeholder_src = "https://media.istockphoto.com/id/1980276924/vector/no-p
 
 let galleryObservations = [];
 let galleryEvents = [];
+let galleryDhmReports = {};
 
 const desc_word_limit = 20;
 
@@ -72,9 +73,12 @@ function getFilteredObservations() {
         errorElement.textContent = "";
     }
 
-    const approvedObservations = galleryObservations.filter(observation =>
-        allowedFlags.includes(getQCFlag(observation))
-    );
+const approvedObservations = galleryObservations.filter(observation =>
+    allowedFlags.includes(getQCFlag(observation))
+);
+
+
+
 
     let filteredObservations;
 
@@ -128,6 +132,7 @@ function createGalleryCard(observation) {
         observation.observation_title || "Flood observation";
 
     card.appendChild(title);
+
 
     // Keep URL names distinct from HTML element names.
     const sourceURL = getSourceURL(observation.source_url);
@@ -188,16 +193,31 @@ function createGalleryCard(observation) {
         image.src = "images/social_media_placeholder.png";
         card.appendChild(image);
     }
-    else if (imageURL) {
-        const image = document.createElement("img");
+else if (imageURL) {
+    const image = document.createElement("img");
 
-        image.alt = title.textContent;
-        image.style.width = "100%";
-        image.style.display = "block";
+    image.alt = title.textContent;
+    image.style.width = "100%";
+    image.style.display = "block";
 
-        image.src = imageURL;
-        card.appendChild(image);
-    }
+    image.onerror = function () {
+        const fallback = document.createElement("div");
+
+        fallback.textContent = "Image preview unavailable";
+        fallback.style.cssText =
+            "padding:28px 12px;" +
+            "background:#f1f5f7;" +
+            "color:#586b75;" +
+            "text-align:center;" +
+            "font-size:13px;" +
+            "border-radius:6px;";
+
+        image.replaceWith(fallback);
+    };
+
+    image.src = imageURL;
+    card.appendChild(image);
+}
 
     let details_str = [
         observation.author || "Author Unknown",
@@ -211,7 +231,7 @@ function createGalleryCard(observation) {
             ? new URL(sourceURL).hostname.replace(/^www\./, "")
             : "Unknown Source";
 
-        details_str = 
+        details_str =
         [
             site_name,
             observation.datetime
@@ -253,6 +273,7 @@ function createGalleryCard(observation) {
 
         card.appendChild(link);
     }
+    // Add the DHM report associated with this observation's flood event.
 
     return card;
 }
@@ -262,15 +283,76 @@ function renderGallery() {
     if (!gallery) return;
 
     const observations = getFilteredObservations();
+    const selectedEvent =
+        document.getElementById("event-select")?.value || "all";
 
-    if (observations.length === 0) {
-        gallery.textContent = "No observations match the selected filters.";
-        return;
+    gallery.replaceChildren();
+
+    // Display observations matching the selected filters.
+if (observations.length === 0) {
+    const section = document.createElement("section");
+    section.style.cssText =
+        "grid-column:1/-1;padding:20px 24px;" +
+        "background:#f5f8fa;border:1px solid #dce5e9;" +
+        "border-radius:6px;";
+
+    const heading = document.createElement("h3");
+    heading.textContent = "Event Observations";
+
+    const message = document.createElement("p");
+    message.textContent =
+        "No observation records are currently displayed " +
+        "for this event under the selected filters.";
+
+    const explanation = document.createElement("p");
+    explanation.textContent =
+        "This does not mean flooding did not occur. " +
+        "DHM rainfall information may still be available " +
+        "below as regional environmental context.";
+    explanation.style.cssText =
+        "font-size:13px;color:#586b75;margin-top:8px;";
+
+    section.append(heading, message, explanation);
+    gallery.appendChild(section);
+}
+    else {
+        gallery.append(
+            ...observations.map(createGalleryCard)
+        );
     }
 
-    gallery.replaceChildren(
-        ...observations.map(createGalleryCard)
-    );
+    // Display the DHM report for the selected event.
+    if (selectedEvent !== "all") {
+        const report = galleryDhmReports[selectedEvent];
+
+        if (report) {
+            const section = document.createElement("section");
+            section.className = "panel report";
+            section.style.gridColumn = "1 / -1";
+            section.style.cssText =
+                "grid-column:1/-1;display:flex;flex-direction:column;" +
+                "align-items:flex-start;gap:12px;padding:24px;" +
+                "border:1px solid #dce5e9;background:#fff;";
+
+            const heading = document.createElement("h3");
+            heading.textContent = "Environmental Context";
+
+            const description = document.createElement("p");
+            description.textContent =
+                "DHM rainfall information associated with this " +
+                "flood event. Regional reports do not necessarily " +
+                "document rainfall at the exact flood location.";
+
+            const link = document.createElement("a");
+            link.href = report.url;
+            link.textContent = report.label;
+            link.target = "_blank";
+            link.rel = "noopener noreferrer";
+
+            section.append(heading, description, link);
+            gallery.appendChild(section);
+        }
+    }
 }
 
 async function initializeGallery() {
@@ -280,14 +362,29 @@ async function initializeGallery() {
     gallery.textContent = "Loading observations and checking images…";
 
     try {
-        const [observations, events] = await Promise.all([
+        const [observations, events, dhmReports] = await Promise.all([
             loadCSV("data/processed_observations.csv"),
-            loadCSV("data/events.csv")
+            loadCSV("data/events.csv"),
+            loadCSV("data/event_dhm_reports.csv")
         ]);
+
 
         galleryEvents = events;
         galleryObservations = observations;
 
+galleryDhmReports = {};
+
+dhmReports.forEach(report => {
+    const eventId = String(report.event_id || "").trim();
+    const url = getSourceURL(report.url);
+
+    if (eventId && url) {
+        galleryDhmReports[eventId] = {
+            url: url,
+            label: report.label || "View DHM rainfall report"
+        };
+    }
+});
         populateGalleryFilters(galleryObservations);
 
         // Register one listener per dropdown.

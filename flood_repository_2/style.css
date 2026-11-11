@@ -1,6 +1,6 @@
 /* Merged stylesheet. style.css wins conflicts; unique style2.css declarations are retained. Responsive overrides remain in their own media-query scopes. */
 
-/* 
+/*
    01. Observation Popups
     */
 
@@ -23,7 +23,7 @@
     display: block;
 }
 
-/* 
+/*
    02. Event Cards and Status
     */
 
@@ -45,7 +45,7 @@
     font-weight: bold;
 }
 
-/* 
+/*
    03. Timeline Items
     */
 
@@ -62,7 +62,7 @@
     color: #155e75;
 }
 
-/* 
+/*
    04. Streamflow Tables
     */
 
@@ -92,7 +92,7 @@
 
 /* Design tokens: shared colors used throughout all pages. */
 
-/* 
+/*
    05. Shared Colors and Design Tokens
     */
 
@@ -108,7 +108,7 @@
 
 /* Base sizing and typography. */
 
-/* 
+/*
    06. Base Styles and Accessibility
     */
 
@@ -143,7 +143,7 @@ select:focus-visible {
 
 /* Shared content width and draft status strip. */
 
-/* 
+/*
    07. Page Width and Draft Banner
     */
 
@@ -169,7 +169,7 @@ select:focus-visible {
 
 /* Shared header, wordmark, and page navigation. */
 
-/* 
+/*
    08. Header, Branding and Navigation
     */
 
@@ -229,7 +229,7 @@ nav a[aria-current] {
 
 /* Reusable action buttons. */
 
-/* 
+/*
    09. Buttons
     */
 
@@ -257,7 +257,7 @@ nav a[aria-current] {
 
 /* Home hero layout and introductory text. */
 
-/* 
+/*
    10. Home Hero
     */
 
@@ -311,7 +311,7 @@ nav a[aria-current] {
     font-size: 13px;
 }
 
-/* 
+/*
    11. Images and Thumbnails
     */
 
@@ -339,7 +339,7 @@ nav a[aria-current] {
 
 /* Image and embed placeholders. Replace their contents when assets are available. */
 
-/* 
+/*
    12. Placeholders
     */
 
@@ -392,7 +392,7 @@ nav a[aria-current] {
 
 /* Shared section spacing, cards, and headings. */
 
-/* 
+/*
    13. Sections and Typography
     */
 
@@ -444,7 +444,7 @@ p {
     color: #276c82;
 }
 
-/* 
+/*
    16. Feature and Contribution Sections
     */
 
@@ -487,7 +487,7 @@ p {
 
 /* Shared footer layout and resource links. */
 
-/* 
+/*
    17. Footer
     */
 
@@ -533,7 +533,7 @@ footer {
 
 /* Inner-page headings and lead descriptions. */
 
-/* 
+/*
    18. Page Headings and Notices
     */
 
@@ -566,7 +566,7 @@ footer {
 
 /* Map page: sidebar filters and map placeholder. */
 
-/* 
+/*
    19. Panels and Form Controls
     */
 
@@ -605,7 +605,7 @@ select {
     opacity: 1;
 }
 
-/* 
+/*
    20. Embedded Content
     */
 
@@ -624,7 +624,7 @@ select {
 
 /* Event summary, status tags, and chronology. */
 
-/* 
+/*
    21. Event Overview and Timeline
     */
 
@@ -675,7 +675,7 @@ select {
 
 /* Evidence gallery cards and report panel. */
 
-/* 
+/*
    22. Evidence Media and Reports
     */
 
@@ -729,7 +729,7 @@ select {
 
 /* Data and methods: columns and measurement table. */
 
-/* 
+/*
    23. Data and Methods Tables
     */
 
@@ -779,7 +779,7 @@ caption {
 
 /* Contribution page width and three-step workflow. */
 
-/* 
+/*
    24. Contribution Workflow
     */
 
@@ -815,7 +815,7 @@ caption {
 
 /* Keyboard-only skip link becomes visible when focused. */
 
-/* 
+/*
    25. Keyboard Skip Link
     */
 
@@ -834,7 +834,7 @@ caption {
 
 /* Tablet layout: wrap navigation and reduce column gaps. */
 
-/* 
+/*
    26. Responsive Layout: 1050px
     */
 
@@ -880,7 +880,7 @@ caption {
 
 /* Small-screen layout: stack columns and allow navigation to scroll. */
 
-/* 
+/*
    27. Responsive Layout: 650px
     */
 
@@ -1001,7 +1001,7 @@ caption {
 
 }
 
-/* 
+/*
    28. Logo Images
     */
 
@@ -1017,7 +1017,7 @@ caption {
     height: auto;
 }
 
-/* 
+/*
    29. Map Filters
     */
 
@@ -1058,7 +1058,7 @@ caption {
     margin-bottom: 3px;
 }
 
-/* 
+/*
    30. Shared Filter Rows
     */
 
@@ -1095,7 +1095,7 @@ input.filter-dropdown {
     box-sizing: border-box;
 }
 
-/* 
+/*
    31. Map Layout and Panel Overrides
     */
 
@@ -1135,7 +1135,7 @@ input.filter-dropdown {
 
 /* Stack filters above the map on smaller screens. */
 
-/* 
+/*
    32. Responsive Map Layout: 800px
     */
 
@@ -1146,7 +1146,7 @@ input.filter-dropdown {
 
 }
 
-/* 
+/*
    33. ODK Embed
     */
 
@@ -1157,7 +1157,7 @@ input.filter-dropdown {
 
 /* Keep the filters and map side by side with matching panel heights. */
 
-/* 
+/*
    34. Map Layout and Panel Overrides
     */
 
@@ -1177,7 +1177,7 @@ input.filter-dropdown {
 
 /* Place the record count above a map that fills the remaining space. */
 
-/* 
+/*
    35. Map Panel and Record Count
     */
 
@@ -1199,7 +1199,7 @@ input.filter-dropdown {
 
 /* Keep the filters compact and vertically stacked. */
 
-/* 
+/*
    36. Map Filters
     */
 
@@ -1229,7 +1229,7 @@ input.filter-dropdown {
 
 /* Stack the panels on smaller screens. */
 
-/* 
+/*
    37. Responsive Map Layout: 800px
     */
 
@@ -1248,7 +1248,7 @@ input.filter-dropdown {
 
 /* Map legend container. */
 
-/* 
+/*
    38. Map Legend
     */
 
@@ -1288,7 +1288,7 @@ input.filter-dropdown {
     transform: rotate(-45deg);
 }
 
-/* 
+/*
    39. Leaflet Flood Popups
     */
 
@@ -1326,7 +1326,7 @@ input.filter-dropdown {
     border-radius: 6px;
 }
 
-/* 
+/*
    40. Custom Leaflet Popups
     */
 
@@ -1339,7 +1339,7 @@ input.filter-dropdown {
     border-radius: 8px;
 }
 
-/* 
+/*
    41. Evidence Card Content and Media
     */
 
@@ -1371,7 +1371,7 @@ input.filter-dropdown {
     display: none;
 }
 
-/* 
+/*
    42. Gallery Layout
     */
 
@@ -1381,13 +1381,13 @@ input.filter-dropdown {
     gap: 20px;
 }
 
-/* 
+/*
    43. Gallery Card Images
     */
 
 .card {
     box-sizing: border-box;
-    height: 360px;
+    height: auto;
     min-width: 0;
     border: 1px solid var(--line);
     padding: 20px;
@@ -1397,7 +1397,7 @@ input.filter-dropdown {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    overflow-y: auto;
+    overflow-y: visible;
 }
 
 /* Keep text at its natural height; let the image shrink first. */
