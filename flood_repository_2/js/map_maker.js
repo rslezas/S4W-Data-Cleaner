@@ -29,8 +29,8 @@ spiderfier.addListener("click", function (marker) {
 for (const [name, zIndex] of Object.entries({
     watershedsPane: 410,
     riversPane: 420,
-    eventsPane: 450,
-    observationsPane: 440
+    eventsPane: 440,
+    observationsPane: 450
 })) {
     map.createPane(name);
     map.getPane(name).style.zIndex = zIndex;
@@ -116,7 +116,8 @@ const watershedsLayer = L.geoJSON(null, {
 // Pin colours for each evidence category.
 const evidenceColors = {
     "image": "#2563eb",
-    "video": "#dc2626"
+    "video": "#dc2626",
+    "flood observation": "#16a34a"
 };
 
 const evidenceLegend = createEvidenceLegend(evidenceColors);
@@ -226,6 +227,36 @@ image.src = /^https?:\/\//i.test(photo)
     return gallery;
 }
 
+const brokenGooglePhotos = new Set();
+
+async function loadBrokenGooglePhotos() {
+    try {
+        const response = await fetch("data/broken_google_photos.json");
+
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
+
+        const urls = await response.json();
+
+        brokenGooglePhotos.clear();
+
+        for (const url of urls) {
+            brokenGooglePhotos.add(url);
+        }
+
+        console.log(
+            `Loaded ${brokenGooglePhotos.size} flagged broken Google Photos links.`
+        );
+    } catch (error) {
+        console.warn("Could not load broken Google Photos report:", error);
+    }
+}
+
+function isBrokenGooglePhotosURL(url) {
+    return url !== null && brokenGooglePhotos.has(url.href);
+}
+
 // Return a valid HTTP/HTTPS URL, or null.
 function getPopupURL(value) {
     try {
@@ -311,7 +342,16 @@ function appendPopupVideo(container, url, title) {
     video.src = url.href;
     container.appendChild(video);
 }
+// Check whether an observation shares its location with a flood event.
+function overlapsEvent(latlng) {
+    return layerData.events.some(feature => {
+        const coordinates = feature.geometry?.coordinates;
 
+        return coordinates &&
+            Math.abs(coordinates[1] - latlng.lat) < 0.0000001 &&
+            Math.abs(coordinates[0] - latlng.lng) < 0.0000001;
+    });
+}
 // Create a point layer with coloured pins and custom popups.
 function makePointLayer(pane, color, isEvent = false) {
     const layer = L.geoJSON(null, {
@@ -320,15 +360,46 @@ function makePointLayer(pane, color, isEvent = false) {
             const evidenceType = getPopupEvidenceType(properties);
 
             // Events keep their assigned colour; observations use their type.
-            const pinColor = isEvent
-                ? color
-                : evidenceColors[evidenceType] || evidenceColors.image || color;
+            // Determine whether an observation has a usable media URL.
+const imageURL = getPopupURL(properties.image_url) ||
+                 getPopupURL(properties.source_url);
 
-            const label = isEvent
-                ? "Flood event"
-                : `Flood evidence: ${evidenceType}`;
+const videoURL = getPopupURL(properties.video_url) ||
+                 getPopupURL(properties.source_url);
 
-const marker = L.marker(latlng, {
+const hasImage = evidenceType === "image" &&
+                 imageURL &&
+                 !isBrokenGooglePhotosURL(imageURL);
+
+const hasVideo = evidenceType === "video" && videoURL;
+
+// Assign green when no usable image or video URL is available.
+const pinColor = isEvent
+    ? color
+    : hasVideo
+        ? evidenceColors.video
+        : hasImage
+            ? evidenceColors.image
+            : evidenceColors["flood observation"];
+
+const label = isEvent
+    ? "Flood event"
+    : hasVideo
+        ? "Flood video observation"
+        : hasImage
+            ? "Flood photo observation"
+            : "Flood observation";
+// Shift overlapping observation pins 30 pixels to the right.
+let displayLatLng = latlng;
+
+if (!isEvent && overlapsEvent(latlng)) {
+    const point = map.project(latlng, map.getZoom());
+    const shiftedPoint = L.point(point.x + 30, point.y);
+
+    displayLatLng = map.unproject(shiftedPoint, map.getZoom());
+}
+
+const marker = L.marker(displayLatLng, {
     pane: pane,
     icon: getPinIcon(pinColor),
     title: label,
@@ -355,6 +426,11 @@ return marker;
             const content = document.createElement("article");
             content.className = "evidence-card";
 
+            // Allow all popup content to scroll, including observation photos.
+            content.style.maxHeight = "260px";
+            content.style.overflowY = "auto";
+            content.style.paddingRight = "8px";
+
             content.innerHTML = `
                 <h3 class="evidence-title"></h3>
                 <div class="evidence-media"></div>
@@ -372,18 +448,68 @@ return marker;
             const link = content.querySelector(".evidence-link");
 
             content.querySelector(".evidence-title").textContent = title;
+            // Display available observation details beneath the title.
+if (!isEvent) {
+    const details = document.createElement("div");
+    details.className = "evidence-details";
+    details.style.cssText = "font-size:13px;line-height:1.6;margin:8px 0;";
+
+    const fields = [
+        ["Date", properties.datetime],
+        ["Location", properties.location],
+        ["River", properties.river],
+        ["Watershed", properties.watershed],
+        ["Description", properties.description]
+    ];
+
+    fields.forEach(([label, value]) => {
+        if (value && String(value).trim()) {
+            const line = document.createElement("div");
+
+            const heading = document.createElement("strong");
+            heading.textContent = label + ": ";
+
+            const text = document.createElement("span");
+            text.textContent = String(value).trim();
+
+            line.appendChild(heading);
+            line.appendChild(text);
+            details.appendChild(line);
+        }
+    });
+
+    content.querySelector(".evidence-title").after(details);
+}
 
             // The source link is independent of image and video URLs.
             const sourceURL = getPopupURL(properties.source_url) ||
                 getPopupURL(properties.sourceUrl);
 
-            if (sourceURL) {
-                link.href = sourceURL.href;
-                link.hidden = false;
-            }
+
+// Hide source links flagged as broken by the Google Photos checker.
+if (sourceURL && !isBrokenGooglePhotosURL(sourceURL)) {
+    link.href = sourceURL.href;
+    link.hidden = false;
+}
+
 
             if (isEvent) {
                 // Events display their photo gallery and environmental context.
+                if (eventId(properties) === "FLOOD-2024-001") {
+    const context = document.createElement("p");
+
+    context.style.cssText =
+        "font-size:13px;line-height:1.5;margin:8px 0;";
+
+    context.textContent =
+        "Regional flood event affecting multiple waterways across " +
+        "Kathmandu Valley. Linked observations include Hanumante Khola, " +
+        "Nakkhu Khola, Balkhu, Bagmati River, and Godawari. " +
+        "This event may appear under individual river filters because " +
+        "observations from those rivers are associated with it.";
+
+    content.querySelector(".evidence-title").after(context);
+}
                 content.style.maxHeight = "260px";
                 content.style.overflowY = "auto";
                 content.style.paddingRight = "8px";
@@ -397,7 +523,15 @@ return marker;
                 }
             } else if (evidenceType === "image") {
                 // Prefer the processed image URL, falling back to the source.
-                const imageURL = getPopupURL(properties.image_url) || sourceURL;
+
+const candidateImageURL =
+    getPopupURL(properties.image_url) || sourceURL;
+
+const imageURL = candidateImageURL &&
+    !isBrokenGooglePhotosURL(candidateImageURL)
+        ? candidateImageURL
+        : null;
+
 
                 if (imageURL) {
                     const image = document.createElement("img");
@@ -651,8 +785,8 @@ async function initializeLayers() {
 
     populateEventFilter();
 
-    const loaders = [loadRivers, loadWatersheds, loadEvents, loadObservations, loadDhmReports];
-    const labels = ["Rivers", "Watersheds", "Events", "Evidence", "DHM Reports"];
+    const loaders = [loadRivers, loadWatersheds, loadEvents, loadObservations, loadDhmReports, loadBrokenGooglePhotos];
+    const labels = ["Rivers", "Watersheds", "Events", "Evidence", "DHM Reports", "Google Photos Link Report"];
     const results = await Promise.allSettled(loaders.map(function (load) {
         return load();
     }));

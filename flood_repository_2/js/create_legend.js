@@ -18,7 +18,8 @@
         const entries = [
             ["Flood Event", "#000000"],
             ["Image", evidenceColors["image"]],
-            ["Video", evidenceColors["video"]]
+            ["Video", evidenceColors["video"]],
+            ["Flood Observation", evidenceColors["flood observation"]]
         ];
 
         entries.forEach(function ([label, color]) {

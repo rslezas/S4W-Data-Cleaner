@@ -3,6 +3,7 @@ const placeholder_src = "https://media.istockphoto.com/id/1980276924/vector/no-p
 let galleryObservations = [];
 let galleryEvents = [];
 let galleryDhmReports = {};
+let galleryBrokenGooglePhotos = new Set();
 
 const desc_word_limit = 20;
 
@@ -193,7 +194,7 @@ function createGalleryCard(observation) {
         image.src = "images/social_media_placeholder.png";
         card.appendChild(image);
     }
-else if (imageURL) {
+else if (imageURL && !galleryBrokenGooglePhotos.has(imageURL)) {
     const image = document.createElement("img");
 
     image.alt = title.textContent;
@@ -258,7 +259,7 @@ else if (imageURL) {
         card.appendChild(description);
     }
 
-    if (sourceURL) {
+    if (sourceURL && !galleryBrokenGooglePhotos.has(sourceURL)) {
         const typeName = type.replace(
             /\b[a-z]/gi,
             letter => letter.toUpperCase()
@@ -362,11 +363,19 @@ async function initializeGallery() {
     gallery.textContent = "Loading observations and checking images…";
 
     try {
-        const [observations, events, dhmReports] = await Promise.all([
-            loadCSV("data/processed_observations.csv"),
-            loadCSV("data/events.csv"),
-            loadCSV("data/event_dhm_reports.csv")
-        ]);
+        const [observations, events, dhmReports, brokenLinks] = await Promise.all([
+    loadCSV("data/processed_observations.csv"),
+    loadCSV("data/events.csv"),
+    loadCSV("data/event_dhm_reports.csv"),
+    fetch("data/broken_google_photos.json").then(response => {
+        if (!response.ok) {
+            throw new Error(`Broken-link report HTTP ${response.status}`);
+        }
+        return response.json();
+    })
+]);
+
+galleryBrokenGooglePhotos = new Set(brokenLinks);
 
 
         galleryEvents = events;

@@ -1,6 +1,7 @@
 const placeholder_src = "https://media.istockphoto.com/id/1980276924/vector/no-photo-thumbnail-graphic-element-no-found-or-available-image-in-the-observationsList-or-album-flat.jpg"
 
 let listedObservations = [];
+let observationListBrokenGooglePhotos = new Set();
 
 const desc_word_limit = 50;
 
@@ -187,7 +188,7 @@ function createObservationCard(observation) {
             mediaContent.appendChild(video);
         }
     }
-    else if (imageURL) {
+    else if (imageURL && !observationListBrokenGooglePhotos.has(imageURL)) {
         const image = document.createElement("img");
 
         image.alt = title.textContent;
@@ -224,7 +225,7 @@ function createObservationCard(observation) {
         textContent.appendChild(description);
     }
 
-    if (sourceURL) {
+    if (sourceURL && !observationListBrokenGooglePhotos.has(sourceURL)) {
         const typeName = type.replace(
             /\b[a-z]/gi,
             letter => letter.toUpperCase()
@@ -274,10 +275,19 @@ async function initializeObservations() {
     observationsList.textContent = "Loading observations…";
 
     try {
-        // Load the observations used by this list.
-        listedObservations = await loadCSV(
-            "data/processed_observations.csv"
-        );
+        // Load observations and the broken-link report together.
+const [observations, brokenLinks] = await Promise.all([
+    loadCSV("data/processed_observations.csv"),
+    fetch("data/broken_google_photos.json").then(response => {
+        if (!response.ok) {
+            throw new Error(`Broken-link report HTTP ${response.status}`);
+        }
+        return response.json();
+    })
+]);
+
+listedObservations = observations;
+observationListBrokenGooglePhotos = new Set(brokenLinks);
 
         // Refresh the list whenever a filter changes.
         [
