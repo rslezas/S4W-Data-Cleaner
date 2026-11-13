@@ -93,6 +93,7 @@ if (type === "image" || type === "video") {
     evidenceTypes.push(type === "image" ? "Image" : "Video");
 }
     }
+evidenceTypes.push("Flood Observation");
 
     fillDropdown("riverFilter", riverNames, "All Rivers");
     fillDropdown("watershedFilter", watershedNames, "All Watersheds");

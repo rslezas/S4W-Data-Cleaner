@@ -700,15 +700,18 @@ function renderObservationsLayer(selected) {
     }
 
     try {
-        // Only images and videos belong on the map.
-        // News reports and social media links remain available in the gallery.
-        const supportedFeatures = layerData.observations.filter(feature => {
-            const evidenceType = normalize(
-                feature.properties?.evidence_type
-            );
+        // Include image, video, and flood observations on the map.
+const supportedFeatures = layerData.observations.filter(feature => {
+    const properties = feature.properties || {};
+    const evidenceType = normalize(properties.evidence_type);
 
-            return ["image", "video"].includes(evidenceType);
-        });
+    if (["image", "video"].includes(evidenceType)) {
+        return true;
+    }
+
+    // Include observations without usable image or video evidence.
+    return selected.evidence === "Flood Observation";
+});
 
         // Apply the shared event, river, watershed, type, and date filters.
         const filteredObservations = get_filtered_observations(
@@ -718,6 +721,7 @@ function renderObservationsLayer(selected) {
                 river: selected.river,
                 watershed: selected.watershed,
                 observationType: selected.evidence,
+                brokenPhotoURLs: brokenGooglePhotos,
                 startDate: selected.startDate,
                 endDate: selected.endDate,
                 riverNormalizer: normalizeRiverName
