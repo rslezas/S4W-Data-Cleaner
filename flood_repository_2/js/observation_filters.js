@@ -51,6 +51,7 @@ function get_filtered_observations(
         watershed = "all",
         river = "all",
         observationType = "all",
+        brokenPhotoURLs = new Set(),
         startDate = "",
         endDate = "",
         recentEventIds = new Set(),
@@ -91,8 +92,45 @@ function get_filtered_observations(
                     : eventId === selectedEvent
             );
 
-        const evidenceType =
-            String(observation.evidence_type ?? "").trim() || "Not Provided";
+        const originalType =
+    String(observation.evidence_type ?? "").trim().toLowerCase();
+
+const getValidURL = value => {
+    try {
+        const url = new URL(String(value ?? "").trim());
+        return ["http:", "https:"].includes(url.protocol)
+            ? url.href
+            : null;
+    } catch {
+        return null;
+    }
+};
+
+const imageURL =
+    getValidURL(observation.image_url) ||
+    getValidURL(observation.source_url);
+
+const videoURL =
+    getValidURL(observation.video_url) ||
+    getValidURL(observation.source_url);
+
+const brokenLinks =
+    typeof galleryBrokenGooglePhotos !== "undefined"
+        ? galleryBrokenGooglePhotos
+        : brokenPhotoURLs;
+
+const hasImage =
+    originalType === "image" &&
+    imageURL &&
+    !brokenLinks.has(imageURL);
+
+const hasVideo =
+    originalType === "video" && videoURL;
+
+const evidenceType =
+    !hasImage && !hasVideo
+        ? "Flood Observation"
+        : originalType;
 
         const date = observationDateKey(observation.datetime);
 
@@ -112,7 +150,18 @@ function get_filtered_observations(
                 normalizeFilterValue(river) === "all" ||
                 riverNormalizer(river) === riverNormalizer(observation.river ?? "")
             ) &&
-            matches(observationType, evidenceType) &&
+            (
+    normalizeFilterValue(observationType) === "all" ||
+    (
+        normalizeFilterValue(observationType) === "flood observation"
+            ? !hasImage && !hasVideo
+            : normalizeFilterValue(observationType) === "image"
+                ? Boolean(hasImage)
+                : normalizeFilterValue(observationType) === "video"
+                    ? Boolean(hasVideo)
+                    : matches(observationType, originalType)
+    )
+) &&
             matchesDate
         );
     });

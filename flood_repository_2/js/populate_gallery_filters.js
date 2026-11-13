@@ -56,7 +56,10 @@ function populateEventFilter() {
 function populateGalleryFilters(galleryObservations) {
     fillDropdown(
         "evidence-type",
-        galleryObservations.map(getEvidenceType),
+        [
+            ...galleryObservations.map(getEvidenceType),
+            "Flood Observation"
+        ],
         "All Evidence Types"
     );
 
