@@ -49,9 +49,19 @@ function populateEventFilter() {
         return watershedMatches && riverMatches;
     });
 
-    events.sort((a, b) =>
-        (a.name || "").localeCompare(b.name || "")
-    );
+    events.sort((a, b) => {
+    const dateA = Date.parse(a.datetime || a.date || "");
+    const dateB = Date.parse(b.datetime || b.date || "");
+
+    const validA = Number.isFinite(dateA);
+    const validB = Number.isFinite(dateB);
+
+    if (validA && validB) return dateB - dateA;
+    if (validA) return -1;
+    if (validB) return 1;
+
+    return (a.name || "").localeCompare(b.name || "");
+});
 
     select.replaceChildren(new Option("All Events", "all"));
 
