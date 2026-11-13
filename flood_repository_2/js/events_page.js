@@ -14,7 +14,21 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
-            const events = results.data.filter(e => e.event_id && e.event_name);
+           const events = results.data
+    .filter(e => e.event_id && e.event_name)
+    .sort((a, b) => {
+        const dateA = Date.parse(a.datetime || "");
+        const dateB = Date.parse(b.datetime || "");
+
+        const validA = Number.isFinite(dateA);
+        const validB = Number.isFinite(dateB);
+
+        if (validA && validB) return dateB - dateA;
+        if (validA) return -1;
+        if (validB) return 1;
+
+        return a.event_name.localeCompare(b.event_name);
+    });
             // Load the 100-word event summaries from a separate CSV file.
 const summaryResults = await new Promise((resolve, reject) => {
     Papa.parse("data/event_summaries.csv", {
@@ -107,7 +121,11 @@ const sources = [];
 
 if (
     event.sourceUrl &&
-    /^https?:\/\//i.test(event.sourceUrl.trim())
+    /^https?:\/\//i.test(event.sourceUrl.trim()) &&
+    !(
+        dhmReports[event.event_id] &&
+        /dhm\.gov\.np/i.test(event.sourceUrl)
+    )
 ) {
     sources.push({
         label: (() => {
@@ -127,9 +145,13 @@ if (
     });
 }
 
+const sourcesSection = document.querySelector(".event-sources-section");
+
 if (sources.length === 0) {
-    sourcesContainer.textContent = "Evidence sources are being reviewed.";
+    sourcesSection.style.display = "none";
 } else {
+    sourcesSection.style.display = "";
+    
     const sourceList = document.createElement("ul");
 
     sources.forEach(source => {
@@ -149,7 +171,7 @@ if (sources.length === 0) {
 }
                 showEventPhotos(event);
                 updateDhmLink(event.event_id);
-                updateEventTimeline(event);
+                
             }
 
             dropdown.addEventListener("change", () => {
@@ -309,57 +331,4 @@ function updateDhmLink(eventId) {
         link.style.display = "none";
     }
 }
-
-
-function updateEventTimeline(event) {
-    const timeline = document.getElementById("event-timeline");
-    if (!timeline) return;
-
-    timeline.innerHTML = "";
-
-    const entry = document.createElement("article");
-
-    const date = document.createElement("span");
-    date.textContent = event.datetime || "Date unavailable";
-
-    const title = document.createElement("h3");
-    title.textContent = "Documented flood event";
-
-    const description = document.createElement("p");
-    description.textContent =
-        event.description || "No event description available.";
-
-    entry.append(date, title, description);
-    timeline.appendChild(entry);
-
-    const report = dhmReports[event.event_id];
-
-    if (report) {
-        const context = document.createElement("article");
-
-        const heading = document.createElement("h3");
-        heading.textContent = "Environmental Context";
-
-        const explanation = document.createElement("p");
-        explanation.textContent =
-            "Supporting DHM documentation. Regional rainfall information does not necessarily measure conditions at the exact flood location.";
-
-        const link = document.createElement("a");
-        link.href = report.url;
-        link.textContent = report.label;
-        link.target = "_blank";
-        link.rel = "noopener noreferrer";
-
-        context.append(heading, explanation, link);
-        timeline.appendChild(context);
-    }
-}
-
-
-
-
-
-
-
-
 
