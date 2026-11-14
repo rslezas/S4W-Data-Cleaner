@@ -94,7 +94,7 @@ dhmReports = Object.fromEntries(
 
 document.getElementById("event-summary").textContent =
     eventSummaries[event.event_id] ||
-    "An event summary is being prepared."; 
+    "An event summary is being prepared.";
     // Original evidence links for each flood event.
 const eventSources = {
     "FLOOD-2023-002": [
@@ -151,7 +151,7 @@ if (sources.length === 0) {
     sourcesSection.style.display = "none";
 } else {
     sourcesSection.style.display = "";
-    
+
     const sourceList = document.createElement("ul");
 
     sources.forEach(source => {
@@ -171,7 +171,7 @@ if (sources.length === 0) {
 }
                 showEventPhotos(event);
                 updateDhmLink(event.event_id);
-                
+
             }
 
             dropdown.addEventListener("change", () => {
@@ -254,11 +254,10 @@ if (
         return;
     }
 
+
     let current = 0;
 
-    const image = document.createElement("img");
-    image.style.cssText = "width:100%;max-height:280px;object-fit:contain;";
-    image.alt = "Flood photograph: " + event.event_name;
+    const mediaContainer = document.createElement("div");
 
     const counter = document.createElement("p");
     counter.style.textAlign = "center";
@@ -266,17 +265,35 @@ if (
     function updatePhoto() {
         const photo = photos[current];
 
-        image.src = /^https?:\/\//i.test(photo)
+        const mediaURL = /^https?:\/\//i.test(photo)
             ? photo
             : "media/" +
                 encodeURIComponent(event.event_id) + "/" +
                 encodeURIComponent(photo);
 
-        counter.textContent = `Photo ${current + 1} of ${photos.length}`;
+        const isVideo = /\.mp4(?:\?.*)?$/i.test(photo);
+
+        const media = document.createElement(isVideo ? "video" : "img");
+        media.src = mediaURL;
+        media.style.cssText =
+            "width:100%;max-height:280px;object-fit:contain;";
+
+        if (isVideo) {
+            media.controls = true;
+            media.preload = "metadata";
+        } else {
+            media.alt = "Flood photograph: " + event.event_name;
+        }
+
+        mediaContainer.replaceChildren(media);
+
+        counter.textContent =
+            `${isVideo ? "Video" : "Photo"} ${current + 1} of ${photos.length}`;
     }
 
-    gallery.appendChild(image);
+    gallery.appendChild(mediaContainer);
     gallery.appendChild(counter);
+
 
     if (photos.length > 1) {
         const previous = document.createElement("button");

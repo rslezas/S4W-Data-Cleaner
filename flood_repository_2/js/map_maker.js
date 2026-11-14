@@ -4,9 +4,22 @@ const data_paths = {
     watersheds: "data/geojson/watersheds.geojson",
     events: "data/events.csv",
     observations: "data/processed_observations.csv",
+    observationMedia: "data/observation_media.json",
     dhmReports: "data/event_dhm_reports.csv"
 };
+let observationMedia = {};
 
+async function loadObservationMedia() {
+    const response = await fetch(data_paths.observationMedia);
+
+    if (!response.ok) {
+        throw new Error(
+            `Failed to load observation media: ${response.status}`
+        );
+    }
+
+    observationMedia = await response.json();
+}
 const map = L.map("map").setView([27.7172, 85.3240], 11);
 
 const spiderfier = typeof OverlappingMarkerSpiderfier !== "undefined"
@@ -164,6 +177,82 @@ function getPinIcon(color) {
     return icon;
 }
 
+function createObservationMediaGallery(properties) {
+    const gallery = document.createElement("div");
+    const observationId = String(properties.observation_id || "").trim();
+    const eventId = String(properties.event_id || "").trim();
+
+    const files = observationMedia[observationId] || [];
+
+    if (files.length === 0 || !eventId) {
+        return gallery;
+    }
+
+    let current = 0;
+
+    const mediaContainer = document.createElement("div");
+    const controls = document.createElement("div");
+
+    controls.style.cssText =
+        "display:flex;justify-content:space-between;" +
+        "align-items:center;margin-top:8px;gap:8px;";
+
+    const previous = document.createElement("button");
+    previous.textContent = "Previous";
+
+    const counter = document.createElement("span");
+
+    const next = document.createElement("button");
+    next.textContent = "Next";
+
+    function showMedia() {
+        const filename = files[current];
+
+        const url =
+            `media/${encodeURIComponent(eventId)}/` +
+            encodeURIComponent(filename);
+
+        const isVideo = /\.mp4$/i.test(filename);
+        const element = document.createElement(isVideo ? "video" : "img");
+
+        element.src = url;
+        element.style.width = "100%";
+        element.style.height = "180px";
+        element.style.objectFit = "contain";
+        element.style.borderRadius = "8px";
+
+        if (isVideo) {
+            element.controls = true;
+            element.preload = "metadata";
+        } else {
+            element.alt = `Flood observation photo ${current + 1}`;
+            element.loading = "lazy";
+        }
+
+        mediaContainer.replaceChildren(element);
+
+        counter.textContent =
+            `${isVideo ? "Video" : "Photo"} ${current + 1} of ${files.length}`;
+    }
+
+    previous.onclick = () => {
+        current = (current - 1 + files.length) % files.length;
+        showMedia();
+    };
+
+    next.onclick = () => {
+        current = (current + 1) % files.length;
+        showMedia();
+    };
+
+    controls.append(previous, counter, next);
+    gallery.append(mediaContainer, controls);
+
+    showMedia();
+
+    return gallery;
+}
+
 function createEventPhotoGallery(properties) {
     const gallery = document.createElement("div");
     const eventId = String(properties.event_id || "").trim();
@@ -180,11 +269,7 @@ function createEventPhotoGallery(properties) {
 
     let currentPhoto = 0;
 
-    const image = document.createElement("img");
-    image.style.width = "100%";
-    image.style.height = "180px";
-    image.style.objectFit = "contain";
-    image.style.borderRadius = "8px";
+    const mediaContainer = document.createElement("div");
 
     const controls = document.createElement("div");
     controls.style.display = "flex";
@@ -203,11 +288,30 @@ function createEventPhotoGallery(properties) {
     function showPhoto() {
         const photo = photos[currentPhoto];
 
-image.src = /^https?:\/\//i.test(photo)
-    ? photo
-    : `media/${encodeURIComponent(eventId)}/${encodeURIComponent(photo)}`;
-        image.alt = `Flood event photo ${currentPhoto + 1}`;
-        counter.textContent = `${currentPhoto + 1} / ${photos.length}`;
+        const mediaURL = /^https?:\/\//i.test(photo)
+            ? photo
+            : `media/${encodeURIComponent(eventId)}/${encodeURIComponent(photo)}`;
+
+        const isVideo = /\.mp4(?:\?.*)?$/i.test(photo);
+
+        const media = document.createElement(isVideo ? "video" : "img");
+        media.src = mediaURL;
+        media.style.width = "100%";
+        media.style.height = "180px";
+        media.style.objectFit = "contain";
+        media.style.borderRadius = "8px";
+
+        if (isVideo) {
+            media.controls = true;
+            media.preload = "metadata";
+        } else {
+            media.alt = `Flood event photo ${currentPhoto + 1}`;
+        }
+
+        mediaContainer.replaceChildren(media);
+
+        counter.textContent =
+            `${isVideo ? "Video" : "Photo"} ${currentPhoto + 1} / ${photos.length}`;
     }
 
     previous.onclick = () => {
@@ -221,11 +325,12 @@ image.src = /^https?:\/\//i.test(photo)
     };
 
     controls.append(previous, counter, next);
-    gallery.append(image, controls);
+    gallery.append(mediaContainer, controls);
 
     showPhoto();
     return gallery;
 }
+
 
 const brokenGooglePhotos = new Set();
 
@@ -521,9 +626,13 @@ if (sourceURL && !isBrokenGooglePhotosURL(sourceURL)) {
                 if (dhmContext) {
                     content.appendChild(dhmContext);
                 }
+
+            } else if (
+                observationMedia[String(properties.observation_id || "").trim()]?.length
+            ) {
+                media.appendChild(createObservationMediaGallery(properties));
             } else if (evidenceType === "image") {
                 // Prefer the processed image URL, falling back to the source.
-
 const candidateImageURL =
     getPopupURL(properties.image_url) || sourceURL;
 
@@ -789,8 +898,8 @@ async function initializeLayers() {
 
     populateEventFilter();
 
-    const loaders = [loadRivers, loadWatersheds, loadEvents, loadObservations, loadDhmReports, loadBrokenGooglePhotos];
-    const labels = ["Rivers", "Watersheds", "Events", "Evidence", "DHM Reports", "Google Photos Link Report"];
+    const loaders = [loadRivers, loadWatersheds, loadEvents, loadObservations, loadObservationMedia, loadDhmReports, loadBrokenGooglePhotos];
+    const labels = ["Rivers", "Watersheds", "Events", "Evidence", "Observation Media", "DHM Reports", "Google Photos Link Report"];
     const results = await Promise.allSettled(loaders.map(function (load) {
         return load();
     }));
@@ -867,7 +976,7 @@ function createDhmContext(eventId) {
 
     const heading = document.createElement("strong");
     heading.textContent = "Environmental Context";
-    
+
     const explanation = document.createElement("p");
     explanation.textContent = eventId === "FLOOD-2023-001"
     ? "DHM monthly rainfall report for August 2023, providing regional monsoon rainfall context for the Hanumante Khola flood."

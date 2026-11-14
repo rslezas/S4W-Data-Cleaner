@@ -4,6 +4,7 @@ let galleryObservations = [];
 let galleryEvents = [];
 let galleryDhmReports = {};
 let galleryBrokenGooglePhotos = new Set();
+let galleryObservationMedia = {};
 
 const desc_word_limit = 20;
 
@@ -74,9 +75,16 @@ function getFilteredObservations() {
         errorElement.textContent = "";
     }
 
-const approvedObservations = galleryObservations.filter(observation =>
-    allowedFlags.includes(getQCFlag(observation))
-);
+const approvedObservations = galleryObservations.filter(observation => {
+    const observationId = String(observation.observation_id || "").trim();
+
+    const hasVerifiedLocalMedia =
+        Array.isArray(galleryObservationMedia[observationId]) &&
+        galleryObservationMedia[observationId].length > 0;
+
+    return allowedFlags.includes(getQCFlag(observation)) ||
+        hasVerifiedLocalMedia;
+});
 
 
 
@@ -140,8 +148,70 @@ function createGalleryCard(observation) {
     const imageURL = getSourceURL(observation.image_url);
     const videoURL = getSourceURL(observation.video_url);
     const type = normalize(getEvidenceType(observation));
+    const localFiles =
+        galleryObservationMedia[String(observation.observation_id || "").trim()] || [];
 
-    if (type == "video" && videoURL) {
+    if (localFiles.length > 0) {
+        let current = 0;
+
+        const mediaContainer = document.createElement("div");
+        const controls = document.createElement("div");
+        controls.style.cssText =
+            "display:flex;justify-content:space-between;" +
+            "align-items:center;gap:8px;margin:8px 0;";
+
+        const previous = document.createElement("button");
+        previous.textContent = "Previous";
+
+        const counter = document.createElement("span");
+
+        const next = document.createElement("button");
+        next.textContent = "Next";
+
+        function showLocalMedia() {
+            const filename = localFiles[current];
+            const eventId = String(observation.event_id || "").trim();
+            const url =
+                `media/${encodeURIComponent(eventId)}/` +
+                encodeURIComponent(filename);
+
+            const isVideo = /\.mp4$/i.test(filename);
+            const element = document.createElement(isVideo ? "video" : "img");
+
+            element.src = url;
+            element.style.width = "100%";
+            element.style.height = "220px";
+            element.style.objectFit = "contain";
+
+            if (isVideo) {
+                element.controls = true;
+                element.preload = "metadata";
+            } else {
+                element.alt = title.textContent;
+                element.loading = "lazy";
+            }
+
+            mediaContainer.replaceChildren(element);
+            counter.textContent =
+                `${isVideo ? "Video" : "Photo"} ${current + 1} of ${localFiles.length}`;
+        }
+
+        previous.onclick = () => {
+            current = (current - 1 + localFiles.length) % localFiles.length;
+            showLocalMedia();
+        };
+
+        next.onclick = () => {
+            current = (current + 1) % localFiles.length;
+            showLocalMedia();
+        };
+
+        controls.append(previous, counter, next);
+        card.append(mediaContainer, controls);
+        showLocalMedia();
+    } else if (type == "video" && videoURL) {
+
+
 
         if (videoURL.includes("youtube") || videoURL.includes("youtu.be"))
         {
@@ -363,7 +433,7 @@ async function initializeGallery() {
     gallery.textContent = "Loading observations and checking images…";
 
     try {
-        const [observations, events, dhmReports, brokenLinks] = await Promise.all([
+        const [observations, events, dhmReports, brokenLinks, observationMedia] = await Promise.all([
     loadCSV("data/processed_observations.csv"),
     loadCSV("data/events.csv"),
     loadCSV("data/event_dhm_reports.csv"),
@@ -371,12 +441,18 @@ async function initializeGallery() {
         if (!response.ok) {
             throw new Error(`Broken-link report HTTP ${response.status}`);
         }
+                return response.json();
+    }),
+    fetch("data/observation_media.json").then(response => {
+        if (!response.ok) {
+            throw new Error(`Observation media HTTP ${response.status}`);
+        }
         return response.json();
     })
 ]);
 
 galleryBrokenGooglePhotos = new Set(brokenLinks);
-
+galleryObservationMedia = observationMedia;
 
         galleryEvents = events;
         galleryObservations = observations;
