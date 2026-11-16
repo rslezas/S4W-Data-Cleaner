@@ -472,10 +472,16 @@ const imageURL = getPopupURL(properties.image_url) ||
 const videoURL = getPopupURL(properties.video_url) ||
                  getPopupURL(properties.source_url);
 
-const hasImage = evidenceType === "image" &&
-                 imageURL &&
-                 !isBrokenGooglePhotosURL(imageURL);
+const observationId = String(properties.observation_id || "").trim();
 
+const hasLocalImages = (observationMedia[observationId] || [])
+    .some(file => /\.(jpg|jpeg|png|gif|webp)$/i.test(file));
+
+const hasImage = hasLocalImages ||
+    (evidenceType === "image" &&
+     imageURL &&
+     !isBrokenGooglePhotosURL(imageURL));
+     
 const hasVideo = evidenceType === "video" && videoURL;
 
 // Assign green when no usable image or video URL is available.

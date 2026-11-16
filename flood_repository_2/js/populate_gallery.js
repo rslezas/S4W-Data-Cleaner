@@ -66,7 +66,7 @@ function parseDate(value) {
 }
 
 function getFilteredObservations() {
-    const allowedFlags = ["AutoPassed", "HumanPassed"];
+    const allowedFlags = ["AutoPassed", "HumanPassed", "CheckedGood"];
     const errorElement = document.getElementById("dateFilterError");
 
     // Clear any previous date-range error.
@@ -433,8 +433,9 @@ async function initializeGallery() {
     gallery.textContent = "Loading observations and checking images…";
 
     try {
-        const [observations, events, dhmReports, brokenLinks, observationMedia] = await Promise.all([
+       const [observations, reviewedObservations, events, dhmReports, brokenLinks, observationMedia] = await Promise.all([
     loadCSV("data/processed_observations.csv"),
+    loadCSV("data/observations.csv"),
     loadCSV("data/events.csv"),
     loadCSV("data/event_dhm_reports.csv"),
     fetch("data/broken_google_photos.json").then(response => {
@@ -455,7 +456,57 @@ galleryBrokenGooglePhotos = new Set(brokenLinks);
 galleryObservationMedia = observationMedia;
 
         galleryEvents = events;
-        galleryObservations = observations;
+
+// Preserve processed evidence fields and automated QC results.
+// Use the sponsor-reviewed QC status for gallery eligibility.
+const reviewedById = new Map(
+    reviewedObservations
+        .filter(row => String(row.observation_id || "").trim())
+        .map(row => [String(row.observation_id).trim(), row])
+);
+
+const processedIds = new Set(
+    observations.map(row =>
+        String(row.observation_id || "").trim()
+    )
+);
+
+const processedWithReviews = observations.map(observation => {
+    const id = String(observation.observation_id || "").trim();
+    const reviewed = reviewedById.get(id);
+
+    return {
+    ...observation,
+
+    // Restore event associations from sponsor-reviewed data.
+    event_id: reviewed?.event_id?.trim()
+        || observation.event_id,
+
+    // Preserve both automated and sponsor-reviewed QC.
+    automated_qc_flag: observation.qc_flag,
+    reviewed_qc_flag: reviewed?.qc_flag || "",
+
+    qc_flag: reviewed?.qc_flag === "CheckedGood"
+        ? "CheckedGood"
+        : observation.qc_flag
+    };
+});
+
+// Include sponsor-reviewed records missing from processed data.
+// Do not include unresolved duplicate IDs or records requiring review.
+const missingReviewed = reviewedObservations.filter(row => {
+    const id = String(row.observation_id || "").trim();
+
+    return id &&
+        !processedIds.has(id) &&
+        id !== "Evan" &&
+        row.qc_flag === "CheckedGood";
+});
+
+galleryObservations = [
+    ...processedWithReviews,
+    ...missingReviewed
+];
 
 galleryDhmReports = {};
 

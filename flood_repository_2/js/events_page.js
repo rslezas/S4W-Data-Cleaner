@@ -87,8 +87,6 @@ dhmReports = Object.fromEntries(
                 document.getElementById("event-title").textContent = event.event_name;
                 document.getElementById("event-date").textContent =
                     [event.datetime, event.location].filter(Boolean).join(" - ");
-                document.getElementById("event-description").textContent =
-                    event.description || "No description available.";
                 // Display the event-specific summary on the Flood Events page.
 
 
