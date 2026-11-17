@@ -1,4 +1,4 @@
-﻿
+
 const data_paths = {
     rivers: "data/geojson/rivers.geojson",
     watersheds: "data/geojson/watersheds.geojson",
@@ -474,15 +474,23 @@ const videoURL = getPopupURL(properties.video_url) ||
 
 const observationId = String(properties.observation_id || "").trim();
 
-const hasLocalImages = (observationMedia[observationId] || [])
-    .some(file => /\.(jpg|jpeg|png|gif|webp)$/i.test(file));
+const localMediaFiles = observationMedia[observationId] || [];
+
+const hasLocalImages = localMediaFiles.some(file =>
+    /\.(jpg|jpeg|png|gif|webp)$/i.test(file)
+);
+
+const hasLocalVideos = localMediaFiles.some(file =>
+    /\.(mp4|mov|webm)$/i.test(file)
+);
 
 const hasImage = hasLocalImages ||
     (evidenceType === "image" &&
      imageURL &&
      !isBrokenGooglePhotosURL(imageURL));
-     
-const hasVideo = evidenceType === "video" && videoURL;
+
+const hasVideo = hasLocalVideos ||
+    (evidenceType === "video" && videoURL);
 
 // Assign green when no usable image or video URL is available.
 const pinColor = isEvent
@@ -514,7 +522,8 @@ const marker = L.marker(displayLatLng, {
     pane: pane,
     icon: getPinIcon(pinColor),
     title: label,
-    alt: label
+    alt: label,
+    zIndexOffset: observationId === "MEDIA-2024-001" ? 1000 : 0
 });
 
 if (!isEvent) {
@@ -1008,13 +1017,3 @@ function createDhmContext(eventId) {
     section.append(heading, explanation, link);
     return section;
 }
-
-
-
-
-
-
-
-
-
-
