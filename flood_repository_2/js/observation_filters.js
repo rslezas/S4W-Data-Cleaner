@@ -119,11 +119,26 @@ const brokenLinks =
         ? galleryBrokenGooglePhotos
         : brokenPhotoURLs;
 
-const hasImage =
-    originalType === "image" &&
-    imageURL &&
-    !brokenLinks.has(imageURL);
+// Check locally stored photographs first.
+const observationId = String(observation.observation_id || "").trim();
 
+const localFiles =
+    typeof observationMedia !== "undefined"
+        ? (observationMedia[observationId] || [])
+        : [];
+
+const hasLocalImages = localFiles.some(file =>
+    /\.(jpg|jpeg|png|gif|webp)$/i.test(file)
+);
+
+const hasImage =
+    hasLocalImages ||
+    (
+        originalType === "image" &&
+        imageURL &&
+        !brokenLinks.has(imageURL)
+    );
+    
 const hasVideo =
     originalType === "video" && videoURL;
 

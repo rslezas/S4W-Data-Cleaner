@@ -1,6 +1,13 @@
 const placeholder_src = "https://media.istockphoto.com/id/1980276924/vector/no-photo-thumbnail-graphic-element-no-found-or-available-image-in-the-observationsList-or-album-flat.jpg"
 
 let listedObservations = [];
+// Updated by map_maker.js whenever map filters change.
+let visibleMapObservationIds = null;
+
+document.addEventListener("s4w:visible-observations", event => {
+    visibleMapObservationIds = new Set(event.detail?.ids || []);
+    if (listedObservations.length) renderObservationsList();
+});
 let observationListBrokenGooglePhotos = new Set();
 
 const desc_word_limit = 50;
@@ -248,11 +255,16 @@ function renderObservationsList() {
     const observationsList = document.getElementById("observation-list");
     if (!observationsList) return;
 
-    const observations = getFilteredObservations().filter(observation =>
-        ["image", "video"].includes(
-            normalize(getEvidenceType(observation))
-        )
-    );
+    const observations = getFilteredObservations().filter(observation => {
+        const id = String(observation.observation_id || "").trim();
+        // The list should mirror the observation markers, including
+        // flood observations that do not yet have photos or videos.
+        if (visibleMapObservationIds !== null) {
+            return visibleMapObservationIds.has(id);
+        }
+        // Fallback while the map is initializing.
+        return ["image", "video"].includes(normalize(getEvidenceType(observation)));
+    });
 
     if (observations.length === 0) {
         observationsList.textContent = "No observations match the selected filters.";

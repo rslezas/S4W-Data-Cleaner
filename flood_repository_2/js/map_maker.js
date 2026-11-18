@@ -1,4 +1,4 @@
-
+﻿
 const data_paths = {
     rivers: "data/geojson/rivers.geojson",
     watersheds: "data/geojson/watersheds.geojson",
@@ -523,7 +523,7 @@ const marker = L.marker(displayLatLng, {
     icon: getPinIcon(pinColor),
     title: label,
     alt: label,
-    zIndexOffset: observationId === "MEDIA-2024-001" ? 1000 : 0
+    zIndexOffset: 0
 });
 
 if (!isEvent) {
@@ -681,7 +681,48 @@ const imageURL = candidateImageURL &&
                     appendPopupVideo(media, videoURL, title);
                 }
             }
+// Display additional evidence links for individual observations.
+if (
+    !isEvent &&
+    properties.observation_id !== "SPONSOR-037" &&
+    false
+) {
+    const urls = String(properties.additional_source_urls)
+        .split("|")
+        .map(url => url.trim())
+        .filter(Boolean);
 
+    const validURLs = [...new Set(urls)].filter(url => {
+        const parsed = getPopupURL(url);
+        return parsed && !isBrokenGooglePhotosURL(parsed);
+    });
+
+    if (validURLs.length > 0) {
+        const section = document.createElement("div");
+        section.className = "additional-evidence";
+        section.style.cssText =
+            "margin-top:12px;font-size:13px;line-height:1.7;";
+
+        const heading = document.createElement("strong");
+        heading.textContent = "Additional evidence";
+        section.appendChild(heading);
+
+        validURLs.forEach((url, index) => {
+            const wrapper = document.createElement("div");
+            const anchor = document.createElement("a");
+
+            anchor.href = getPopupURL(url).href;
+            anchor.target = "_blank";
+            anchor.rel = "noopener noreferrer";
+            anchor.textContent = `View evidence ${index + 1}`;
+
+            wrapper.appendChild(anchor);
+            section.appendChild(wrapper);
+        });
+
+        content.appendChild(section);
+    }
+}
             marker.bindPopup(content, {
                 className: "custom-popup",
                 maxWidth: 420,
@@ -860,9 +901,21 @@ const supportedFeatures = layerData.observations.filter(feature => {
         );
 
         replaceFeatures(observationsLayer, matchingFeatures);
+
+        // Keep the observation cards synchronized with the visible markers.
+        document.dispatchEvent(new CustomEvent("s4w:visible-observations", {
+            detail: {
+                ids: matchingFeatures.map(feature =>
+                    String(feature.properties?.observation_id || "").trim()
+                ).filter(Boolean)
+            }
+        }));
     } catch (error) {
         // Clear stale markers and display the error.
         replaceFeatures(observationsLayer, []);
+        document.dispatchEvent(new CustomEvent("s4w:visible-observations", {
+            detail: { ids: [] }
+        }));
 
         console.error("Could not display observations:", error);
 
@@ -1017,3 +1070,6 @@ function createDhmContext(eventId) {
     section.append(heading, explanation, link);
     return section;
 }
+
+
+
