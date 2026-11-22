@@ -46,7 +46,26 @@ function populateEventFilter() {
                 matches(selectedRiver, river, normalizeRiverName)
             );
 
-        return watershedMatches && riverMatches;
+        const qualifyingObservationIds = new Set(observations.filter(feature => {
+            const p = feature.properties || {};
+            const observationId = String(p.observation_id || "").trim();
+            if (!observationId) return false;
+
+            const localFiles = observationMedia[observationId] || [];
+            const hasLocalMedia = localFiles.some(file =>
+                /\.(jpg|jpeg|png|gif|webp|mp4|mov|webm)$/i.test(file)
+            );
+
+            const type = normalize(p.evidence_type);
+            const imageURL = getPopupURL(p.image_url) || getPopupURL(p.source_url);
+            const videoURL = getPopupURL(p.video_url) || getPopupURL(p.source_url);
+
+            return hasLocalMedia ||
+                (type === "image" && imageURL && !isBrokenGooglePhotosURL(imageURL)) ||
+                (type === "video" && videoURL && !isBrokenGooglePhotosURL(videoURL));
+        }).map(feature => String(feature.properties.observation_id).trim()));
+
+        return watershedMatches && riverMatches && qualifyingObservationIds.size >= 2;
     });
 
     events.sort((a, b) => {
@@ -66,12 +85,42 @@ function populateEventFilter() {
     select.replaceChildren(new Option("All Events", "all"));
 
     for (const event of events) {
-        select.add(new Option(event.name, eventId(event)));
+        select.add(new Option("EVENT — " + event.name, eventId(event)));
     }
 
-    select.value = events.some(event =>
-        eventId(event) === previousSelection
-    ) ? previousSelection : "all";
+    const observations = layerData.observations
+        .map(feature => feature.properties || {})
+        .filter(observation => String(observation.observation_id || "").trim());
+
+    const observationGroup = document.createElement("optgroup");
+    observationGroup.label = "INDIVIDUAL OBSERVATIONS";
+
+    observations.sort((a, b) =>
+        String(a.observation_title || a.location || "").localeCompare(
+            String(b.observation_title || b.location || "")
+        )
+    );
+
+    const seenObservations = new Set();
+
+    for (const observation of observations) {
+        const id = String(observation.observation_id).trim();
+
+        if (seenObservations.has(id)) continue;
+        seenObservations.add(id);
+
+        const name = String(
+            observation.observation_title || observation.location || id
+        ).trim();
+
+        observationGroup.appendChild(
+            new Option("OBSERVATION — " + name, "observation:" + id)
+        );
+    }
+
+    select.appendChild(observationGroup);
+
+    select.value = (events.some(event => eventId(event) === previousSelection) || (previousSelection.startsWith("observation:") && seenObservations.has(previousSelection.slice(12)))) ? previousSelection : "all";
 }
 
 function populateFilters() {
@@ -112,3 +161,8 @@ evidenceTypes.push("Flood Observation");
     // The event dropdown has its own function and data source.
     populateEventFilter();
 }
+
+
+
+
+

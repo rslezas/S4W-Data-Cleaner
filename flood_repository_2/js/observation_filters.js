@@ -1,4 +1,4 @@
-function normalizeFilterValue(value) {
+﻿function normalizeFilterValue(value) {
     return String(value ?? "").trim().toLowerCase();
 }
 
@@ -86,13 +86,13 @@ function get_filtered_observations(
 
         const matchesEvent =
             selectedEvent === "all" ||
-            (
-                selectedEvent === "recent"
+            (selectedEvent.startsWith("observation:")
+                ? observation.observation_id === selectedEvent.slice(12)
+                : selectedEvent === "recent"
                     ? recentEventIds.has(eventId)
-                    : eventId === selectedEvent
-            );
+                    : eventId === selectedEvent);
 
-        const originalType =
+const originalType =
     String(observation.evidence_type ?? "").trim().toLowerCase();
 
 const getValidURL = value => {
@@ -181,3 +181,4 @@ const evidenceType =
         );
     });
 }
+

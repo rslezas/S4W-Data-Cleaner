@@ -547,4 +547,45 @@ if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", initializeGallery);
 } else {
     initializeGallery();
+}function openGalleryPhoto(src, alt) {
+    const overlay = document.createElement("div");
+    overlay.style.cssText = "position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:99999;display:flex;align-items:center;justify-content:center;padding:55px 20px 20px;box-sizing:border-box;";
+
+    const image = document.createElement("img");
+    image.src = src;
+    image.alt = alt || "Enlarged flood photograph";
+    image.style.cssText = "max-width:100%;max-height:100%;object-fit:contain;";
+
+    const close = document.createElement("button");
+    close.textContent = "×";
+    close.setAttribute("aria-label", "Close photograph");
+    close.style.cssText = "position:absolute;top:10px;right:20px;font-size:36px;color:white;background:transparent;border:0;cursor:pointer;";
+
+    const previousFocus = document.activeElement;
+    const closeViewer = () => {
+        document.removeEventListener("keydown", onKeyDown);
+        overlay.remove();
+        previousFocus?.focus();
+    };
+    const onKeyDown = e => {
+        if (e.key === "Escape") closeViewer();
+    };
+
+    close.onclick = closeViewer;
+    overlay.onclick = e => {
+        if (e.target === overlay) closeViewer();
+    };
+
+    overlay.append(image, close);
+    document.body.appendChild(overlay);
+    document.addEventListener("keydown", onKeyDown);
+    close.focus();
 }
+
+document.addEventListener("click", event => {
+    const image = event.target.closest("img");
+    if (!image || !image.closest(".card") || image.closest(".gallery-photo-viewer")) return;
+    if (image.src.includes("social_media_placeholder")) return;
+    if (!image.complete || image.naturalWidth === 0) return;
+    openGalleryPhoto(image.currentSrc || image.src, image.alt);
+});

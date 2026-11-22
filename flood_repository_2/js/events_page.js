@@ -274,7 +274,7 @@ if (
         const media = document.createElement(isVideo ? "video" : "img");
         media.src = mediaURL;
         media.style.cssText =
-            "width:100%;max-height:280px;object-fit:contain;";
+            "width:100%;max-height:500px;object-fit:contain;";
 
         if (isVideo) {
             media.controls = true;
@@ -346,4 +346,5 @@ function updateDhmLink(eventId) {
         link.style.display = "none";
     }
 }
+
 

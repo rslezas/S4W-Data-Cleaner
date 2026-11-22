@@ -217,7 +217,7 @@ function createObservationMediaGallery(properties) {
 
         element.src = url;
         element.style.width = "100%";
-        element.style.height = "180px";
+        element.style.height = "320px";
         element.style.objectFit = "contain";
         element.style.borderRadius = "8px";
 
@@ -297,7 +297,7 @@ function createEventPhotoGallery(properties) {
         const media = document.createElement(isVideo ? "video" : "img");
         media.src = mediaURL;
         media.style.width = "100%";
-        media.style.height = "180px";
+        media.style.height = "320px";
         media.style.objectFit = "contain";
         media.style.borderRadius = "8px";
 
@@ -547,7 +547,7 @@ return marker;
             content.className = "evidence-card";
 
             // Allow all popup content to scroll, including observation photos.
-            content.style.maxHeight = "260px";
+            content.style.maxHeight = "420px";
             content.style.overflowY = "auto";
             content.style.paddingRight = "8px";
 
@@ -630,7 +630,7 @@ if (sourceURL && !isBrokenGooglePhotosURL(sourceURL)) {
 
     content.querySelector(".evidence-title").after(context);
 }
-                content.style.maxHeight = "260px";
+                content.style.maxHeight = "420px";
                 content.style.overflowY = "auto";
                 content.style.paddingRight = "8px";
 
@@ -725,8 +725,8 @@ if (
 }
             marker.bindPopup(content, {
                 className: "custom-popup",
-                maxWidth: 420,
-                maxHeight: 350
+                maxWidth: 550,
+                maxHeight: 500
             });
         }
     });
@@ -775,7 +775,7 @@ function refreshLayers() {
 // even when their evidence types are not displayed as map markers.
 if (selected.event !== "all") {
     const eventObservations = layerData.observations.filter(feature =>
-        eventId(feature.properties) === selected.event
+        (selected.event.startsWith("observation:") ? String(feature.properties.observation_id || "").trim() === selected.event.slice(12) : eventId(feature.properties) === selected.event)
     );
 
     const bounds = L.geoJSON({
@@ -844,13 +844,41 @@ function renderEventsLayer(selected) {
     const availableEventIds = new Set(
         Array.from(document.getElementById("eventFilter").options)
             .map(option => option.value)
-            .filter(id => id !== "all")
+            .filter(id => id !== "all" && !id.startsWith("observation:"))
     );
 
     replaceFeatures(eventsLayer, layerData.events.filter(feature => {
         const id = eventId(feature.properties);
 
+                const qualifyingObservations = new Set(
+            layerData.observations
+                .filter(observation => {
+                    const p = observation.properties || {};
+                    if (eventId(p) !== id) return false;
+
+                    const observationId = String(p.observation_id || "").trim();
+                    if (!observationId) return false;
+
+                    const localFiles = observationMedia[observationId] || [];
+                    const hasLocalMedia = localFiles.some(file =>
+                        /\.(jpg|jpeg|png|gif|webp|mp4|mov|webm)$/i.test(file)
+                    );
+
+                    const type = normalize(p.evidence_type);
+                    const imageURL = getPopupURL(p.image_url) || getPopupURL(p.source_url);
+                    const videoURL = getPopupURL(p.video_url) || getPopupURL(p.source_url);
+
+                    return hasLocalMedia ||
+                        (type === "image" && imageURL && !isBrokenGooglePhotosURL(imageURL)) ||
+                        (type === "video" && videoURL && !isBrokenGooglePhotosURL(videoURL));
+                })
+                .map(observation =>
+                    String(observation.properties.observation_id).trim()
+                )
+        );
+
         return availableEventIds.has(id) &&
+            qualifyingObservations.size >= 2 &&
             matchesEvent(selected.event, feature.properties);
     }));
 }
@@ -875,7 +903,7 @@ const supportedFeatures = layerData.observations.filter(feature => {
     }
 
     // Include observations without usable image or video evidence.
-    return selected.evidence === "Flood Observation";
+    return selected.evidence === "Flood Observation" || (selected.event.startsWith("observation:") && String(properties.observation_id || "").trim() === selected.event.slice(12));
 });
 
         // Apply the shared event, river, watershed, type, and date filters.
@@ -1070,6 +1098,14 @@ function createDhmContext(eventId) {
     section.append(heading, explanation, link);
     return section;
 }
+
+
+
+
+
+
+
+
 
 
 

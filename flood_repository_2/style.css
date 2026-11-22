@@ -1,4 +1,4 @@
-/* Merged stylesheet. style.css wins conflicts; unique style2.css declarations are retained. Responsive overrides remain in their own media-query scopes. */
+﻿/* Merged stylesheet. style.css wins conflicts; unique style2.css declarations are retained. Responsive overrides remain in their own media-query scopes. */
 
 /*
    01. Observation Popups
@@ -1362,7 +1362,7 @@ input.filter-dropdown {
 .evidence-media video {
     display: block;
     width: 100%;
-    max-height: 240px;
+    max-height: 360px;
     object-fit: contain;
     margin: 12px 0;
 }
@@ -1377,7 +1377,7 @@ input.filter-dropdown {
 
 .gallery {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 20px;
 }
 
@@ -1421,12 +1421,12 @@ input.filter-dropdown {
 .card img {
     display: block;
     width: 100%;
-    height: 200px;
+    height: 300px;
     min-height: 60px;
 
     flex: 1 1 150px;
 
-    object-fit: cover;
+    object-fit: contain;
     border-radius: 8px;
 }
 
@@ -1462,7 +1462,7 @@ input.filter-dropdown {
 /* Navigation cards: three equal columns */
 .navigation-cards {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 20px;
 }
 
@@ -1655,3 +1655,4 @@ input.filter-dropdown {
         font-size: 18px;
     }
 }
+
