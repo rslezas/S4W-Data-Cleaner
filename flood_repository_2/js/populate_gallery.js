@@ -433,11 +433,10 @@ async function initializeGallery() {
     gallery.textContent = "Loading observations and checking images…";
 
     try {
-       const [observations, reviewedObservations, events, dhmReports, brokenLinks, observationMedia] = await Promise.all([
+       const [observations, reviewedObservations, events, brokenLinks, observationMedia] = await Promise.all([
     loadCSV("data/processed_observations.csv"),
     loadCSV("data/observations.csv"),
     loadCSV("data/events.csv"),
-    loadCSV("data/event_dhm_reports.csv"),
     fetch("data/broken_google_photos.json").then(response => {
         if (!response.ok) {
             throw new Error(`Broken-link report HTTP ${response.status}`);
@@ -510,14 +509,15 @@ galleryObservations = [
 
 galleryDhmReports = {};
 
-dhmReports.forEach(report => {
+// DHM report links are stored in events.csv.
+events.forEach(report => {
     const eventId = String(report.event_id || "").trim();
-    const url = getSourceURL(report.url);
+    const url = getSourceURL(report.dhm_report_url);
 
     if (eventId && url) {
         galleryDhmReports[eventId] = {
             url: url,
-            label: report.label || "View DHM rainfall report"
+            label: report.dhm_report_label || "View DHM rainfall report"
         };
     }
 });

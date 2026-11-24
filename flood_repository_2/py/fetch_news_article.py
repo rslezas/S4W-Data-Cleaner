@@ -4,6 +4,8 @@ from dateutil.parser import parse
 from urllib.parse import urlparse
 import re
 
+# This script populates the title, description, thumbnail
+
 word_limit = 100
 
 def clean_text(text):

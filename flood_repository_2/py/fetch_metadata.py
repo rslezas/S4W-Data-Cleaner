@@ -1,13 +1,13 @@
 from pathlib import Path
-import math
-import json
 import subprocess
+import json
 
 request_timeout = 30
 
 project_root = Path(__file__).resolve().parent.parent
 exiftool_path = project_root / "tools" / "exiftool" / "exiftool.exe"
 
+# Retrieves gps metadata from an image or video
 def get_gps(path):
     media_path = Path(path).resolve()
 
@@ -55,6 +55,7 @@ def get_gps(path):
     ) as error:
         return "Cannot read GPS metadata."
 
+# Redundant - If gps location exists on photo/video, we will use that instead of the 
 def verify_media_location(latitude, longitude, path):
 
     data = get_gps(path)

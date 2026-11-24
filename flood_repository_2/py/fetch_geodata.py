@@ -1,7 +1,6 @@
 import json
 import math
 from pathlib import Path
-
 from pyproj import Transformer
 from shapely.geometry import Point, shape
 from shapely.ops import transform
@@ -75,20 +74,14 @@ watersheds = load_features(
     ["watershed", "name"],
     {"Polygon", "MultiPolygon"},
 )
-"""
-municipalities = load_features(
-    "kathmandu_municipalities.geojson",
-    ["name:en", "name"],
-    {"Polygon", "MultiPolygon"},
-)
-"""
+
 rivers = load_features(
     "rivers.geojson",
     ["river", "name:en", "name"],
     {"LineString", "MultiLineString"},
 )
 
-
+# This function returns the name of the shape that a point falls into on a GeoJSON
 def find_containing_name(point, features):
     for feature in features:
         if feature["geometry"].covers(point):
@@ -96,6 +89,7 @@ def find_containing_name(point, features):
 
     return None
 
+# Populates location details from GeoJSON features 
 def get_location_details(latitude, longitude, max_river_distance_m=None):
     result = {
         "watershed": None,

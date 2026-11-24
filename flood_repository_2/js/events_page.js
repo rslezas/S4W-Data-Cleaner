@@ -29,44 +29,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
         return a.event_name.localeCompare(b.event_name);
     });
-            // Load the 100-word event summaries from a separate CSV file.
-const summaryResults = await new Promise((resolve, reject) => {
-    Papa.parse("data/event_summaries.csv", {
-        download: true,
-        header: true,
-        skipEmptyLines: true,
-        complete: resolve,
-        error: reject
-    });
-});
-
+            // Event summaries are stored in the summary column of events.csv.
 const eventSummaries = Object.fromEntries(
-    summaryResults.data.map(row => [row.event_id, row.summary])
+    events.map(row => [row.event_id, row.summary])
 );
-// Load DHM environmental context reports from CSV.
-const dhmResults = await new Promise((resolve, reject) => {
-    Papa.parse("data/event_dhm_reports.csv", {
-        download: true,
-        header: true,
-        skipEmptyLines: "greedy",
-        transformHeader: header => header.replace(/^\uFEFF/, "").trim(),
-        complete: resolve,
-        error: reject
-    });
-});
-
-if (dhmResults.errors.length) {
-    console.error("Error parsing DHM reports:", dhmResults.errors);
-}
-
+// DHM environmental context reports are stored in events.csv.
 dhmReports = Object.fromEntries(
-    dhmResults.data
-        .filter(row => row.event_id && row.url)
+    events
+        .filter(row => row.event_id && row.dhm_report_url)
         .map(row => [
             row.event_id,
             {
-                url: row.url,
-                label: row.label
+                url: row.dhm_report_url,
+                label: row.dhm_report_label
             }
         ])
 );

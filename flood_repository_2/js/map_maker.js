@@ -4,8 +4,7 @@ const data_paths = {
     watersheds: "data/geojson/watersheds.geojson",
     events: "data/events.csv",
     observations: "data/processed_observations.csv",
-    observationMedia: "data/observation_media.json",
-    dhmReports: "data/event_dhm_reports.csv"
+    observationMedia: "data/observation_media.json"
 };
 let observationMedia = {};
 
@@ -1046,17 +1045,17 @@ async function initializeLayers() {
 });
 
 initializeLayers();
-// DHM environmental context reports are loaded from CSV.
+// DHM environmental context reports are stored in events.csv.
 const eventDhmReports = {};
 
 async function loadDhmReports() {
-    const reports = await loadCSV(data_paths.dhmReports);
+    const reports = await loadCSV(data_paths.events);
 
     reports.forEach(report => {
-        if (report.event_id && report.url) {
+        if (report.event_id && report.dhm_report_url) {
             eventDhmReports[report.event_id] = {
-                url: report.url,
-                label: report.label
+                url: report.dhm_report_url,
+                label: report.dhm_report_label
             };
         }
     });
