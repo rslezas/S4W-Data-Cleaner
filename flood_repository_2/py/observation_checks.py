@@ -5,10 +5,14 @@ from urllib.parse import urlparse
 
 import requests
 from PIL import Image
+import mimetypes
+from contextlib import contextmanager
 
 from fetch_news_article import get_article_elements
 from fetch_metadata import verify_media_location
 from fetch_geodata import get_location_details
+
+site_root = Path(__file__).resolve().parent.parent
 
 min_width = 200
 min_height = 150
@@ -18,6 +22,55 @@ download_timeout = 120
 max_download_bytes = 100 * 1024 * 1024  # 100 MiB per file.
 
 ###### Shared Helpers ######
+
+import mimetypes
+from contextlib import contextmanager
+
+# Local paths such as "media/downloads/abc.jpg" are relative to the website folder (flood_repository_2).
+site_root = Path(__file__).resolve().parent.parent
+
+
+def is_online_url(value):
+    return urlparse(str(value or "").strip()).scheme in {"http", "https"}
+
+
+def resolve_local_path(value):
+    """Return the Path of an existing local file inside the site folder, else None."""
+    text = str(value or "").strip().replace("\\", "/")
+
+    if not text or is_online_url(text):
+        return None
+
+    path = (site_root / text).resolve()
+
+    # Refuse paths that escape the site folder (e.g. "../../secrets.txt").
+    try:
+        path.relative_to(site_root)
+    except ValueError:
+        return None
+
+    return path if path.is_file() else None
+
+
+@contextmanager
+def open_media(source_url):
+    """Yield (media_path, content_type) for a local file or a downloaded URL."""
+    if not is_online_url(source_url):
+        local_path = resolve_local_path(source_url)
+
+        if local_path is None:
+            raise FileNotFoundError(source_url)
+
+        # Local files have no server header, so the type is guessed from the extension.
+        content_type = mimetypes.guess_type(local_path.name)[0] or ""
+        yield local_path, content_type
+        return
+
+    # Online file: download to a temp folder that is deleted afterwards.
+    with tempfile.TemporaryDirectory() as temp_dir:
+        media_path = Path(temp_dir) / "media"
+        content_type = download_media(source_url, media_path)
+        yield media_path, content_type
 
 def is_youtube_url(url):
     hostname = (urlparse(url).hostname or "").lower()
@@ -78,6 +131,12 @@ def download_media(url, destination):
 
 def check_source_url(entry):
     url = str(entry.get("source_url") or "").strip()
+
+    # Local files only need to exist.
+    if url and not is_online_url(url):
+        if resolve_local_path(url) is None:
+            return "Local media file not found."
+        return None
 
     try:
         parsed = urlparse(url)
@@ -154,16 +213,10 @@ def populate_image(entry):
 
 
 def process_image(entry, check_location=True):
+    source_url = str(entry["source_url"]).strip()
+
     try:
-        # Delete the downloaded file when this block exits.
-        with tempfile.TemporaryDirectory() as temp_dir:
-            media_path = Path(temp_dir) / "media"
-
-            download_media(
-                str(entry["source_url"]).strip(),
-                media_path,
-            )
-
+        with open_media(source_url) as (media_path, content_type):
             rejection_reason = check_image(
                 entry,
                 media_path,
@@ -174,6 +227,9 @@ def process_image(entry, check_location=True):
                 return rejection_reason
 
             populate_image(entry)
+
+    except FileNotFoundError:
+        return "Local media file not found."
 
     except ValueError:
         return "Image exceeds the download size limit."
@@ -259,12 +315,8 @@ def process_video(entry):
             populate_video(entry, video_data)
 
         else:
-            # Direct video files need a local copy for GPS inspection.
-            with tempfile.TemporaryDirectory() as temp_dir:
-                media_path = Path(temp_dir) / "media"
-
-                content_type = download_media(video_url, media_path)
-
+            # Direct video files (online or local) need a local path for GPS inspection.
+            with open_media(video_url) as (media_path, content_type):
                 video_data = {
                     "provider": "direct",
                     "content_type": content_type,

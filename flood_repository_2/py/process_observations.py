@@ -11,10 +11,14 @@ from tqdm import tqdm
 from observation_checks import common_passes, type_passes, populate_location
 
 observations_path = Path(r"data/observations.csv")
+manual_observations_path = Path(r"data/manual_observations.csv")
 observations_output_path = Path(r"data/processed_observations.csv")
 
 observations = pd.read_csv(observations_path, low_memory=False)
 records = observations.to_dict("records")
+
+manual_observations = pd.read_csv(manual_observations_path, low_memory=False)
+manual_records = manual_observations.to_dict("records")
 
 passed_entries = []
 rejected_entries = []
@@ -37,27 +41,25 @@ def process_observation(entry):
 
     return None
 
-for observation in tqdm(records, desc="Processing observations", unit="entry"):
+def run_processing(records, manual=False):
+    for observation in tqdm(records, desc="Processing observations", unit="entry"):
+        entry = observation.copy()
+        rejection_reason = None if manual else process_observation(entry)
 
-    entry = observation.copy()
+        if rejection_reason is None:
+            try:
+                populate_location(entry)
+            except Exception:
+                pass                      # one bad coordinate shouldn't stop the whole run
+            entry["qc_flag"] = "HumanPassed" if manual else "AutoPassed"
+            passed_entries.append(entry)
+        else:
+            entry["qc_flag"] = "AutoRejected"
+            entry["rejection_reason"] = rejection_reason
+            rejected_entries.append(entry)
 
-    rejection_reason = process_observation(entry)
+run_processing(records)
+run_processing(manual_records, manual=True)
 
-    rejection_reason = process_observation(entry)
-
-    if rejection_reason is None:
-        populate_location(entry)
-
-        entry["qc_flag"] = "AutoPassed"
-        passed_entries.append(entry)
-    else:
-        entry["qc_flag"] = "AutoRejected"
-        entry["rejection_reason"] = rejection_reason
-        rejected_entries.append(entry)
-
-processed_observations = (
-    pd.DataFrame(passed_entries + rejected_entries)
-    .reset_index(drop=True)
-)
-
-processed_observations.to_csv(observations_output_path, index=False, encoding="utf-8-sig")
+processed = pd.DataFrame(passed_entries + rejected_entries).reset_index(drop=True)
+processed.to_csv(observations_output_path, index=False, encoding="utf-8-sig")
